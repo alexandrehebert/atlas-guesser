@@ -201,6 +201,9 @@
     "collapse_sidebar": "Collapse sidebar",
     "expand_sidebar": "Expand sidebar",
     "country_button_aria": "Select {country}",
+    "map_view_label": "Map view",
+    "map_view_globe": "Globe",
+    "map_view_flat": "Flat",
     "mode_moves": {
       "flag-to-country": "Which country matches this flag?",
       "capital-to-country": "Which country matches this capital?",

@@ -19,32 +19,53 @@ import { getCountryFocusScale } from '../focusScale';
 import { useGame } from './GameContext';
 import { useGameLayout } from './GameLayoutContext';
 
+// ── Globe (3D) constants ─────────────────────────────────────────────────────
+const DEFAULT_ALT = 1.65;
+const MOBILE_ALT  = 1.95;
+const FOCUS_ALT   = 1.15;
+
 interface GameMapContextValue {
+  // 3D globe
+  globeRef: RefObject<any>;
+  setGlobeRef: (globe: any) => void;
+  // 2D SVG
   svgRef: RefObject<SVGSVGElement | null>;
   pathRefs: RefObject<Record<string, SVGPathElement | null>>;
   mapTransform: ZoomTransform;
+  // Shared controls
   zoomBy: (factor: number) => void;
   resetZoom: () => void;
-  focusCountry?: (countryCode: string) => void;
+  focusCountry: (countryCode: string) => void;
 }
 
 const GameMapContext = createContext<GameMapContextValue | null>(null);
 
 export function GameMapProvider({ children }: { children: ReactNode }) {
-  const { mode, round, quiz } = useGame();
+  const { mode, round, answer, quiz, mapView } = useGame();
   const { isMobile, sidebarOpen } = useGameLayout();
+  const [isMapEngineReady, setIsMapEngineReady] = useState(false);
 
+  // ── 3D refs ──────────────────────────────────────────────────────────────
+  const globeRef = useRef<any>(null);
+
+  const setGlobeRef = useCallback((globe: any) => {
+    globeRef.current = globe;
+    setIsMapEngineReady(Boolean(globe));
+  }, []);
+
+  // ── 2D refs ──────────────────────────────────────────────────────────────
   const svgRef = useRef<SVGSVGElement | null>(null);
   const zoomBehaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   const pathRefs = useRef<Record<string, SVGPathElement | null>>({});
   const defaultTransformRef = useRef<ZoomTransform>(DESKTOP_DEFAULT_MAP_TRANSFORM);
   const [mapTransform, setMapTransform] = useState<ZoomTransform>(DESKTOP_DEFAULT_MAP_TRANSFORM);
   const viewBox = quiz.viewBox;
+
   const focusBoundsByCode = useMemo(() => {
     return new Map(
       quiz.countries
-        .filter((country) => country.focusBounds.width > 0 && country.focusBounds.height > 0)
-        .map((country) => [country.code, country.focusBounds] as const),
+        .filter((c) => c.focusBounds.width > 0 && c.focusBounds.height > 0)
+        .map((c) => [c.code, c.focusBounds] as const),
     );
   }, [quiz.countries]);
 
@@ -52,7 +73,11 @@ export function GameMapProvider({ children }: { children: ReactNode }) {
     return isMobile ? zoomIdentity : DESKTOP_DEFAULT_MAP_TRANSFORM;
   }, [isMobile]);
 
+  // ── Wire up d3-zoom when the SVG is mounted (2D mode) ────────────────────
   useEffect(() => {
+    if (mapView !== 'flat') return;
+    setIsMapEngineReady(false);
+
     const svgElement = svgRef.current;
     if (!svgElement) return;
 
@@ -66,38 +91,51 @@ export function GameMapProvider({ children }: { children: ReactNode }) {
     zoomBehaviorRef.current = behavior;
     svgSelection.call(behavior);
     svgSelection.call(behavior.transform, defaultTransformRef.current);
+    setIsMapEngineReady(true);
 
     return () => {
       svgSelection.on('.zoom', null);
+      zoomBehaviorRef.current = null;
     };
-  }, []);
+  }, [mapView]); // re-wire whenever the map switches to flat
 
   useEffect(() => {
+    if (mapView === 'globe') {
+      setIsMapEngineReady(false);
+    }
+  }, [mapView]);
+
+  useEffect(() => {
+    if (mapView !== 'flat') return;
     const nextDefaultTransform = getDefaultMapTransform();
     defaultTransformRef.current = nextDefaultTransform;
 
     if (!svgRef.current || !zoomBehaviorRef.current) return;
-
     select(svgRef.current)
       .transition()
       .duration(220)
       .call(zoomBehaviorRef.current.transform, nextDefaultTransform);
-  }, [getDefaultMapTransform]);
+  }, [getDefaultMapTransform, mapView]);
 
+  // ── focusCountry — works for both map types ───────────────────────────────
   const focusCountry = useCallback((countryCode: string) => {
-    if (!svgRef.current || !zoomBehaviorRef.current || !countryCode) return;
+    if (!countryCode) return;
+    const country = quiz.countries.find((c) => c.code === countryCode);
 
+    if (mapView === 'globe') {
+      if (!globeRef.current || !country) return;
+      const [lat, lng] = country.latlng;
+      globeRef.current.pointOfView({ lat, lng, altitude: FOCUS_ALT }, 800);
+      return;
+    }
+
+    // Flat (2D)
+    if (!svgRef.current || !zoomBehaviorRef.current) return;
     const pathElement = pathRefs.current[countryCode];
     const bounds = focusBoundsByCode.get(countryCode) || pathElement?.getBBox();
-    if (!bounds) return;
-    if (bounds.width <= 0 || bounds.height <= 0) return;
+    if (!bounds || bounds.width <= 0 || bounds.height <= 0) return;
 
-    const nextScale = getCountryFocusScale({
-      bounds,
-      viewBox,
-      isMobile,
-    });
-
+    const nextScale = getCountryFocusScale({ bounds, viewBox, isMobile });
     const centerX = bounds.x + bounds.width / 2;
     const centerY = bounds.y + bounds.height / 2;
     const targetCenterX = !isMobile && sidebarOpen ? viewBox.width * 0.44 : viewBox.width / 2;
@@ -110,38 +148,65 @@ export function GameMapProvider({ children }: { children: ReactNode }) {
       .transition()
       .duration(260)
       .call(zoomBehaviorRef.current.transform, nextTransform);
-  }, [focusBoundsByCode, isMobile, viewBox.height, viewBox.width, sidebarOpen]);
+  }, [focusBoundsByCode, isMobile, mapView, quiz.countries, sidebarOpen, viewBox]);
 
+  // Auto-focus behavior:
+  // - Before answering: keep country-to-X modes focused on the target.
+  // - After answering: always center/zoom to the correct target country.
   useEffect(() => {
+    if (!isMapEngineReady) return;
+
+    if (answer && round.targetCode) {
+      focusCountry(round.targetCode);
+      return;
+    }
+
     if (MAP_MODES.has(mode)) return;
     focusCountry(round.targetCode);
-  }, [focusCountry, mode, round.targetCode]);
+  }, [answer, focusCountry, isMapEngineReady, mode, round.targetCode]);
 
+  // ── zoomBy ────────────────────────────────────────────────────────────────
   const zoomBy = useCallback((factor: number) => {
+    if (mapView === 'globe') {
+      if (!globeRef.current) return;
+      const pov = globeRef.current.pointOfView();
+      const newAlt = Math.max(0.4, Math.min(6.0, (pov?.altitude ?? DEFAULT_ALT) / factor));
+      globeRef.current.pointOfView({ ...pov, altitude: newAlt }, 300);
+      return;
+    }
     if (!svgRef.current || !zoomBehaviorRef.current) return;
-    const svgSelection = select(svgRef.current);
-    svgSelection.transition().duration(180).call(zoomBehaviorRef.current.scaleBy, factor);
-  }, []);
+    select(svgRef.current).transition().duration(180).call(zoomBehaviorRef.current.scaleBy, factor);
+  }, [mapView]);
 
+  // ── resetZoom ─────────────────────────────────────────────────────────────
   const resetZoom = useCallback(() => {
     if (!MAP_MODES.has(mode) && round.targetCode) {
       focusCountry(round.targetCode);
       return;
     }
-
+    if (mapView === 'globe') {
+      if (!globeRef.current) return;
+      const pov = globeRef.current.pointOfView();
+      globeRef.current.pointOfView({ ...pov, altitude: isMobile ? MOBILE_ALT : DEFAULT_ALT }, 500);
+      return;
+    }
     if (!svgRef.current || !zoomBehaviorRef.current) return;
-    const svgSelection = select(svgRef.current);
-    svgSelection.transition().duration(220).call(zoomBehaviorRef.current.transform, defaultTransformRef.current);
-  }, [focusCountry, mode, round.targetCode]);
+    select(svgRef.current)
+      .transition()
+      .duration(220)
+      .call(zoomBehaviorRef.current.transform, defaultTransformRef.current);
+  }, [focusCountry, isMobile, mapView, mode, round.targetCode]);
 
   const value = useMemo<GameMapContextValue>(() => ({
+    globeRef,
+    setGlobeRef,
     svgRef,
     pathRefs,
     mapTransform,
     zoomBy,
     resetZoom,
     focusCountry,
-  }), [mapTransform, zoomBy, resetZoom, focusCountry]);
+  }), [mapTransform, zoomBy, resetZoom, focusCountry, setGlobeRef]);
 
   return <GameMapContext.Provider value={value}>{children}</GameMapContext.Provider>;
 }
@@ -155,3 +220,6 @@ export function useGameMap(): GameMapContextValue {
 }
 
 export type { CountryQuizPayload };
+
+
+

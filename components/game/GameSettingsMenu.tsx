@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from 'next-intl';
 import GameModeSelector from "./GameModeSelector";
 import GameScore from "./GameScore";
-import { Settings2, Trash2 } from "lucide-react";
+import { Globe, Map, Settings2, Trash2 } from "lucide-react";
 import { useGame } from './contexts/GameContext';
 import { useGameLayout } from './contexts/GameLayoutContext';
 
@@ -13,7 +13,7 @@ export default function GameSettingsMenu() {
   const [confirmClear, setConfirmClear] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const t = useTranslations('guesser');
-  const { clearScore, score } = useGame();
+  const { clearScore, score, mapView, setMapView } = useGame();
   const { isMobile } = useGameLayout();
   const hasScore = score.correct > 0 || score.total > 0 || score.streak > 0 || score.bestStreak > 0;
 
@@ -54,6 +54,29 @@ export default function GameSettingsMenu() {
       {open && (
         <div className="absolute right-0 mt-2 w-[min(26rem,calc(100vw-1rem))] rounded-2xl border border-white/12 bg-slate-950/95 p-4 shadow-xl z-50 flex flex-col gap-4 sm:w-80">
           <GameModeSelector />
+          {isMobile ? (
+            <div className="order-2 flex flex-col gap-1.5">
+              <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">{t('map_view_label')}</span>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setMapView('globe')}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm transition-[background-color,border-color,color] duration-150 ${mapView === 'globe' ? 'border-sky-400/50 bg-sky-500/15 text-sky-100' : 'border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/10 hover:border-white/16'}`}
+                >
+                  <Globe className="h-4 w-4 shrink-0" />
+                  {t('map_view_globe')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMapView('flat')}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm transition-[background-color,border-color,color] duration-150 ${mapView === 'flat' ? 'border-sky-400/50 bg-sky-500/15 text-sky-100' : 'border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/10 hover:border-white/16'}`}
+                >
+                  <Map className="h-4 w-4 shrink-0" />
+                  {t('map_view_flat')}
+                </button>
+              </div>
+            </div>
+          ) : null}
           {isMobile ? <GameScore /> : null}
           {confirmClear ? (
             <div className="order-5 rounded-xl border border-rose-400/30 bg-rose-500/10 p-3 text-sm text-rose-50">

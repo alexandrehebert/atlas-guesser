@@ -16,6 +16,7 @@ function createCountry(code: string): QuizCountry {
     centroid: { x: 0, y: 0 },
     capitalPoint: { x: 0, y: 0 },
     focusBounds: { x: 0, y: 0, width: 10, height: 10 },
+    latlng: [0, 0],
   };
 }
 

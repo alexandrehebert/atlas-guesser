@@ -15,10 +15,18 @@ import {
 } from 'react';
 import type { CountryQuizPayload, QuizCountry } from '~/lib/server/countryQuiz';
 import { MAP_MODES, MODE_ACCENTS } from '../constants';
-import { createInitialRound, createRound, recordRoundHistory, type RoundHistory } from '~/components/game/rounds';
+import { createRound, recordRoundHistory, type RoundHistory } from '~/components/game/rounds';
 import type { AnswerState, GameMode, RoundState, ScoreState } from '../types';
 
 const SCORE_STORAGE_KEY = 'atlas-guesser-score:v1';
+const MAP_VIEW_STORAGE_KEY = 'atlas-guesser-map-view:v1';
+
+export type MapView = 'globe' | 'flat';
+
+function parseStoredMapView(value: string | null): MapView {
+  if (value === 'flat' || value === 'globe') return value;
+  return 'flat';
+}
 
 function createDefaultScore(): ScoreState {
   return { correct: 0, total: 0, streak: 0, bestStreak: 0 };
@@ -60,6 +68,8 @@ interface GameContextValue {
   isFlagOptionsMode: boolean;
   isCapitalOptionsMode: boolean;
   isNameOptionsMode: boolean;
+  mapView: MapView;
+  setMapView: (view: MapView) => void;
   changeMode: (nextMode: GameMode) => void;
   submitAnswer: (selectedCode: string) => void;
   nextRound: () => void;
@@ -69,13 +79,21 @@ interface GameContextValue {
 
 const GameContext = createContext<GameContextValue | null>(null);
 
-export function GameProvider({ quiz, children, initialMode = 'flag-to-country' }: { quiz: CountryQuizPayload; children: ReactNode; initialMode?: GameMode }) {
+interface GameProviderProps {
+  quiz: CountryQuizPayload;
+  children: ReactNode;
+  initialMode?: GameMode;
+  initialRound?: RoundState;
+}
+
+export function GameProvider({ quiz, children, initialMode = 'flag-to-country', initialRound }: GameProviderProps) {
   const [mode, setMode] = useState<GameMode>(initialMode);
-  const [round, setRound] = useState<RoundState>(() => createInitialRound(quiz.countries, initialMode));
+  const [round, setRound] = useState<RoundState>(() => initialRound ?? createRound(quiz.countries, initialMode));
   const [answer, setAnswer] = useState<AnswerState | null>(null);
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
   const [score, setScore] = useState<ScoreState>(createDefaultScore);
   const [scoreLoaded, setScoreLoaded] = useState(false);
+  const [mapView, setMapViewState] = useState<MapView>('flat');
   const roundHistoryRef = useRef<Partial<Record<GameMode, RoundHistory>>>({});
   const skipNextScorePersistRef = useRef(false);
 
@@ -92,6 +110,7 @@ export function GameProvider({ quiz, children, initialMode = 'flag-to-country' }
     }
 
     setScore(parseStoredScore(window.localStorage.getItem(SCORE_STORAGE_KEY)));
+    setMapViewState(parseStoredMapView(window.localStorage.getItem(MAP_VIEW_STORAGE_KEY)));
     setScoreLoaded(true);
   }, []);
 
@@ -108,23 +127,6 @@ export function GameProvider({ quiz, children, initialMode = 'flag-to-country' }
 
     window.localStorage.setItem(SCORE_STORAGE_KEY, JSON.stringify(score));
   }, [score, scoreLoaded]);
-
-  // Randomize the first question only on the client, after hydration
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setRound((prev) => {
-        // Only randomize if still on the deterministic first question
-        if (prev.targetCode === (quiz.countries[0]?.code || '')) {
-          if (quiz.countries.length > 1) {
-            return buildRound(mode, prev.targetCode);
-          }
-        }
-        return prev;
-      });
-    }
-    // Only run on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buildRound, mode, quiz.countries]);
 
   const countriesByCode = useMemo(
     () => new Map(quiz.countries.map((country) => [country.code, country])),
@@ -175,6 +177,13 @@ export function GameProvider({ quiz, children, initialMode = 'flag-to-country' }
     setScore(createDefaultScore());
   }, []);
 
+  const setMapView = useCallback((view: MapView) => {
+    setMapViewState(view);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(MAP_VIEW_STORAGE_KEY, view);
+    }
+  }, []);
+
   const value = useMemo<GameContextValue>(() => ({
     quiz,
     mode,
@@ -189,6 +198,8 @@ export function GameProvider({ quiz, children, initialMode = 'flag-to-country' }
     isFlagOptionsMode,
     isCapitalOptionsMode,
     isNameOptionsMode,
+    mapView,
+    setMapView,
     changeMode,
     submitAnswer,
     nextRound,
@@ -208,6 +219,8 @@ export function GameProvider({ quiz, children, initialMode = 'flag-to-country' }
     isFlagOptionsMode,
     isCapitalOptionsMode,
     isNameOptionsMode,
+    mapView,
+    setMapView,
     changeMode,
     submitAnswer,
     nextRound,

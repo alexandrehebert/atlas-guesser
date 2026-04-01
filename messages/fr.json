@@ -203,6 +203,9 @@
     "collapse_sidebar": "Réduire le panneau",
     "expand_sidebar": "Ouvrir le panneau",
     "country_button_aria": "Sélectionner {country}",
+    "map_view_label": "Vue de la carte",
+    "map_view_globe": "Globe",
+    "map_view_flat": "Planisphère",
     "mode_moves": {
       "flag-to-country": "Quel pays pour ce drapeau ?",
       "capital-to-country": "Quel pays pour cette capitale ?",

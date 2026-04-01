@@ -5,7 +5,7 @@ import { City } from 'country-state-city';
 import countries, { type Country } from 'world-countries';
 
 const QUIZ_MAP_VIEWBOX = { width: 1000, height: 560 };
-const MIN_CLICKABLE_COUNTRY_SIZE = 10;
+const MIN_CLICKABLE_COUNTRY_SIZE = 5;
 
 export interface QuizCountry {
   code: string;
@@ -16,6 +16,8 @@ export interface QuizCountry {
   centroid: { x: number; y: number };
   capitalPoint: { x: number; y: number };
   focusBounds: { x: number; y: number; width: number; height: number };
+  /** [latitude, longitude] from world-countries data */
+  latlng: [number, number];
 }
 
 export interface CountryQuizPayload {
@@ -323,6 +325,8 @@ async function buildCountryQuizPayload(locale: string): Promise<CountryQuizPaylo
     }
 
     seenCodes.add(country.cca2);
+    const lat = Number.isFinite(country.latlng?.[0]) ? country.latlng[0] : 0;
+    const lng = Number.isFinite(country.latlng?.[1]) ? country.latlng[1] : 0;
     quizCountries.push({
       code: country.cca2,
       name: getLocalizedCountryName(country, locale),
@@ -337,6 +341,7 @@ async function buildCountryQuizPayload(locale: string): Promise<CountryQuizPaylo
         width: projectedWidth,
         height: projectedHeight,
       },
+      latlng: [lat, lng],
     });
   }
 

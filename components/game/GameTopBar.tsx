@@ -1,11 +1,12 @@
 'use client';
 
 import GameSettingsMenu from './GameSettingsMenu';
+import GameMapViewToggle from './GameMapViewToggle';
 import GameZoomControls from './GameZoomControls';
 import { useGameLayout } from './contexts/GameLayoutContext';
 
 export default function GameTopBar() {
-  const { topBarRef } = useGameLayout();
+  const { topBarRef, isMobile } = useGameLayout();
   return (
     <div ref={topBarRef} className="absolute left-4 right-4 top-4 z-50 flex flex-wrap items-center justify-between gap-2 sm:left-5 sm:right-5 sm:top-5">
       <div className="flex items-center gap-3 select-none">
@@ -31,6 +32,7 @@ export default function GameTopBar() {
       {/* Zoom controls and then settings button */}
       <div className="flex items-center gap-2">
         <GameZoomControls />
+        {!isMobile ? <GameMapViewToggle /> : null}
         <GameSettingsMenu />
       </div>
     </div>

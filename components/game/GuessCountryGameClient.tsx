@@ -2,7 +2,7 @@
 
 import GuessCountryGame from "./GuessCountryGame";
 import type { CountryQuizPayload } from "~/lib/server/countryQuiz";
-import type { GameMode } from "./types";
+import type { GameMode, RoundState } from "./types";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { GameProvider, useGame } from "./contexts/GameContext";
@@ -18,7 +18,13 @@ const GAME_MODES: GameMode[] = [
   "country-to-flag",
 ];
 
-export default function GuessCountryGameClient({ quiz }: { quiz: CountryQuizPayload }) {
+interface GuessCountryGameClientProps {
+  quiz: CountryQuizPayload;
+  initialMode: GameMode;
+  initialRound: RoundState;
+}
+
+export default function GuessCountryGameClient({ quiz, initialMode, initialRound }: GuessCountryGameClientProps) {
   const [mapReady, setMapReady] = useState(false);
   const mapReadyRef = useRef(false);
   const handleMapReady = useCallback(() => {
@@ -31,15 +37,12 @@ export default function GuessCountryGameClient({ quiz }: { quiz: CountryQuizPayl
   const searchParams = useSearchParams();
   const router = useRouter();
   const modeParam = searchParams?.get("mode");
-  const initialMode: GameMode = GAME_MODES.includes(modeParam as GameMode)
-    ? (modeParam as GameMode)
-    : "flag-to-country";
   // Track if we've initialized mode from the query param
   const initialized = useRef(false);
 
   function GameProviderWithQuerySync({ children }: { children: React.ReactNode }) {
     return (
-      <GameProvider quiz={quiz} initialMode={initialMode}>
+      <GameProvider quiz={quiz} initialMode={initialMode} initialRound={initialRound}>
         <GameModeQuerySync />
         {children}
       </GameProvider>
