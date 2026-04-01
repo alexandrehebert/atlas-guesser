@@ -178,11 +178,20 @@ export function GameProvider({ quiz, children, initialMode = 'flag-to-country', 
   }, []);
 
   const setMapView = useCallback((view: MapView) => {
+    if (view === mapView) {
+      return;
+    }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('atlas-map-view-switch-start', {
+        detail: { view },
+      }));
+    }
     setMapViewState(view);
     if (typeof window !== 'undefined') {
       window.localStorage.setItem(MAP_VIEW_STORAGE_KEY, view);
     }
-  }, []);
+  }, [mapView]);
 
   const value = useMemo<GameContextValue>(() => ({
     quiz,

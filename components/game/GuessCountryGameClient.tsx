@@ -3,6 +3,7 @@
 import GuessCountryGame from "./GuessCountryGame";
 import type { CountryQuizPayload } from "~/lib/server/countryQuiz";
 import type { GameMode, RoundState } from "./types";
+import type { MapView } from "./contexts/GameContext";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { GameProvider, useGame } from "./contexts/GameContext";
@@ -17,6 +18,8 @@ const GAME_MODES: GameMode[] = [
   "country-to-name",
   "country-to-flag",
 ];
+
+const MIN_MAP_LOADING_MS = 2000;
 
 interface GuessCountryGameClientProps {
   quiz: CountryQuizPayload;
@@ -78,23 +81,79 @@ function GameModeQuerySync({ modeParam, searchParams, router }: GameModeQuerySyn
 
 export default function GuessCountryGameClient({ quiz, initialMode, initialRound }: GuessCountryGameClientProps) {
   const [mapReady, setMapReady] = useState(false);
+  const [loadingTargetView, setLoadingTargetView] = useState<MapView>('flat');
   const mapReadyRef = useRef(false);
   const isMapTransitioningRef = useRef(true);
+  const mapTransitionStartedAtRef = useRef<number | null>(null);
+  const mapReadyTimeoutRef = useRef<number | null>(null);
+
+  const handleMapLoadingStart = useCallback((targetView?: MapView) => {
+    if (mapReadyTimeoutRef.current !== null) {
+      window.clearTimeout(mapReadyTimeoutRef.current);
+      mapReadyTimeoutRef.current = null;
+    }
+
+    if (targetView) {
+      setLoadingTargetView(targetView);
+    }
+
+    isMapTransitioningRef.current = true;
+    mapTransitionStartedAtRef.current = Date.now();
+    mapReadyRef.current = false;
+    setMapReady(false);
+  }, []);
+
   const handleMapReady = useCallback(() => {
+    if (mapReadyTimeoutRef.current !== null) {
+      window.clearTimeout(mapReadyTimeoutRef.current);
+      mapReadyTimeoutRef.current = null;
+    }
+
+    const startedAt = mapTransitionStartedAtRef.current;
+    if (startedAt !== null) {
+      const elapsed = Date.now() - startedAt;
+      const remaining = MIN_MAP_LOADING_MS - elapsed;
+
+      if (remaining > 0) {
+        mapReadyTimeoutRef.current = window.setTimeout(() => {
+          mapReadyTimeoutRef.current = null;
+          mapTransitionStartedAtRef.current = null;
+          isMapTransitioningRef.current = false;
+          mapReadyRef.current = true;
+          setMapReady(true);
+        }, remaining);
+        return;
+      }
+    }
+
     if (!isMapTransitioningRef.current && mapReadyRef.current) {
       return;
     }
+
+    mapTransitionStartedAtRef.current = null;
     isMapTransitioningRef.current = false;
     mapReadyRef.current = true;
     setMapReady(true);
   }, []);
-  const handleMapLoadingStart = useCallback(() => {
-    if (isMapTransitioningRef.current) {
-      return;
-    }
-    isMapTransitioningRef.current = true;
-    mapReadyRef.current = false;
-    setMapReady(false);
+
+  useEffect(() => {
+    const onMapViewSwitchStart = (event: Event) => {
+      const customEvent = event as CustomEvent<{ view?: MapView }>;
+      handleMapLoadingStart(customEvent.detail?.view);
+    };
+
+    window.addEventListener('atlas-map-view-switch-start', onMapViewSwitchStart);
+    return () => {
+      window.removeEventListener('atlas-map-view-switch-start', onMapViewSwitchStart);
+    };
+  }, [handleMapLoadingStart]);
+
+  useEffect(() => {
+    return () => {
+      if (mapReadyTimeoutRef.current !== null) {
+        window.clearTimeout(mapReadyTimeoutRef.current);
+      }
+    };
   }, []);
 
   const searchParams = useSearchParams();
@@ -110,7 +169,7 @@ export default function GuessCountryGameClient({ quiz, initialMode, initialRound
             quiz={quiz}
             mapReady={mapReady}
             handleMapReady={handleMapReady}
-            handleMapLoadingStart={handleMapLoadingStart}
+            loadingTargetView={loadingTargetView}
           />
         </GameMapProvider>
       </GameLayoutProvider>
