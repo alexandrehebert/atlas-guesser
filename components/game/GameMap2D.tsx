@@ -271,10 +271,10 @@ function getStatusClasses(params: {
   }
 
   if (!answer && hoveredCode === countryCode && MAP_MODES.has(round.mode)) {
-    return 'fill-slate-500/90 stroke-slate-100';
+    return 'fill-slate-500/95 stroke-slate-100';
   }
 
-  return 'fill-slate-900/88 stroke-slate-600/85';
+  return 'fill-slate-800/84 stroke-slate-400/58';
 }
 
 export default function GameMap2D({ onInitialZoomEnd }: { onInitialZoomEnd?: () => void }) {
@@ -705,22 +705,42 @@ export default function GameMap2D({ onInitialZoomEnd }: { onInitialZoomEnd?: () 
     <svg
       ref={svgRef}
       viewBox={`0 0 ${quiz.viewBox.width} ${quiz.viewBox.height}`}
-      preserveAspectRatio={isMobile ? 'xMidYMid slice' : 'xMidYMid meet'}
       className="absolute inset-0 h-full w-full cursor-grab active:cursor-grabbing"
     >
       <defs>
-        <pattern id="quiz-grid" width="30" height="30" patternUnits="userSpaceOnUse">
-          <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(148,163,184,0.08)" strokeWidth="0.75" />
+        <pattern
+          id="quiz-grid"
+          width="30"
+          height="30"
+          patternUnits="userSpaceOnUse"
+          patternTransform={`translate(${mapTransform.x} ${mapTransform.y}) scale(${mapTransform.k})`}
+        >
+          <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(148,163,184,0.12)" strokeWidth={0.75} />
         </pattern>
+        <radialGradient id="quiz-grid-fade-gradient" cx="50%" cy="50%" r="72%">
+          <stop offset="0%" stopColor="white" />
+          <stop offset="70%" stopColor="white" />
+          <stop offset="100%" stopColor="black" />
+        </radialGradient>
+        <mask id="quiz-grid-fade-mask" maskUnits="userSpaceOnUse" x="0" y="0" width={quiz.viewBox.width} height={quiz.viewBox.height}>
+          <rect width={quiz.viewBox.width} height={quiz.viewBox.height} fill="url(#quiz-grid-fade-gradient)" />
+        </mask>
         <radialGradient id="quiz-map-glow" cx="50%" cy="46%" r="70%">
-          <stop offset="0%" stopColor="rgba(56,189,248,0.12)" />
-          <stop offset="65%" stopColor="rgba(15,23,42,0.06)" />
+          <stop offset="0%" stopColor="rgba(56,189,248,0.18)" />
+          <stop offset="62%" stopColor="rgba(15,23,42,0.14)" />
           <stop offset="100%" stopColor="rgba(2,6,23,0)" />
         </radialGradient>
       </defs>
 
-      <rect width={quiz.viewBox.width} height={quiz.viewBox.height} fill="url(#quiz-grid)" />
+      <rect width={quiz.viewBox.width} height={quiz.viewBox.height} fill="rgba(7,26,49,0.72)" />
       <rect width={quiz.viewBox.width} height={quiz.viewBox.height} fill="url(#quiz-map-glow)" />
+      <rect
+        width={quiz.viewBox.width}
+        height={quiz.viewBox.height}
+        fill="url(#quiz-grid)"
+        mask="url(#quiz-grid-fade-mask)"
+        pointerEvents="none"
+      />
 
       <g transform={`translate(${mapTransform.x},${mapTransform.y}) scale(${mapTransform.k})`}>
         <g pointerEvents="none">
@@ -728,7 +748,7 @@ export default function GameMap2D({ onInitialZoomEnd }: { onInitialZoomEnd?: () 
             <path
               key={`non-playable-${index}`}
               d={path}
-              className="fill-slate-900/68 stroke-slate-700/70"
+              className="fill-slate-800/76 stroke-slate-500/62"
               strokeWidth={0.75}
               vectorEffect="non-scaling-stroke"
             />
@@ -745,7 +765,7 @@ export default function GameMap2D({ onInitialZoomEnd }: { onInitialZoomEnd?: () 
               }}
               d={country.path}
               className={`${getStatusClasses({ countryCode: country.code, round, answer, hoveredCode })} outline-none transition-[fill,stroke,filter] duration-200`}
-              strokeWidth={country.code === round.targetCode || answer?.selectedCode === country.code ? 1.35 : 0.85}
+              strokeWidth={country.code === round.targetCode || answer?.selectedCode === country.code ? 1.15 : 0.68}
               vectorEffect="non-scaling-stroke"
               style={{
                 filter: country.code === round.targetCode && !answer && !MAP_MODES.has(round.mode)

@@ -201,6 +201,7 @@
     "collapse_sidebar": "Collapse sidebar",
     "expand_sidebar": "Expand sidebar",
     "country_button_aria": "Select {country}",
+    "loading": "Loading map...",
     "map_view_label": "Map view",
     "map_view_globe": "Globe",
     "map_view_flat": "Flat",

@@ -13,9 +13,10 @@ interface GuessCountryGameProps {
   quiz: CountryQuizPayload;
   mapReady: boolean;
   handleMapReady: () => void;
+  handleMapLoadingStart: () => void;
 }
 
-export default function GuessCountryGame({ quiz, mapReady, handleMapReady }: GuessCountryGameProps) {
+export default function GuessCountryGame({ quiz, mapReady, handleMapReady, handleMapLoadingStart }: GuessCountryGameProps) {
   function SidebarSwitcher() {
     const { isMobile } = useGameLayout();
     // Avoid SSR mismatch: don't render sidebar until isMobile is known
@@ -31,7 +32,7 @@ export default function GuessCountryGame({ quiz, mapReady, handleMapReady }: Gue
       <GameTopBar />
       {/* Always render GameMap, fade in when ready */}
       <div className={`transition-opacity duration-700 ${mapReady ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <GameMap onInitialZoomEnd={handleMapReady} />
+        <GameMap onInitialZoomEnd={handleMapReady} onViewChangeStart={handleMapLoadingStart} />
       </div>
       <div
         className={`absolute inset-0 z-50 flex items-center justify-center bg-slate-950/80 transition-opacity duration-700 ${mapReady ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}

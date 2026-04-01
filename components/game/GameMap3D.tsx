@@ -20,18 +20,23 @@ interface AnswerLabelDatum {
 
 // Match the exact status hues used by the 2D SVG map classes.
 const COLORS: Record<string, string> = {
-  default: 'rgba(15,23,42,0.88)',      // fill-slate-900/88
-  hover: 'rgba(100,116,139,0.90)',     // fill-slate-500/90
+  default: 'rgba(30,41,59,0.84)',      // fill-slate-800/84
+  hover: 'rgba(100,116,139,0.95)',     // fill-slate-500/95
   target: 'rgba(252,211,77,0.90)',     // fill-amber-300/90
   correct: 'rgba(52,211,153,0.85)',    // fill-emerald-400/85
   incorrect: 'rgba(251,113,133,0.90)', // fill-rose-400/90
   targetRevealed: 'rgba(56,189,248,0.90)', // fill-sky-400/90
+};
+const NON_PLAYABLE = {
+  fill: 'rgba(30,41,59,0.76)',    // close to fill-slate-800 while still muted
+  stroke: 'rgba(100,116,139,0.62)',
 };
 const DEFAULT_ALT = 1.65;
 const MOBILE_ALT  = 1.95;
 const FOCUS_ALT   = 1.15;
 const INITIAL_LNG = -20;
 const INITIAL_LAT = 15;
+const OCEAN_COLOR = '#071a31';
 
 export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
   const { quiz, round, answer, hoveredCode, submitAnswer, setHoveredCode, mode } = useGame();
@@ -84,7 +89,12 @@ export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
 
     if (globeRef.current) {
       globeRef.current.polygonCapColor(
-        (d: any) => colorMapRef.current.get(d.properties?.quizCode) ?? COLORS.default,
+        (d: any) => (d.properties?.quizCode
+          ? colorMapRef.current.get(d.properties.quizCode) ?? COLORS.default
+          : NON_PLAYABLE.fill),
+      );
+      globeRef.current.polygonStrokeColor(
+        (d: any) => (d.properties?.quizCode ? 'rgba(203,213,225,0.55)' : NON_PLAYABLE.stroke),
       );
     }
   }, [quiz.countries, round.targetCode, answer, hoveredCode, mode]);
@@ -126,6 +136,11 @@ export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
     const altitude  = isMobile ? MOBILE_ALT : DEFAULT_ALT;
 
     const init = async () => {
+      // Let React paint switch/loading UI before globe setup work starts.
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => resolve());
+      });
+
       const geoData: GeoJSON.FeatureCollection = await fetch('/maps/world-countries-110m.geojson').then(r => r.json());
       if (!mounted) return;
 
@@ -160,6 +175,7 @@ export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
       globe
         .globeImageUrl('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR42mPgldYCAACLAFN4VUZsAAAAAElFTkSuQmCC')
         .backgroundColor('rgba(0,0,0,0)')
+        .showGraticules(true)
         .showAtmosphere(true)
         .atmosphereColor('#3b82f6')
         .atmosphereAltitude(0.14)
@@ -167,10 +183,12 @@ export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
         .polygonGeoJsonGeometry((d: any) => d.geometry)
         .polygonAltitude(0.018)
         .polygonCapColor(
-          (d: any) => colorMapRef.current.get(d.properties?.quizCode) ?? COLORS.default,
+          (d: any) => (d.properties?.quizCode
+            ? colorMapRef.current.get(d.properties.quizCode) ?? COLORS.default
+            : NON_PLAYABLE.fill),
         )
         .polygonSideColor(() => '#0a1628')
-        .polygonStrokeColor(() => '#94a3b8cc')
+        .polygonStrokeColor((d: any) => (d.properties?.quizCode ? 'rgba(203,213,225,0.55)' : NON_PLAYABLE.stroke))
         .onPolygonHover((d: any) => {
           if (!MAP_MODES.has(modeRef.current)) return;
           setHoveredCode(d?.properties?.quizCode ?? null);
@@ -180,6 +198,17 @@ export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
           if (!code || answerRef.current) return;
           submitAnswer(code);
         });
+
+      const globeMaterial = globe.globeMaterial?.();
+      if (globeMaterial) {
+        globeMaterial.color?.set?.(OCEAN_COLOR);
+        globeMaterial.emissive?.set?.(OCEAN_COLOR);
+        globeMaterial.emissiveIntensity = 0.2;
+        globeMaterial.specular?.set?.('#0b1220');
+        globeMaterial.shininess = 2;
+        globeMaterial.map = null;
+        globeMaterial.needsUpdate = true;
+      }
 
       globe.pointOfView({ lat: INITIAL_LAT, lng: INITIAL_LNG, altitude }, 0);
       globe.width(container.clientWidth).height(container.clientHeight);
@@ -205,9 +234,18 @@ export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
   }, []); // intentionally mount-once
 
   return (
-    <div
-      ref={containerRef}
-      className="absolute inset-0 z-10"
-    />
+    <div className="absolute inset-0 z-10">
+      <div
+        ref={containerRef}
+        className="absolute inset-0"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: 'radial-gradient(circle at 50% 50%, rgba(2,6,23,0) 62%, rgba(2,6,23,0.42) 86%, rgba(2,6,23,0.62) 100%)',
+        }}
+      />
+    </div>
   );
 }
