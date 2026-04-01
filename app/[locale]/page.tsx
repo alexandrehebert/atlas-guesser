@@ -295,7 +295,7 @@ export default async function HomePage({ params }: HomePageProps) {
 
       <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-16 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
         <AnimatedSection animation="fade-in-down" className="flex items-center justify-between">
-          <SectionEyebrow iconSrc="/icon.svg">{t('eyebrow')}</SectionEyebrow>
+          <SectionEyebrow iconSrc="/icon.svg">Atlas Guesser</SectionEyebrow>
           <LanguageSwitcher currentLocale={locale} />
         </AnimatedSection>
 

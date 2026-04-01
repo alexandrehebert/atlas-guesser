@@ -10,9 +10,10 @@ interface GuesserPageProps {
 export async function generateMetadata({ params }: GuesserPageProps): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'guesser' });
+  const tLanding = await getTranslations({ locale, namespace: 'landing' });
 
   return {
-    title: t('metadata_title'),
+    title: 'Atlas Guesser | ' + tLanding('eyebrow'),
     description: t('metadata_description'),
   };
 }
