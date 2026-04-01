@@ -20,6 +20,14 @@ Open `http://localhost:4102`.
 
 This starts the app locally with Docker Compose and runs the production server inside the container.
 
+For development with auto-reload in Docker:
+
+```bash
+docker compose --profile dev up --build
+```
+
+This runs `next dev` in the container with your source mounted and polling enabled, so file changes on macOS trigger refresh correctly.
+
 If you explicitly need a non-Docker workflow for local development:
 
 ```bash
@@ -62,6 +70,12 @@ docker compose up --build
 Then open `http://localhost:4102`.
 
 This runs the production server, which is required for the service worker and install prompt.
+
+For iterative development with hot reload:
+
+```bash
+docker compose --profile dev up --build
+```
 
 ## Deploy
 
