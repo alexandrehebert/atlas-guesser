@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import CountryFlag from '~/components/CountryFlag';
 import LanguageSwitcher from '~/components/LanguageSwitcher';
+import { PwaInstallCallToAction } from '~/components/PwaInstallCallToAction';
 import { HeroSection } from '~/components/landing/HeroSection';
 import { StatsSection } from '~/components/landing/StatsSection';
 import { MapSection } from '~/components/landing/MapSection';
@@ -310,6 +311,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 {t('cta_guesser')}
                 <ArrowRight className="h-4 w-4" />
               </Link>
+              <PwaInstallCallToAction />
             </div>
           }
           metrics={
