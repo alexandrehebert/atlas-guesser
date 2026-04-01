@@ -44,6 +44,8 @@ export function GameMapProvider({ children }: { children: ReactNode }) {
   const { mode, round, answer, quiz, mapView } = useGame();
   const { isMobile, sidebarOpen } = useGameLayout();
   const [isMapEngineReady, setIsMapEngineReady] = useState(false);
+  const [flatMapMountTick, setFlatMapMountTick] = useState(0);
+  const flatMapMountRetryFrameRef = useRef<number | null>(null);
 
   // ── 3D refs ──────────────────────────────────────────────────────────────
   const globeRef = useRef<any>(null);
@@ -79,7 +81,18 @@ export function GameMapProvider({ children }: { children: ReactNode }) {
     setIsMapEngineReady(false);
 
     const svgElement = svgRef.current;
-    if (!svgElement) return;
+    if (!svgElement) {
+      flatMapMountRetryFrameRef.current = requestAnimationFrame(() => {
+        flatMapMountRetryFrameRef.current = null;
+        setFlatMapMountTick((current) => current + 1);
+      });
+      return () => {
+        if (flatMapMountRetryFrameRef.current !== null) {
+          cancelAnimationFrame(flatMapMountRetryFrameRef.current);
+          flatMapMountRetryFrameRef.current = null;
+        }
+      };
+    }
 
     const svgSelection = select(svgElement);
     const behavior = zoom<SVGSVGElement, unknown>()
@@ -97,7 +110,7 @@ export function GameMapProvider({ children }: { children: ReactNode }) {
       svgSelection.on('.zoom', null);
       zoomBehaviorRef.current = null;
     };
-  }, [mapView]); // re-wire whenever the map switches to flat
+  }, [flatMapMountTick, mapView]); // re-wire whenever flat view mounts
 
   useEffect(() => {
     if (mapView === 'globe') {

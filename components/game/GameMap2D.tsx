@@ -705,6 +705,7 @@ export default function GameMap2D({ onInitialZoomEnd }: { onInitialZoomEnd?: () 
     <svg
       ref={svgRef}
       viewBox={`0 0 ${quiz.viewBox.width} ${quiz.viewBox.height}`}
+      preserveAspectRatio="xMidYMid slice"
       className="absolute inset-0 h-full w-full cursor-grab active:cursor-grabbing"
     >
       <defs>
