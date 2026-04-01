@@ -13,11 +13,38 @@ Standalone Next.js app for the world-map guesser game extracted from `trips`.
 ## Run locally
 
 ```bash
+docker compose up --build
+```
+
+Open `http://localhost:4102`.
+
+This starts the app locally with Docker Compose and runs the production server inside the container.
+
+If you explicitly need a non-Docker workflow for local development:
+
+```bash
 npm install
 npm run dev
 ```
 
-Open `http://localhost:4102`.
+## PWA
+
+The app now ships with a web app manifest, installable icons, and a service worker-backed offline fallback.
+
+For a realistic installability check, use the production build:
+
+```bash
+npm run build
+npm run start
+```
+
+Then open `http://localhost:4102`, inspect the Application tab in DevTools, and verify the manifest and service worker are active.
+
+Installability notes:
+
+- PWA installation requires `localhost` or `https`.
+- The service worker is registered only in production builds.
+- When you switch back to `npm run dev`, any old service worker on the same origin is unregistered automatically to avoid stale caches during development.
 
 ## Build
 
@@ -29,10 +56,12 @@ npm run start
 ## Docker (local)
 
 ```bash
-docker compose up
+docker compose up --build
 ```
 
 Then open `http://localhost:4102`.
+
+This runs the production server, which is required for the service worker and install prompt.
 
 ## Deploy
 

@@ -4,6 +4,8 @@ import type { GameMode, RoundState } from './types';
 const MAX_TARGET_HISTORY = 8;
 const MAX_OPTION_HISTORY = 12;
 const OPTION_COUNT = 4;
+const CLOSE_DISTRACTOR_CANDIDATES = 3;
+const MAX_CLOSE_DISTRACTORS = 2;
 
 export interface RoundHistory {
   recentTargetCodes: string[];
@@ -60,6 +62,46 @@ function pickRandom<T>(items: T[]): T {
   return items[Math.floor(Math.random() * items.length)] || items[0];
 }
 
+function addDistractorsFromPool(
+  distractorCodes: string[],
+  pool: QuizCountry[],
+  maxCount: number,
+): void {
+  for (const country of pool) {
+    if (distractorCodes.length >= maxCount) {
+      break;
+    }
+
+    if (distractorCodes.includes(country.code)) {
+      continue;
+    }
+
+    distractorCodes.push(country.code);
+  }
+}
+
+function getCloseDistractorCount(totalSlots: number, availableClose: number, availableFar: number): number {
+  if (totalSlots <= 0 || availableClose <= 0) {
+    return 0;
+  }
+
+  if (totalSlots === 1) {
+    return 1;
+  }
+
+  const maxClose = Math.min(
+    MAX_CLOSE_DISTRACTORS,
+    availableClose,
+    availableFar > 0 ? totalSlots - 1 : totalSlots,
+  );
+
+  if (maxClose <= 1) {
+    return 1;
+  }
+
+  return 1 + Math.floor(Math.random() * maxClose);
+}
+
 function createOptionCodes(
   countries: QuizCountry[],
   mode: GameMode,
@@ -82,24 +124,37 @@ function createOptionCodes(
   const recentOptionSignatures = new Set(history?.recentOptionSignatures || []);
   let fallbackOptionCodes = [targetCode, ...allDistractors.slice(0, optionCount - 1).map((country) => country.code)];
 
+  const closeCandidateCodes = new Set(
+    allDistractors
+      .slice(0, Math.min(CLOSE_DISTRACTOR_CANDIDATES, allDistractors.length))
+      .map((country) => country.code),
+  );
+
+  const preferredCloseDistractors = preferredDistractors.filter((country) => closeCandidateCodes.has(country.code));
+  const preferredFarDistractors = preferredDistractors.filter((country) => !closeCandidateCodes.has(country.code));
+  const fallbackCloseDistractors = allDistractors.filter((country) => closeCandidateCodes.has(country.code));
+  const fallbackFarDistractors = allDistractors.filter((country) => !closeCandidateCodes.has(country.code));
+
   for (let attempt = 0; attempt < 6; attempt += 1) {
     const distractorCodes: string[] = [];
-    const preferredPool = mode === 'country-to-flag'
-      ? preferredDistractors
-      : shuffle(preferredDistractors);
-    const fallbackPool = mode === 'country-to-flag'
-      ? allDistractors
-      : shuffle(allDistractors);
+    const maxDistractors = optionCount - 1;
 
-    for (const country of preferredPool) {
-      if (distractorCodes.length >= optionCount - 1) break;
-      distractorCodes.push(country.code);
-    }
+    if (mode === 'country-to-flag') {
+      const closeDistractorCount = getCloseDistractorCount(
+        maxDistractors,
+        fallbackCloseDistractors.length,
+        fallbackFarDistractors.length,
+      );
 
-    for (const country of fallbackPool) {
-      if (distractorCodes.length >= optionCount - 1) break;
-      if (distractorCodes.includes(country.code)) continue;
-      distractorCodes.push(country.code);
+      addDistractorsFromPool(distractorCodes, preferredCloseDistractors, closeDistractorCount);
+      addDistractorsFromPool(distractorCodes, fallbackCloseDistractors, closeDistractorCount);
+      addDistractorsFromPool(distractorCodes, shuffle(preferredFarDistractors), maxDistractors);
+      addDistractorsFromPool(distractorCodes, shuffle(fallbackFarDistractors), maxDistractors);
+      addDistractorsFromPool(distractorCodes, shuffle(preferredCloseDistractors), maxDistractors);
+      addDistractorsFromPool(distractorCodes, shuffle(fallbackCloseDistractors), maxDistractors);
+    } else {
+      addDistractorsFromPool(distractorCodes, shuffle(preferredDistractors), maxDistractors);
+      addDistractorsFromPool(distractorCodes, shuffle(allDistractors), maxDistractors);
     }
 
     const optionCodes = shuffle([targetCode, ...distractorCodes]);
