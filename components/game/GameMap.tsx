@@ -272,10 +272,10 @@ function getStatusClasses(params: {
   }
 
   if (!answer && hoveredCode === countryCode && MAP_MODES.has(round.mode)) {
-    return 'fill-slate-500/90 stroke-slate-100';
+    return 'fill-slate-500/95 stroke-slate-100';
   }
 
-  return 'fill-slate-900/88 stroke-slate-600/85';
+  return 'fill-slate-700/78 stroke-slate-300/55';
 }
 
 // Accepts onInitialZoomEnd prop to notify when initial zoom animation is done
@@ -688,15 +688,16 @@ export default function GameMap({ onInitialZoomEnd }: { onInitialZoomEnd?: () =>
     >
       <defs>
         <pattern id="quiz-grid" width="30" height="30" patternUnits="userSpaceOnUse">
-          <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(148,163,184,0.08)" strokeWidth="0.75" />
+          <path d="M 30 0 L 0 0 0 30" fill="none" stroke="rgba(148,163,184,0.12)" strokeWidth="0.75" />
         </pattern>
         <radialGradient id="quiz-map-glow" cx="50%" cy="46%" r="70%">
-          <stop offset="0%" stopColor="rgba(56,189,248,0.12)" />
-          <stop offset="65%" stopColor="rgba(15,23,42,0.06)" />
+          <stop offset="0%" stopColor="rgba(56,189,248,0.18)" />
+          <stop offset="62%" stopColor="rgba(15,23,42,0.14)" />
           <stop offset="100%" stopColor="rgba(2,6,23,0)" />
         </radialGradient>
       </defs>
 
+      <rect width={quiz.viewBox.width} height={quiz.viewBox.height} fill="rgba(7,26,49,0.72)" />
       <rect width={quiz.viewBox.width} height={quiz.viewBox.height} fill="url(#quiz-grid)" />
       <rect width={quiz.viewBox.width} height={quiz.viewBox.height} fill="url(#quiz-map-glow)" />
 

@@ -362,15 +362,16 @@ export default async function HomePage({ params }: HomePageProps) {
               <svg aria-hidden="true" className="absolute inset-0 h-full w-full" viewBox="0 0 420 280" preserveAspectRatio="xMidYMid slice">
                 <defs>
                   <pattern id="preview-map-grid" width="24" height="24" patternUnits="userSpaceOnUse">
-                    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(148,163,184,0.08)" strokeWidth="0.7" />
+                    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(148,163,184,0.12)" strokeWidth="0.7" />
                   </pattern>
                   <radialGradient id="preview-map-glow" cx="50%" cy="45%" r="70%">
-                    <stop offset="0%" stopColor="rgba(56,189,248,0.18)" />
-                    <stop offset="60%" stopColor="rgba(15,23,42,0.1)" />
+                    <stop offset="0%" stopColor="rgba(56,189,248,0.2)" />
+                    <stop offset="60%" stopColor="rgba(15,23,42,0.16)" />
                     <stop offset="100%" stopColor="rgba(2,6,23,0)" />
                   </radialGradient>
                 </defs>
 
+                <rect x="0" y="0" width="420" height="280" fill="rgba(7,26,49,0.7)" />
                 <rect x="0" y="0" width="420" height="280" fill="url(#preview-map-grid)" />
                 <rect x="0" y="0" width="420" height="280" fill="url(#preview-map-glow)" />
 
@@ -379,8 +380,8 @@ export default async function HomePage({ params }: HomePageProps) {
                     <path
                       key={`landing-map-country-${index}`}
                       d={pathValue}
-                      fill="rgba(15,23,42,0.9)"
-                      stroke="rgba(100,116,139,0.72)"
+                      fill="rgba(30,41,59,0.88)"
+                      stroke="rgba(148,163,184,0.72)"
                       strokeWidth="0.7"
                     />
                   ))}
