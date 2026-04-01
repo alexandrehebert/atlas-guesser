@@ -7,20 +7,6 @@ services:
     ports:
       - "4102:4102"
     environment:
-      NODE_ENV: production
-      PORT: 4102
-    restart: unless-stopped
-
-  guesser-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: guesser-app-dev
-    profiles:
-      - dev
-    ports:
-      - "4102:4102"
-    environment:
       NODE_ENV: development
       PORT: 4102
       WATCHPACK_POLLING: "true"
@@ -28,5 +14,4 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: npm run dev -- -H 0.0.0.0
     restart: unless-stopped

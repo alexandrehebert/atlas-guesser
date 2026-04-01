@@ -7,11 +7,9 @@ RUN npm ci
 
 COPY . .
 
-ENV NODE_ENV=production
-ENV PORT=4102
-
-RUN npm run build
-
 EXPOSE 4102
 
-CMD ["npm", "run", "start", "--", "-H", "0.0.0.0"]
+ENV NODE_ENV=development
+ENV PORT=4102
+
+CMD ["npm", "run", "dev", "--", "-H", "0.0.0.0"]
