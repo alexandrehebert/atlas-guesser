@@ -285,6 +285,33 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
       });
     }
 
+    if (quiz.country === 'india') {
+      playableItems.push({
+        filePath: 'public/maps/india-states.geojson',
+        sourceLabel: 'codeforgermany/click_that_hood',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
+    if (quiz.country === 'russia') {
+      playableItems.push({
+        filePath: 'public/maps/russia-subjects.geojson',
+        sourceLabel: 'codeforgermany/click_that_hood',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
+    if (quiz.country === 'australia') {
+      playableItems.push({
+        filePath: 'public/maps/australia-states.geojson',
+        sourceLabel: 'codeforgermany/click_that_hood',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
     return [
       {
         id: 'playable',

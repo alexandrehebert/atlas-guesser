@@ -243,7 +243,10 @@
       "canada": "Kanada",
       "usa": "Vereinigte Staaten",
       "brazil": "Brasilien",
-      "china": "China"
+      "china": "China",
+      "india": "Indien",
+      "russia": "Russland",
+      "australia": "Australien"
     },
     "top_badge": {
       "departements": "{count} Departements",
@@ -251,7 +254,8 @@
       "laender": "{count} Bundesländer",
       "states": "{count} Bundesstaaten",
       "communities": "{count} Gemeinschaften",
-      "provinces": "{count} Provinzen"
+      "provinces": "{count} Provinzen",
+      "subjects": "{count} Föderationssubjekte"
     },
     "mode": {
       "departements": "Departements",
@@ -259,7 +263,8 @@
       "laender": "Bundesländer",
       "states": "Bundesstaaten",
       "communities": "Gemeinschaften",
-      "provinces": "Provinzen"
+      "provinces": "Provinzen",
+      "subjects": "Föderationssubjekte"
     },
     "game_mode_map_click": "Klick auf Karte",
     "game_mode_highlighted_to_name": "Multiple Choice",
@@ -269,7 +274,8 @@
       "laender": "Bundesland-Hinweis",
       "states": "Bundesstaat-Hinweis",
       "communities": "Gemeinschaft-Hinweis",
-      "provinces": "Provinz-Hinweis"
+      "provinces": "Provinz-Hinweis",
+      "subjects": "Föderationssubjekt"
     },
     "prompt_body": {
       "departements": "Finde dieses Departement auf der Karte von {countryName}.",
@@ -277,7 +283,8 @@
       "laender": "Finde dieses Bundesland auf der Karte von {countryName}.",
       "states": "Finde diesen Bundesstaat auf der Karte von {countryName}.",
       "communities": "Finde diese Gemeinschaft auf der Karte von {countryName}.",
-      "provinces": "Finde diese Provinz auf der Karte von {countryName}."
+      "provinces": "Finde diese Provinz auf der Karte von {countryName}.",
+      "subjects": "Finden Sie dieses Föderationssubjekt auf der Karte von {countryName}."
     },
     "prompt_body_choices": {
       "departements": "Ein Gebiet ist auf der Karte markiert. Welches Departement ist es?",
@@ -285,7 +292,8 @@
       "laender": "Ein Gebiet ist auf der Karte markiert. Welches Bundesland ist es?",
       "states": "Ein Gebiet ist auf der Karte markiert. Welcher Bundesstaat ist es?",
       "communities": "Ein Gebiet ist auf der Karte markiert. Welche Gemeinschaft ist es?",
-      "provinces": "Ein Gebiet ist auf der Karte markiert. Welche Provinz ist es?"
+      "provinces": "Ein Gebiet ist auf der Karte markiert. Welche Provinz ist es?",
+      "subjects": "Ein Bereich ist auf der Karte hervorgehoben. Welches Föderationssubjekt ist es?"
     },
     "instruction_map": "Klicke das passende Grenzgebiet auf der Karte.",
     "instruction_choices": "Ein markiertes Gebiet wird auf der Karte angezeigt. Wähle den richtigen Namen aus 4 Optionen.",

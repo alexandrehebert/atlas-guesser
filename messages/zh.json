@@ -243,7 +243,10 @@
       "canada": "加拿大",
       "usa": "美国",
       "brazil": "巴西",
-      "china": "中国"
+      "china": "中国",
+      "india": "印度",
+      "russia": "俄罗斯",
+      "australia": "澳大利亚"
     },
     "top_badge": {
       "departements": "{count} 个省",
@@ -251,7 +254,8 @@
       "laender": "{count} 个联邦州",
       "states": "{count} 个州",
       "communities": "{count} 个自治区",
-      "provinces": "{count} 个省份"
+      "provinces": "{count} 个省份",
+      "subjects": "{count} 个联邦主体"
     },
     "mode": {
       "departements": "省",
@@ -259,7 +263,8 @@
       "laender": "联邦州",
       "states": "州",
       "communities": "自治区",
-      "provinces": "省份"
+      "provinces": "省份",
+      "subjects": "联邦主体"
     },
     "game_mode_map_click": "点击地图",
     "game_mode_highlighted_to_name": "多项选择",
@@ -269,7 +274,8 @@
       "laender": "联邦州提示",
       "states": "州提示",
       "communities": "自治区提示",
-      "provinces": "省份提示"
+      "provinces": "省份提示",
+      "subjects": "联邦主体提示"
     },
     "prompt_body": {
       "departements": "在 {countryName} 地图上找到这个省。",
@@ -277,7 +283,8 @@
       "laender": "在 {countryName} 地图上找到这个联邦州。",
       "states": "在 {countryName} 地图上找到这个州。",
       "communities": "在 {countryName} 地图上找到这个自治区。",
-      "provinces": "在 {countryName} 地图上找到这个省份。"
+      "provinces": "在 {countryName} 地图上找到这个省份。",
+      "subjects": "在{countryName}地图上找到这个联邦主体。"
     },
     "prompt_body_choices": {
       "departements": "地图上有一个区域被高亮。这是哪个省？",
@@ -285,7 +292,8 @@
       "laender": "地图上有一个区域被高亮。这是哪个联邦州？",
       "states": "地图上有一个区域被高亮。这是哪个州？",
       "communities": "地图上有一个区域被高亮。这是哪个自治区？",
-      "provinces": "地图上有一个区域被高亮。这是哪个省份？"
+      "provinces": "地图上有一个区域被高亮。这是哪个省份？",
+      "subjects": "地图上高亮了一个区域。这是哪个联邦主体？"
     },
     "instruction_map": "点击地图上对应的边界区域。",
     "instruction_choices": "地图上显示一个高亮区域。从 4 个选项中选择正确名称。",

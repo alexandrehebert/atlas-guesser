@@ -243,7 +243,10 @@
       "canada": "Canada",
       "usa": "Stati Uniti",
       "brazil": "Brasile",
-      "china": "Cina"
+      "china": "Cina",
+      "india": "India",
+      "russia": "Russia",
+      "australia": "Australia"
     },
     "top_badge": {
       "departements": "{count} dipartimenti",
@@ -251,7 +254,8 @@
       "laender": "{count} Länder",
       "states": "{count} stati",
       "communities": "{count} comunità",
-      "provinces": "{count} province"
+      "provinces": "{count} province",
+      "subjects": "{count} soggetti federali"
     },
     "mode": {
       "departements": "Dipartimenti",
@@ -259,7 +263,8 @@
       "laender": "Länder",
       "states": "Stati",
       "communities": "Comunità",
-      "provinces": "Province"
+      "provinces": "Province",
+      "subjects": "Soggetti federali"
     },
     "game_mode_map_click": "Clic sulla mappa",
     "game_mode_highlighted_to_name": "Scelta multipla",
@@ -269,7 +274,8 @@
       "laender": "Indizio Land",
       "states": "Indizio stato",
       "communities": "Indizio comunità",
-      "provinces": "Indizio provincia"
+      "provinces": "Indizio provincia",
+      "subjects": "Soggetto federale"
     },
     "prompt_body": {
       "departements": "Trova questo dipartimento sulla mappa di {countryName}.",
@@ -277,7 +283,8 @@
       "laender": "Trova questo Land sulla mappa di {countryName}.",
       "states": "Trova questo stato sulla mappa di {countryName}.",
       "communities": "Trova questa comunità sulla mappa di {countryName}.",
-      "provinces": "Trova questa provincia sulla mappa di {countryName}."
+      "provinces": "Trova questa provincia sulla mappa di {countryName}.",
+      "subjects": "Trova questo soggetto federale sulla mappa di {countryName}."
     },
     "prompt_body_choices": {
       "departements": "Un'area è evidenziata sulla mappa. Quale dipartimento è?",
@@ -285,7 +292,8 @@
       "laender": "Un'area è evidenziata sulla mappa. Quale Land è?",
       "states": "Un'area è evidenziata sulla mappa. Quale stato è?",
       "communities": "Un'area è evidenziata sulla mappa. Quale comunità è?",
-      "provinces": "Un'area è evidenziata sulla mappa. Quale provincia è?"
+      "provinces": "Un'area è evidenziata sulla mappa. Quale provincia è?",
+      "subjects": "Un'area è evidenziata sulla mappa. Quale soggetto federale è?"
     },
     "instruction_map": "Clicca l'area di confine corrispondente sulla mappa.",
     "instruction_choices": "Un'area evidenziata è mostrata sulla mappa. Scegli il nome corretto tra 4 opzioni.",

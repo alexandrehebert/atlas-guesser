@@ -217,6 +217,51 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
       },
     ],
   },
+  india: {
+    countryCode: 'IN',
+    countryNames: ['india', 'bharat'],
+    sortLocale: 'en',
+    defaultLevelId: 'states',
+    levels: [
+      {
+        id: 'states',
+        fileName: 'india-states.geojson',
+        minimumClickableSize: 1,
+        codeProperty: 'code',
+        nameProperty: 'name',
+      },
+    ],
+  },
+  russia: {
+    countryCode: 'RU',
+    countryNames: ['russia', 'russian federation', 'rossiya'],
+    sortLocale: 'en',
+    defaultLevelId: 'subjects',
+    levels: [
+      {
+        id: 'subjects',
+        fileName: 'russia-subjects.geojson',
+        minimumClickableSize: 1,
+        codeProperty: 'code',
+        nameProperty: 'name',
+      },
+    ],
+  },
+  australia: {
+    countryCode: 'AU',
+    countryNames: ['australia'],
+    sortLocale: 'en',
+    defaultLevelId: 'states',
+    levels: [
+      {
+        id: 'states',
+        fileName: 'australia-states.geojson',
+        minimumClickableSize: 2,
+        codeProperty: 'code',
+        nameProperty: 'name',
+      },
+    ],
+  },
 };
 
 const cachedPayloadPromises: Partial<Record<AdminQuizCountrySlug, Promise<AdminSubdivisionQuizPayload>>> = {};
