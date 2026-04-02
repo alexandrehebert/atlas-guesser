@@ -298,6 +298,20 @@
     "section_labels": {
       "france_overseas": "Outre-mer",
       "generic_inset": "Encart"
+    },
+    "sources": {
+      "open_button": "Sources",
+      "modal_title": "Sources des donnees GeoJSON",
+      "modal_body": "Jeux de donnees de limites administratives utilises pour afficher cette carte.",
+      "close": "Fermer",
+      "playable_title": "Limites jouables",
+      "context_title": "Couches de contexte",
+      "france_note": "Contours administratifs fournis via les APIs geo publiques francaises (adossees a l'IGN).",
+      "overseas_note": "Extrait outre-mer embarque utilise pour la mise en encart.",
+      "bundled_source_label": "GeoJSON embarque dans le projet",
+      "unverified_note": "La source amont exacte n'est pas enregistree dans l'historique du depot.",
+      "natural_earth_note": "Pays Admin 0, 1:110m.",
+      "open_link": "Ouvrir la source"
     }
   },
   "transport": {

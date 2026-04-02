@@ -296,6 +296,20 @@
     "section_labels": {
       "france_overseas": "Überseegebiete",
       "generic_inset": "Ausschnitt"
+    },
+    "sources": {
+      "open_button": "Datenquellen",
+      "modal_title": "GeoJSON-Datenquellen",
+      "modal_body": "Verwaltungsgrenzen-Datensätze, die zum Rendern dieser Karte verwendet werden.",
+      "close": "Schließen",
+      "playable_title": "Spielbare Grenzen",
+      "context_title": "Kontextebenen",
+      "france_note": "Verwaltungskonturen über die öffentlichen Geo-APIs Frankreichs (IGN-gestützt).",
+      "overseas_note": "Gebündelter Übersee-Auszug für das Inset-Layout.",
+      "bundled_source_label": "Im Projekt gebündeltes GeoJSON",
+      "unverified_note": "Die genaue Upstream-Quelle ist in der Repository-Historie nicht vermerkt.",
+      "natural_earth_note": "Admin-0-Länder, 1:110m.",
+      "open_link": "Quelle öffnen"
     }
   },
   "transport": {

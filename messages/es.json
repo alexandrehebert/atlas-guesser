@@ -296,6 +296,20 @@
     "section_labels": {
       "france_overseas": "Territorios de ultramar",
       "generic_inset": "Recuadro"
+    },
+    "sources": {
+      "open_button": "Fuentes",
+      "modal_title": "Fuentes de datos GeoJSON",
+      "modal_body": "Conjuntos de datos de límites administrativos usados para mostrar este mapa.",
+      "close": "Cerrar",
+      "playable_title": "Límites jugables",
+      "context_title": "Capas de contexto",
+      "france_note": "Contornos administrativos servidos por las APIs geo públicas de Francia (respaldadas por IGN).",
+      "overseas_note": "Extracto ultramarino incluido en el proyecto para el diseño en recuadro.",
+      "bundled_source_label": "GeoJSON incluido en el proyecto",
+      "unverified_note": "La fuente ascendente exacta no quedó registrada en el historial del repositorio.",
+      "natural_earth_note": "Países Admin 0, 1:110m.",
+      "open_link": "Abrir fuente"
     }
   },
   "transport": {

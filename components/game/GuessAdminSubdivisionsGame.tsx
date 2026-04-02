@@ -53,6 +53,19 @@ interface PinchState {
   center: { x: number; y: number } | null;
 }
 
+interface MapSourceItem {
+  filePath: string;
+  sourceLabel: string;
+  note: string;
+  url?: string;
+}
+
+interface MapSourceSection {
+  id: string;
+  title: string;
+  items: MapSourceItem[];
+}
+
 function rectsOverlap(
   first: { x: number; y: number; width: number; height: number },
   second: { x: number; y: number; width: number; height: number },
@@ -160,6 +173,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
   const [mapTransform, setMapTransform] = useState<MapTransformState>({ zoom: 1, x: 0, y: 0 });
   const [mapVisible, setMapVisible] = useState(false);
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const [isSourcesModalOpen, setIsSourcesModalOpen] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [useLargeAnswerLabels, setUseLargeAnswerLabels] = useState(false);
@@ -257,6 +271,24 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isCountryDropdownOpen]);
+
+  useEffect(() => {
+    if (!isSourcesModalOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsSourcesModalOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isSourcesModalOpen]);
 
   useLayoutEffect(() => {
     const computeMobileHomeOffset = (options: { forceApply?: boolean } = {}) => {
@@ -373,6 +405,98 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
     ? t(`prompt_body_choices.${activeLevelId}`, { countryName })
     : t(`prompt_body.${activeLevelId}`, { countryName });
 
+  const dataSourceSections = useMemo<MapSourceSection[]>(() => {
+    const playableItems: MapSourceItem[] = [];
+
+    if (quiz.country === 'france') {
+      playableItems.push(
+        {
+          filePath: 'public/maps/france-departements.geojson',
+          sourceLabel: 'geo.api.gouv.fr / IGN',
+          note: t('sources.france_note'),
+          url: 'https://geo.api.gouv.fr/departements',
+        },
+        {
+          filePath: 'public/maps/france-regions.geojson',
+          sourceLabel: 'geo.api.gouv.fr / IGN',
+          note: t('sources.france_note'),
+          url: 'https://geo.api.gouv.fr/regions',
+        },
+        {
+          filePath: 'public/maps/france-overseas.geojson',
+          sourceLabel: 'france-geojson.gregoiredavid.fr',
+          note: t('sources.overseas_note'),
+          url: 'https://france-geojson.gregoiredavid.fr/',
+        },
+      );
+    }
+
+    if (quiz.country === 'germany') {
+      playableItems.push({
+        filePath: 'public/maps/germany-states.geojson',
+        sourceLabel: 'isellsoap/deutschlandGeoJSON (likely)',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/isellsoap/deutschlandGeoJSON',
+      });
+    }
+
+    if (quiz.country === 'spain') {
+      playableItems.push({
+        filePath: 'public/maps/spain-communities.geojson',
+        sourceLabel: 'codeforgermany/click_that_hood (likely)',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
+    if (quiz.country === 'italy') {
+      playableItems.push({
+        filePath: 'public/maps/italy-regions.geojson',
+        sourceLabel: 'codeforgermany/click_that_hood (likely)',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
+    if (quiz.country === 'canada') {
+      playableItems.push({
+        filePath: 'public/maps/canada-provinces.geojson',
+        sourceLabel: 'codeforgermany/click_that_hood (likely)',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
+    if (quiz.country === 'usa') {
+      playableItems.push({
+        filePath: 'public/maps/usa-states.geojson',
+        sourceLabel: 'PublicaMundi/MappingAPI us-states.json (likely)',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/PublicaMundi/MappingAPI/blob/master/data/geojson/us-states.json',
+      });
+    }
+
+    return [
+      {
+        id: 'playable',
+        title: t('sources.playable_title'),
+        items: playableItems,
+      },
+      {
+        id: 'context',
+        title: t('sources.context_title'),
+        items: [
+          {
+            filePath: 'public/maps/world-countries-110m.geojson',
+            sourceLabel: 'Natural Earth',
+            note: t('sources.natural_earth_note'),
+            url: 'https://www.naturalearthdata.com/downloads/110m-cultural-vectors/',
+          },
+        ],
+      },
+    ].filter((section) => section.items.length > 0);
+  }, [quiz.country, t]);
+
   const switchQuizLevel = (nextLevelId: QuizLevelId) => {
     if (nextLevelId === quizLevelId) {
       return;
@@ -443,6 +567,18 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
     return Math.max(bounds.min, Math.min(bounds.max, value));
   };
 
+  const getHomeMapTransform = (zoom: number): MapTransformState => {
+    const clampedZoom = clampZoom(zoom);
+    const centerX = quiz.viewBox.width / 2;
+    const centerY = quiz.viewBox.height / 2;
+
+    return {
+      zoom: clampedZoom,
+      x: (1 - clampedZoom) * centerX,
+      y: homeOffsetYRef.current + (1 - clampedZoom) * centerY,
+    };
+  };
+
   const zoomAtPoint = (
     nextZoomRaw: number,
     point: { x: number; y: number },
@@ -453,11 +589,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
       const bounds = getZoomBounds();
 
       if (options.recenterOnMin && nextZoom === bounds.min) {
-        return {
-          zoom: bounds.min,
-          x: 0,
-          y: homeOffsetYRef.current,
-        };
+        return getHomeMapTransform(bounds.min);
       }
 
       if (nextZoom === current.zoom) {
@@ -504,7 +636,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
 
   const handleResetZoom = () => {
     hasUserMovedMapRef.current = false;
-    setMapTransform({ zoom: 1, x: 0, y: homeOffsetYRef.current });
+    setMapTransform(getHomeMapTransform(1));
   };
 
   const handleWheelZoom = (event: WheelEvent<SVGSVGElement>) => {
@@ -864,7 +996,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
         </Link>
 
         <div className="pointer-events-auto flex flex-col items-end gap-2">
-          <div ref={countryDropdownRef} className="relative">
+          <div ref={countryDropdownRef} className={`relative ${isCountryDropdownOpen ? 'z-20' : ''}`}>
             <div className="rounded-2xl border border-white/12 bg-slate-950/80 p-1">
               <button
                 type="button"
@@ -877,7 +1009,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
             </div>
 
             {isCountryDropdownOpen && (
-              <div className="absolute right-0 top-full mt-1.5 min-w-full overflow-hidden rounded-2xl border border-white/12 bg-slate-950/95 py-1 shadow-[0_20px_60px_rgba(2,6,23,0.6)] backdrop-blur-md">
+              <div className="absolute right-0 top-full z-10 mt-1.5 min-w-full overflow-hidden rounded-2xl border border-white/12 bg-slate-950/95 py-1 shadow-[0_20px_60px_rgba(2,6,23,0.6)] backdrop-blur-md">
                 {quiz.availableCountries.map((country) => {
                   const isActiveCountry = country === quiz.country;
                   return (
@@ -919,6 +1051,14 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
           <div className="rounded-2xl border border-white/12 bg-slate-950/80 px-4 py-2 text-xs uppercase tracking-[0.16em] text-slate-300">
             {t(`top_badge.${activeLevelId}`, { count: activeAreas.length })}
           </div>
+
+          <button
+            type="button"
+            onClick={() => setIsSourcesModalOpen(true)}
+            className="self-end px-0 py-0 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-300/70 drop-shadow-[0_1px_6px_rgba(2,6,23,0.6)] transition hover:text-slate-100/95 focus-visible:text-slate-100/95"
+          >
+            {t('sources.open_button')}
+          </button>
         </div>
       </div>
 
@@ -1341,6 +1481,63 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
       >
         <MapIcon className="animate-spin text-sky-400" size={64} strokeWidth={2.5} />
       </div>
+
+      {isSourcesModalOpen ? (
+        <div
+          className="absolute inset-0 z-[70] flex items-center justify-center bg-slate-950/62 p-4 backdrop-blur-sm"
+          onClick={() => setIsSourcesModalOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="geojson-sources-title"
+            className="w-full max-w-2xl rounded-[1.75rem] border border-white/12 bg-slate-950/96 p-5 shadow-[0_32px_90px_rgba(2,6,23,0.6)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-sky-200/82">{t('sources.open_button')}</p>
+                <h2 id="geojson-sources-title" className="mt-2 text-xl font-semibold text-white">{t('sources.modal_title')}</h2>
+                <p className="mt-1 text-sm text-slate-300">{t('sources.modal_body')}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSourcesModalOpen(false)}
+                className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-200 transition hover:border-white/22 hover:bg-white/10"
+              >
+                {t('sources.close')}
+              </button>
+            </div>
+
+            <div className="mt-5 max-h-[min(70vh,36rem)] space-y-4 overflow-y-auto pr-1">
+              {dataSourceSections.map((section) => (
+                <section key={section.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                  <h3 className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-slate-300">{section.title}</h3>
+                  <div className="mt-3 space-y-3">
+                    {section.items.map((item) => (
+                      <div key={`${section.id}-${item.filePath}`} className="rounded-2xl border border-white/8 bg-slate-900/72 p-3">
+                        <p className="text-[0.68rem] font-medium uppercase tracking-[0.14em] text-slate-400">{item.filePath}</p>
+                        <p className="mt-1 text-sm font-semibold text-slate-100">{item.sourceLabel}</p>
+                        <p className="mt-1 text-sm text-slate-300">{item.note}</p>
+                        {item.url ? (
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mt-2 inline-flex rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-200 transition hover:border-white/22 hover:bg-white/10"
+                          >
+                            {t('sources.open_link')}
+                          </a>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

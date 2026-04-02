@@ -296,6 +296,20 @@
     "section_labels": {
       "france_overseas": "Territori d'oltremare",
       "generic_inset": "Riquadro"
+    },
+    "sources": {
+      "open_button": "Fonti",
+      "modal_title": "Fonti dati GeoJSON",
+      "modal_body": "Set di dati dei confini amministrativi usati per rendere questa mappa.",
+      "close": "Chiudi",
+      "playable_title": "Confini giocabili",
+      "context_title": "Livelli di contesto",
+      "france_note": "Contorni amministrativi forniti tramite le API geo pubbliche francesi (basate su IGN).",
+      "overseas_note": "Estratto d'oltremare incluso nel progetto per il layout in riquadro.",
+      "bundled_source_label": "GeoJSON incluso nel progetto",
+      "unverified_note": "La fonte upstream esatta non è registrata nella cronologia del repository.",
+      "natural_earth_note": "Paesi Admin 0, 1:110m.",
+      "open_link": "Apri fonte"
     }
   },
   "transport": {

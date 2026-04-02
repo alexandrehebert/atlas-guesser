@@ -296,6 +296,20 @@
     "section_labels": {
       "france_overseas": "Overseas territories",
       "generic_inset": "Inset"
+    },
+    "sources": {
+      "open_button": "Data sources",
+      "modal_title": "GeoJSON data sources",
+      "modal_body": "Administrative boundary datasets used to render this map.",
+      "close": "Close",
+      "playable_title": "Playable boundaries",
+      "context_title": "Context layers",
+      "france_note": "Administrative contours served via France's public geo APIs (IGN-backed).",
+      "overseas_note": "Bundled overseas extract used for the inset layout.",
+      "bundled_source_label": "Bundled project GeoJSON",
+      "unverified_note": "Exact upstream source is not recorded in the repository history.",
+      "natural_earth_note": "Admin 0 countries, 1:110m.",
+      "open_link": "Open source"
     }
   },
   "transport": {
