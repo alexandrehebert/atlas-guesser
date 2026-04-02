@@ -229,34 +229,47 @@
     "back_to_home": "Torna all'atlante",
     "countries": {
       "france": "Francia",
-      "germany": "Germania"
+      "germany": "Germania",
+      "spain": "Spagna",
+      "italy": "Italia",
+      "canada": "Canada"
     },
     "top_badge": {
       "departements": "{count} dipartimenti",
       "regions": "{count} regioni",
-      "states": "{count} Länder"
+      "states": "{count} Länder",
+      "communities": "{count} comunità",
+      "provinces": "{count} province"
     },
     "mode": {
       "departements": "Dipartimenti",
       "regions": "Regioni",
-      "states": "Länder"
+      "states": "Länder",
+      "communities": "Comunità",
+      "provinces": "Province"
     },
     "game_mode_map_click": "Clic sulla mappa",
     "game_mode_highlighted_to_name": "Scelta multipla",
     "prompt_eyebrow": {
       "departements": "Indizio dipartimento",
       "regions": "Indizio regione",
-      "states": "Indizio Land"
+      "states": "Indizio Land",
+      "communities": "Indizio comunità",
+      "provinces": "Indizio provincia"
     },
     "prompt_body": {
       "departements": "Trova questo dipartimento sulla mappa di {countryName}.",
       "regions": "Trova questa regione sulla mappa di {countryName}.",
-      "states": "Trova questo Land sulla mappa di {countryName}."
+      "states": "Trova questo Land sulla mappa di {countryName}.",
+      "communities": "Trova questa comunità sulla mappa di {countryName}.",
+      "provinces": "Trova questa provincia sulla mappa di {countryName}."
     },
     "prompt_body_choices": {
       "departements": "Un'area è evidenziata sulla mappa. Quale dipartimento è?",
       "regions": "Un'area è evidenziata sulla mappa. Quale regione è?",
-      "states": "Un'area è evidenziata sulla mappa. Quale Land è?"
+      "states": "Un'area è evidenziata sulla mappa. Quale Land è?",
+      "communities": "Un'area è evidenziata sulla mappa. Quale comunità è?",
+      "provinces": "Un'area è evidenziata sulla mappa. Quale provincia è?"
     },
     "instruction_map": "Clicca l'area di confine corrispondente sulla mappa.",
     "instruction_choices": "Un'area evidenziata è mostrata sulla mappa. Scegli il nome corretto tra 4 opzioni.",

@@ -1,4 +1,4 @@
-export const SUPPORTED_ADMIN_QUIZ_COUNTRIES = ['france', 'germany'] as const;
+export const SUPPORTED_ADMIN_QUIZ_COUNTRIES = ['france', 'germany', 'spain', 'italy', 'canada'] as const;
 
 export type AdminQuizCountrySlug = (typeof SUPPORTED_ADMIN_QUIZ_COUNTRIES)[number];
 

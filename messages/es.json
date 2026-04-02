@@ -229,34 +229,47 @@
     "back_to_home": "Volver al atlas",
     "countries": {
       "france": "Francia",
-      "germany": "Alemania"
+      "germany": "Alemania",
+      "spain": "España",
+      "italy": "Italia",
+      "canada": "Canadá"
     },
     "top_badge": {
       "departements": "{count} departamentos",
       "regions": "{count} regiones",
-      "states": "{count} estados"
+      "states": "{count} estados",
+      "communities": "{count} comunidades",
+      "provinces": "{count} provincias"
     },
     "mode": {
       "departements": "Departamentos",
       "regions": "Regiones",
-      "states": "Estados"
+      "states": "Estados",
+      "communities": "Comunidades",
+      "provinces": "Provincias"
     },
     "game_mode_map_click": "Clic en mapa",
     "game_mode_highlighted_to_name": "Elección múltiple",
     "prompt_eyebrow": {
       "departements": "Pista departamento",
       "regions": "Pista región",
-      "states": "Pista estado"
+      "states": "Pista estado",
+      "communities": "Pista comunidad",
+      "provinces": "Pista provincia"
     },
     "prompt_body": {
       "departements": "Encuentra este departamento en el mapa de {countryName}.",
       "regions": "Encuentra esta región en el mapa de {countryName}.",
-      "states": "Encuentra este estado en el mapa de {countryName}."
+      "states": "Encuentra este estado en el mapa de {countryName}.",
+      "communities": "Encuentra esta comunidad en el mapa de {countryName}.",
+      "provinces": "Encuentra esta provincia en el mapa de {countryName}."
     },
     "prompt_body_choices": {
       "departements": "Un área está resaltada en el mapa. ¿Qué departamento es?",
       "regions": "Un área está resaltada en el mapa. ¿Qué región es?",
-      "states": "Un área está resaltada en el mapa. ¿Qué estado es?"
+      "states": "Un área está resaltada en el mapa. ¿Qué estado es?",
+      "communities": "Un área está resaltada en el mapa. ¿Qué comunidad es?",
+      "provinces": "Un área está resaltada en el mapa. ¿Qué provincia es?"
     },
     "instruction_map": "Haz clic en el área de frontera correcta en el mapa.",
     "instruction_choices": "Un área resaltada aparece en el mapa. Elige el nombre correcto entre 4 opciones.",

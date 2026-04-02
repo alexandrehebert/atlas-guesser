@@ -229,34 +229,47 @@
     "back_to_home": "Back to atlas",
     "countries": {
       "france": "France",
-      "germany": "Germany"
+      "germany": "Germany",
+      "spain": "Spain",
+      "italy": "Italy",
+      "canada": "Canada"
     },
     "top_badge": {
       "departements": "{count} departments",
       "regions": "{count} regions",
-      "states": "{count} states"
+      "states": "{count} states",
+      "communities": "{count} communities",
+      "provinces": "{count} provinces"
     },
     "mode": {
       "departements": "Departments",
       "regions": "Regions",
-      "states": "States"
+      "states": "States",
+      "communities": "Communities",
+      "provinces": "Provinces"
     },
     "game_mode_map_click": "Map click",
     "game_mode_highlighted_to_name": "Multiple choice",
     "prompt_eyebrow": {
       "departements": "Department prompt",
       "regions": "Region prompt",
-      "states": "State prompt"
+      "states": "State prompt",
+      "communities": "Community prompt",
+      "provinces": "Province prompt"
     },
     "prompt_body": {
       "departements": "Find this department on the map of {countryName}.",
       "regions": "Find this region on the map of {countryName}.",
-      "states": "Find this state on the map of {countryName}."
+      "states": "Find this state on the map of {countryName}.",
+      "communities": "Find this community on the map of {countryName}.",
+      "provinces": "Find this province on the map of {countryName}."
     },
     "prompt_body_choices": {
       "departements": "An area is highlighted on the map. Which department is it?",
       "regions": "An area is highlighted on the map. Which region is it?",
-      "states": "An area is highlighted on the map. Which state is it?"
+      "states": "An area is highlighted on the map. Which state is it?",
+      "communities": "An area is highlighted on the map. Which community is it?",
+      "provinces": "An area is highlighted on the map. Which province is it?"
     },
     "instruction_map": "Click the matching border area on the map.",
     "instruction_choices": "A highlighted area is shown on the map. Choose the correct name among 4 options.",

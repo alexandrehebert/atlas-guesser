@@ -89,6 +89,54 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
       },
     ],
   },
+  spain: {
+    countryCode: 'ES',
+    countryNames: ['spain', 'españa', 'espana'],
+    sortLocale: 'es',
+    defaultLevelId: 'communities',
+    ghostBounds: { minLng: -20, maxLng: 10, minLat: 27, maxLat: 45 },
+    levels: [
+      {
+        id: 'communities',
+        fileName: 'spain-communities.geojson',
+        minimumClickableSize: 2,
+        codeProperty: 'code',
+        nameProperty: 'name',
+      },
+    ],
+  },
+  italy: {
+    countryCode: 'IT',
+    countryNames: ['italy', 'italia'],
+    sortLocale: 'it',
+    defaultLevelId: 'regions',
+    ghostBounds: { minLng: 2, maxLng: 22, minLat: 35, maxLat: 50 },
+    levels: [
+      {
+        id: 'regions',
+        fileName: 'italy-regions.geojson',
+        minimumClickableSize: 2,
+        codeProperty: 'code',
+        nameProperty: 'name',
+      },
+    ],
+  },
+  canada: {
+    countryCode: 'CA',
+    countryNames: ['canada'],
+    sortLocale: 'en',
+    defaultLevelId: 'provinces',
+    ghostBounds: { minLng: -145, maxLng: -48, minLat: 40, maxLat: 85 },
+    levels: [
+      {
+        id: 'provinces',
+        fileName: 'canada-provinces.geojson',
+        minimumClickableSize: 2,
+        codeProperty: 'code',
+        nameProperty: 'name',
+      },
+    ],
+  },
 };
 
 const ALWAYS_VISIBLE_GHOST_COUNTRY_CODES = new Set(

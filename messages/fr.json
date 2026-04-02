@@ -231,34 +231,47 @@
     "back_to_home": "Retour a l'atlas",
     "countries": {
       "france": "France",
-      "germany": "Allemagne"
+      "germany": "Allemagne",
+      "spain": "Espagne",
+      "italy": "Italie",
+      "canada": "Canada"
     },
     "top_badge": {
       "departements": "{count} departements",
       "regions": "{count} regions",
-      "states": "{count} Länder"
+      "states": "{count} Länder",
+      "communities": "{count} communautes",
+      "provinces": "{count} provinces"
     },
     "mode": {
       "departements": "Departements",
       "regions": "Regions",
-      "states": "Länder"
+      "states": "Länder",
+      "communities": "Communautes",
+      "provinces": "Provinces"
     },
     "game_mode_map_click": "Clic carte",
     "game_mode_highlighted_to_name": "Choix multiple",
     "prompt_eyebrow": {
       "departements": "Indice departement",
       "regions": "Indice region",
-      "states": "Indice Land"
+      "states": "Indice Land",
+      "communities": "Indice communaute",
+      "provinces": "Indice province"
     },
     "prompt_body": {
       "departements": "Retrouvez ce departement sur la carte de {countryName}.",
       "regions": "Retrouvez cette region sur la carte de {countryName}.",
-      "states": "Retrouvez ce Land sur la carte de {countryName}."
+      "states": "Retrouvez ce Land sur la carte de {countryName}.",
+      "communities": "Retrouvez cette communaute sur la carte de {countryName}.",
+      "provinces": "Retrouvez cette province sur la carte de {countryName}."
     },
     "prompt_body_choices": {
       "departements": "De quel departement s'agit-il ?",
       "regions": "De quelle region s'agit-il ?",
-      "states": "Quel Land est surligne sur la carte ?"
+      "states": "Quel Land est surligne sur la carte ?",
+      "communities": "De quelle communaute s'agit-il ?",
+      "provinces": "De quelle province s'agit-il ?"
     },
     "instruction_map": "Cliquez sur la bonne limite sur la carte.",
     "instruction_choices": "Une zone surlignee apparait sur la carte. Choisissez le bon nom parmi 4 options.",

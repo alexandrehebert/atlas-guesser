@@ -229,34 +229,47 @@
     "back_to_home": "Zurück zum Atlas",
     "countries": {
       "france": "Frankreich",
-      "germany": "Deutschland"
+      "germany": "Deutschland",
+      "spain": "Spanien",
+      "italy": "Italien",
+      "canada": "Kanada"
     },
     "top_badge": {
       "departements": "{count} Departements",
       "regions": "{count} Regionen",
-      "states": "{count} Bundesländer"
+      "states": "{count} Bundesländer",
+      "communities": "{count} Gemeinschaften",
+      "provinces": "{count} Provinzen"
     },
     "mode": {
       "departements": "Departements",
       "regions": "Regionen",
-      "states": "Bundesländer"
+      "states": "Bundesländer",
+      "communities": "Gemeinschaften",
+      "provinces": "Provinzen"
     },
     "game_mode_map_click": "Klick auf Karte",
     "game_mode_highlighted_to_name": "Multiple Choice",
     "prompt_eyebrow": {
       "departements": "Departement-Hinweis",
       "regions": "Regions-Hinweis",
-      "states": "Bundesland-Hinweis"
+      "states": "Bundesland-Hinweis",
+      "communities": "Gemeinschaft-Hinweis",
+      "provinces": "Provinz-Hinweis"
     },
     "prompt_body": {
       "departements": "Finde dieses Departement auf der Karte von {countryName}.",
       "regions": "Finde diese Region auf der Karte von {countryName}.",
-      "states": "Finde dieses Bundesland auf der Karte von {countryName}."
+      "states": "Finde dieses Bundesland auf der Karte von {countryName}.",
+      "communities": "Finde diese Gemeinschaft auf der Karte von {countryName}.",
+      "provinces": "Finde diese Provinz auf der Karte von {countryName}."
     },
     "prompt_body_choices": {
       "departements": "Ein Gebiet ist auf der Karte markiert. Welches Departement ist es?",
       "regions": "Ein Gebiet ist auf der Karte markiert. Welche Region ist es?",
-      "states": "Ein Gebiet ist auf der Karte markiert. Welches Bundesland ist es?"
+      "states": "Ein Gebiet ist auf der Karte markiert. Welches Bundesland ist es?",
+      "communities": "Ein Gebiet ist auf der Karte markiert. Welche Gemeinschaft ist es?",
+      "provinces": "Ein Gebiet ist auf der Karte markiert. Welche Provinz ist es?"
     },
     "instruction_map": "Klicke das passende Grenzgebiet auf der Karte.",
     "instruction_choices": "Ein markiertes Gebiet wird auf der Karte angezeigt. Wähle den richtigen Namen aus 4 Optionen.",
