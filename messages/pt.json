@@ -193,6 +193,7 @@
     "score_correct_label": "Corretas",
     "score_total_label": "Rodadas",
     "score_streak_label": "Sequência",
+    "score_section_title": "Pontuação",
     "score_best_streak": "Melhor sequência: {count}",
     "clear_scores": "Limpar pontuação salva",
     "clear_scores_confirm": "Excluir a pontuação salva deste dispositivo?",
@@ -297,6 +298,7 @@
     "score_correct_label": "Corretas",
     "score_total_label": "Rodadas",
     "score_streak_label": "Sequência",
+    "score_section_title": "Pontuação",
     "score_best_streak": "Melhor",
     "area_button_aria": "Selecionar {area}",
     "zoom_in": "Ampliar",
@@ -325,7 +327,8 @@
     "clear_scores_confirm_cta": "Excluir",
     "clear_scores_cancel": "Cancelar",
     "game_mode_label": "Modo de jogo",
-    "level_label": "Nível"
+    "level_label": "Nível",
+    "country_label": "País"
   },
   "transport": {
     "car": "Car",

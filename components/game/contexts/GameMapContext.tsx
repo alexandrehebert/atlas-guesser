@@ -15,6 +15,8 @@ export interface GameMapContextValue {
   zoomBy: (factor: number) => void;
   resetZoom: () => void;
   focusCountry: (countryCode: string) => void;
+  isAtMinZoom?: boolean;
+  isAtMaxZoom?: boolean;
 }
 
 export const GameMapContext = createContext<GameMapContextValue | null>(null);

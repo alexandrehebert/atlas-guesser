@@ -193,6 +193,7 @@
     "score_correct_label": "Correct",
     "score_total_label": "Rounds",
     "score_streak_label": "Streak",
+    "score_section_title": "Score",
     "score_best_streak": "Best streak: {count}",
     "clear_scores": "Clear saved score",
     "clear_scores_confirm": "Delete the saved score from this device?",
@@ -297,6 +298,7 @@
     "score_correct_label": "Correct",
     "score_total_label": "Rounds",
     "score_streak_label": "Streak",
+    "score_section_title": "Score",
     "score_best_streak": "Best",
     "area_button_aria": "Select {area}",
     "zoom_in": "Zoom in",
@@ -325,7 +327,8 @@
     "clear_scores_confirm_cta": "Delete",
     "clear_scores_cancel": "Cancel",
     "game_mode_label": "Game mode",
-    "level_label": "Level"
+    "level_label": "Level",
+    "country_label": "Country"
   },
   "transport": {
     "car": "Car",

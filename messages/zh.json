@@ -193,6 +193,7 @@
     "score_correct_label": "正确",
     "score_total_label": "回合",
     "score_streak_label": "连击",
+    "score_section_title": "得分",
     "score_best_streak": "最佳连击：{count}",
     "clear_scores": "清除已保存的分数",
     "clear_scores_confirm": "从此设备删除已保存的分数？",
@@ -297,6 +298,7 @@
     "score_correct_label": "正确",
     "score_total_label": "回合",
     "score_streak_label": "连击",
+    "score_section_title": "得分",
     "score_best_streak": "最佳",
     "area_button_aria": "选择 {area}",
     "zoom_in": "放大",
@@ -325,7 +327,8 @@
     "clear_scores_confirm_cta": "删除",
     "clear_scores_cancel": "取消",
     "game_mode_label": "游戏模式",
-    "level_label": "级别"
+    "level_label": "级别",
+    "country_label": "国家"
   },
   "transport": {
     "car": "Car",

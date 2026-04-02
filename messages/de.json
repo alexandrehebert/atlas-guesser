@@ -193,6 +193,7 @@
     "score_correct_label": "Richtig",
     "score_total_label": "Runden",
     "score_streak_label": "Serie",
+    "score_section_title": "Punktestand",
     "score_best_streak": "Beste Serie: {count}",
     "clear_scores": "Gespeicherten Punktestand löschen",
     "clear_scores_confirm": "Den gespeicherten Punktestand von diesem Gerät löschen?",
@@ -297,6 +298,7 @@
     "score_correct_label": "Richtig",
     "score_total_label": "Runden",
     "score_streak_label": "Serie",
+    "score_section_title": "Punktestand",
     "score_best_streak": "Rekord",
     "area_button_aria": "{area} auswählen",
     "zoom_in": "Vergrößern",
@@ -325,7 +327,8 @@
     "clear_scores_confirm_cta": "Löschen",
     "clear_scores_cancel": "Abbrechen",
     "game_mode_label": "Spielmodus",
-    "level_label": "Ebene"
+    "level_label": "Ebene",
+    "country_label": "Land"
   },
   "transport": {
     "car": "Auto",

@@ -193,6 +193,7 @@
     "score_correct_label": "Corrette",
     "score_total_label": "Round",
     "score_streak_label": "Serie",
+    "score_section_title": "Punteggio",
     "score_best_streak": "Migliore serie: {count}",
     "clear_scores": "Cancella punteggio salvato",
     "clear_scores_confirm": "Eliminare il punteggio salvato da questo dispositivo?",
@@ -297,6 +298,7 @@
     "score_correct_label": "Corrette",
     "score_total_label": "Round",
     "score_streak_label": "Serie",
+    "score_section_title": "Punteggio",
     "score_best_streak": "Record",
     "area_button_aria": "Seleziona {area}",
     "zoom_in": "Zoom in",
@@ -325,7 +327,8 @@
     "clear_scores_confirm_cta": "Elimina",
     "clear_scores_cancel": "Annulla",
     "game_mode_label": "Modalità di gioco",
-    "level_label": "Livello"
+    "level_label": "Livello",
+    "country_label": "Paese"
   },
   "transport": {
     "car": "Auto",

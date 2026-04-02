@@ -195,6 +195,7 @@
     "score_correct_label": "Bonnes réponses",
     "score_total_label": "Manches",
     "score_streak_label": "Série",
+    "score_section_title": "Score",
     "score_best_streak": "Meilleure série : {count}",
     "clear_scores": "Effacer le score enregistré",
     "clear_scores_confirm": "Supprimer le score enregistré sur cet appareil ?",
@@ -299,6 +300,7 @@
     "score_correct_label": "Bonnes reponses",
     "score_total_label": "Manches",
     "score_streak_label": "Serie",
+    "score_section_title": "Score",
     "score_best_streak": "Record",
     "area_button_aria": "Selectionner {area}",
     "zoom_in": "Zoom avant",
@@ -327,7 +329,8 @@
     "clear_scores_confirm_cta": "Supprimer",
     "clear_scores_cancel": "Annuler",
     "game_mode_label": "Mode de jeu",
-    "level_label": "Niveau"
+    "level_label": "Niveau",
+    "country_label": "Pays"
   },
   "transport": {
     "car": "Voiture",

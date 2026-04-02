@@ -15,9 +15,10 @@ import { select } from 'd3-selection';
 import { zoom, zoomIdentity, type ZoomBehavior } from 'd3-zoom';
 import { GameMapContext, type GameMapContextValue } from '../../contexts/GameMapContext';
 
-const MIN_ZOOM = 1;
+const DEFAULT_HOME_ZOOM = 0.92;
+const MIN_ZOOM = 0.82;
 const MAX_ZOOM = 6;
-const MOBILE_MIN_ZOOM = 0.7;
+const MOBILE_MIN_ZOOM = 0.6;
 const MOBILE_MAX_ZOOM = 8;
 const ZOOM_IN_FACTOR = 1.25;
 const ZOOM_OUT_FACTOR = 0.8;
@@ -54,10 +55,18 @@ interface SubdivisionsGameMapProviderProps {
 export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, children }: SubdivisionsGameMapProviderProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const zoomBehaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
-  const mapTransformRef = useRef<MapTransformState>({ zoom: 1, x: 0, y: 0 });
+  const mapTransformRef = useRef<MapTransformState>({
+    zoom: DEFAULT_HOME_ZOOM,
+    x: (1 - DEFAULT_HOME_ZOOM) * (viewBoxWidth / 2),
+    y: (1 - DEFAULT_HOME_ZOOM) * (viewBoxHeight / 2),
+  });
   const suppressClickRef = useRef<boolean>(false);
 
-  const [mapTransform, setMapTransform] = useState<MapTransformState>({ zoom: 1, x: 0, y: 0 });
+  const [mapTransform, setMapTransform] = useState<MapTransformState>(() => ({
+    zoom: DEFAULT_HOME_ZOOM,
+    x: (1 - DEFAULT_HOME_ZOOM) * (viewBoxWidth / 2),
+    y: (1 - DEFAULT_HOME_ZOOM) * (viewBoxHeight / 2),
+  }));
   const [mapVisible, setMapVisible] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [useLargeAnswerLabels, setUseLargeAnswerLabels] = useState(false);
@@ -189,7 +198,7 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
   const resetZoom = useCallback(() => {
     const svgElement = svgRef.current;
     const behavior = zoomBehaviorRef.current;
-    const homeTransform = getHomeMapTransform(1);
+    const homeTransform = getHomeMapTransform(DEFAULT_HOME_ZOOM);
     if (!svgElement || !behavior) {
       setMapTransform(homeTransform);
       return;
@@ -210,7 +219,9 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
     zoomBy,
     resetZoom,
     focusCountry: () => {},
-  }), [mapTransform, zoomBy, resetZoom]);
+    isAtMinZoom,
+    isAtMaxZoom,
+  }), [isAtMaxZoom, isAtMinZoom, mapTransform, zoomBy, resetZoom]);
 
   const adminMapValue = useMemo<SubdivisionsGameMapContextValue>(() => ({
     svgRef,

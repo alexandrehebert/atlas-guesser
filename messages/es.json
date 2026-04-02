@@ -193,6 +193,7 @@
     "score_correct_label": "Correctas",
     "score_total_label": "Rondas",
     "score_streak_label": "Racha",
+    "score_section_title": "Puntuación",
     "score_best_streak": "Mejor racha: {count}",
     "clear_scores": "Borrar puntuación guardada",
     "clear_scores_confirm": "¿Eliminar la puntuación guardada de este dispositivo?",
@@ -297,6 +298,7 @@
     "score_correct_label": "Correctas",
     "score_total_label": "Rondas",
     "score_streak_label": "Racha",
+    "score_section_title": "Puntuación",
     "score_best_streak": "Récord",
     "area_button_aria": "Seleccionar {area}",
     "zoom_in": "Acercar",
@@ -325,7 +327,8 @@
     "clear_scores_confirm_cta": "Borrar",
     "clear_scores_cancel": "Cancelar",
     "game_mode_label": "Modo de juego",
-    "level_label": "Nivel"
+    "level_label": "Nivel",
+    "country_label": "País"
   },
   "transport": {
     "car": "Coche",

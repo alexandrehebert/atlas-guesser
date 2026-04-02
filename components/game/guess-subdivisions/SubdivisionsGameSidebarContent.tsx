@@ -1,16 +1,10 @@
 'use client';
 
-import { useState, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import { ChevronDown } from 'lucide-react';
-import { useRouter } from '~/i18n/navigation';
-import { useGlobalRouteLoading } from '~/components/GlobalRouteLoadingProvider';
 import { useSubdivisionsGame } from './contexts/SubdivisionsGameContext';
 
 export default function SubdivisionsGameSidebarContent() {
   const t = useTranslations('subdivisionsGuesser');
-  const router = useRouter();
-  const { startRouteLoading } = useGlobalRouteLoading();
 
   const {
     quiz,
@@ -23,56 +17,14 @@ export default function SubdivisionsGameSidebarContent() {
     isChoiceMode,
     promptAreaLabel,
     promptBodyLabel,
-    countryName,
     submitAnswer,
     nextRound,
   } = useSubdivisionsGame();
-
-  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
-  const countryDropdownRef = useRef<HTMLDivElement | null>(null);
 
   const activeLevelId = activeLevel?.id ?? quiz.defaultLevelId;
 
   return (
     <>
-      {/* Country selector */}
-      <div ref={countryDropdownRef} className={`relative ${isCountryDropdownOpen ? 'z-20' : ''}`}>
-        <div className="rounded-2xl border border-white/12 bg-slate-950/80 p-1">
-          <button
-            type="button"
-            onClick={() => setIsCountryDropdownOpen((open) => !open)}
-            className="flex w-full items-center justify-between gap-2 rounded-xl px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] text-white transition hover:bg-white/10"
-          >
-            {countryName}
-            <ChevronDown className={`h-3 w-3 text-slate-400 transition-transform duration-200 ${isCountryDropdownOpen ? 'rotate-180' : ''}`} />
-          </button>
-        </div>
-
-        {isCountryDropdownOpen && (
-          <div className="absolute left-0 right-0 top-full z-10 mt-1.5 overflow-hidden rounded-2xl border border-white/12 bg-slate-950/95 py-1 shadow-[0_20px_60px_rgba(2,6,23,0.6)] backdrop-blur-md">
-            {quiz.availableCountries.map((country) => {
-              const isActiveCountry = country === quiz.country;
-              return (
-                <button
-                  key={country}
-                  type="button"
-                  onClick={() => {
-                    setIsCountryDropdownOpen(false);
-                    if (!isActiveCountry) {
-                      startRouteLoading();
-                      router.push(`/subdivisions/${country}`);
-                    }
-                  }}
-                  className={`block w-full px-3 py-1.5 text-left text-[11px] font-semibold uppercase tracking-[0.13em] transition ${isActiveCountry ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
-                >
-                  {t(`countries.${country}`)}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
       {/* Prompt card */}
       <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-4">
         <p className="text-xs uppercase tracking-[0.18em] text-rose-100">{t(`prompt_eyebrow.${activeLevelId}`)}</p>
