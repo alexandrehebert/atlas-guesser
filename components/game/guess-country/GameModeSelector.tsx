@@ -2,13 +2,12 @@
 
 import { useTranslations } from 'next-intl';
 import { useGame } from './contexts/GameContext';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from '~/i18n/navigation';
 import { MODE_ORDER } from '../constants';
 
 export default function GameModeSelector() {
   const t = useTranslations('guesser');
   const { mode } = useGame();
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   return (
@@ -23,9 +22,7 @@ export default function GameModeSelector() {
               key={item}
               type="button"
               onClick={() => {
-                const params = new URLSearchParams(searchParams?.toString() || '');
-                params.set('mode', item);
-                router.replace(`?${params.toString()}`);
+                router.replace(`/guesser/${item}`);
               }}
               className={`rounded-xl border px-3 py-2 text-left text-sm transition-[background-color,border-color,color,box-shadow] duration-150 ${isActive ? 'border-white/22 bg-white/15 text-white' : 'border-white/10 bg-slate-950/45 text-slate-300 hover:bg-white/10 hover:border-white/16 hover:text-slate-100'}`}
             >

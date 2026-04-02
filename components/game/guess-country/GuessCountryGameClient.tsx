@@ -4,7 +4,7 @@ import GuessCountryGame from "./GuessCountryGame";
 import type { CountryQuizPayload } from "~/lib/server/countryQuiz";
 import type { GameMode, RoundState } from "./types";
 import type { MapView } from "./contexts/GameContext";
-import { useSearchParams, useRouter } from "next/navigation";
+import { usePathname, useRouter } from "~/i18n/navigation";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { GameProvider, useGame } from "./contexts/GameContext";
 import { GameLayoutProvider } from "../contexts/GameLayoutContext";
@@ -29,11 +29,11 @@ interface GuessCountryGameClientProps {
 
 interface GameModeQuerySyncProps {
   modeParam: string | null;
-  searchParams: ReturnType<typeof useSearchParams>;
+  pathname: string;
   router: ReturnType<typeof useRouter>;
 }
 
-function GameModeQuerySync({ modeParam, searchParams, router }: GameModeQuerySyncProps) {
+function GameModeQuerySync({ modeParam, pathname, router }: GameModeQuerySyncProps) {
   const { mode, changeMode } = useGame();
   const initialized = useRef(false);
   const lastSource = useRef<'param' | 'ui' | null>(null);
@@ -68,13 +68,12 @@ function GameModeQuerySync({ modeParam, searchParams, router }: GameModeQuerySyn
       // Only update if last change was not from param
       if (lastSource.current !== 'param') {
         lastSource.current = 'ui';
-        const params = new URLSearchParams(searchParams?.toString() || '');
-        params.set('mode', mode);
-        router.replace(`?${params.toString()}`);
+        const basePath = pathname.split('/guesser')[0] || '';
+        router.replace(`${basePath}/guesser/${mode}`);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode]);
+  }, [mode, modeParam, pathname]);
 
   return null;
 }
@@ -156,13 +155,13 @@ export default function GuessCountryGameClient({ quiz, initialMode, initialRound
     };
   }, []);
 
-  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const router = useRouter();
-  const modeParam = searchParams?.get("mode");
+  const modeParam = pathname?.split('/').filter(Boolean).at(-1) ?? null;
 
   return (
     <GameProvider quiz={quiz} initialMode={initialMode} initialRound={initialRound}>
-      <GameModeQuerySync modeParam={modeParam} searchParams={searchParams} router={router} />
+      <GameModeQuerySync modeParam={modeParam} pathname={pathname ?? '/guesser'} router={router} />
       <GameLayoutProvider>
         <GameMapProvider>
           <GuessCountryGame
