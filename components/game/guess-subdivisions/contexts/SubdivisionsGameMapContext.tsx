@@ -17,6 +17,7 @@ import { GameMapContext, type GameMapContextValue } from '../../contexts/GameMap
 import { useSubdivisionsGame } from './SubdivisionsGameContext';
 
 const DEFAULT_HOME_ZOOM = 0.92;
+const HOME_FIT_SCALE_FACTOR = 0.94;
 const MIN_ZOOM = 0.82;
 const MAX_ZOOM = 12;
 const MOBILE_MIN_ZOOM = 0.6;
@@ -107,7 +108,7 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
     const paddedHeight = height + FIT_PADDING * 2;
     const scaleX = viewBoxWidth / paddedWidth;
     const scaleY = viewBoxHeight / paddedHeight;
-    const fitScale = Math.min(scaleX, scaleY);
+    const fitScale = Math.min(scaleX, scaleY) * HOME_FIT_SCALE_FACTOR;
     const clampedZoom = Math.max(bounds.min, Math.min(bounds.max, fitScale));
 
     const centerX = (minX + maxX) / 2;

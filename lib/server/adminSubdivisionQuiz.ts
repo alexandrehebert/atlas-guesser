@@ -11,6 +11,7 @@ export interface QuizArea {
   path: string;
   centroid: { x: number; y: number };
   focusBounds: { x: number; y: number; width: number; height: number };
+  sectionBounds: { x: number; y: number; width: number; height: number };
 }
 
 export interface QuizSectionLabel {
@@ -94,19 +95,19 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
     countryCode: 'FR',
     countryNames: ['france'],
     sortLocale: 'fr',
-    defaultLevelId: 'departements',
+    defaultLevelId: 'regions',
     levels: [
-      {
-        id: 'departements',
-        fileName: 'france-departements.geojson',
-        minimumClickableSize: 2,
-        codeProperty: 'code',
-        nameProperty: 'nom',
-      },
       {
         id: 'regions',
         fileName: 'france-regions.geojson',
         minimumClickableSize: 6,
+        codeProperty: 'code',
+        nameProperty: 'nom',
+      },
+      {
+        id: 'departements',
+        fileName: 'france-departements.geojson',
+        minimumClickableSize: 2,
         codeProperty: 'code',
         nameProperty: 'nom',
       },
@@ -540,7 +541,7 @@ function buildSectionLabelFromCodes(
 ): QuizSectionLabel | null {
   const rects = areas
     .filter((area) => params.codes.includes(area.code))
-    .map((area) => area.focusBounds);
+    .map((area) => area.sectionBounds);
   const unionBounds = getUnionBounds(rects);
 
   if (!unionBounds) {
@@ -685,6 +686,9 @@ function buildQuizAreas(
     const bounds = generator.bounds(focusFeature);
     const projectedWidth = Math.max(0, bounds[1][0] - bounds[0][0]);
     const projectedHeight = Math.max(0, bounds[1][1] - bounds[0][1]);
+    const fullBounds = generator.bounds(rawFeature);
+    const fullProjectedWidth = Math.max(0, fullBounds[1][0] - fullBounds[0][0]);
+    const fullProjectedHeight = Math.max(0, fullBounds[1][1] - fullBounds[0][1]);
 
     if (projectedWidth < levelConfig.minimumClickableSize && projectedHeight < levelConfig.minimumClickableSize) {
       continue;
@@ -706,6 +710,12 @@ function buildQuizAreas(
         y: bounds[0][1],
         width: projectedWidth,
         height: projectedHeight,
+      },
+      sectionBounds: {
+        x: fullBounds[0][0],
+        y: fullBounds[0][1],
+        width: fullProjectedWidth,
+        height: fullProjectedHeight,
       },
     });
   }
