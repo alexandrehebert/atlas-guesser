@@ -233,7 +233,9 @@
       "spain": "España",
       "italy": "Italia",
       "canada": "Canadá",
-      "usa": "Estados Unidos"
+      "usa": "Estados Unidos",
+      "brazil": "Brasil",
+      "china": "China"
     },
     "top_badge": {
       "departements": "{count} departamentos",
