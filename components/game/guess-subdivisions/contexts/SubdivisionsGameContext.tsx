@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -40,8 +41,32 @@ export interface MapSourceSection {
   items: MapSourceItem[];
 }
 
+const SCORE_STORAGE_KEY = 'atlas-guesser-subdivisions-score:v1';
+
 function createDefaultScore(): ScoreState {
   return { correct: 0, total: 0, streak: 0, bestStreak: 0 };
+}
+
+function parseStoredScore(value: string | null): ScoreState {
+  if (!value) {
+    return createDefaultScore();
+  }
+
+  try {
+    const parsed = JSON.parse(value) as Partial<ScoreState> | null;
+    if (!parsed || typeof parsed !== 'object') {
+      return createDefaultScore();
+    }
+
+    const correct = Number.isFinite(parsed.correct) ? Math.max(0, parsed.correct as number) : 0;
+    const total = Number.isFinite(parsed.total) ? Math.max(0, parsed.total as number) : 0;
+    const streak = Number.isFinite(parsed.streak) ? Math.max(0, parsed.streak as number) : 0;
+    const bestStreak = Number.isFinite(parsed.bestStreak) ? Math.max(0, parsed.bestStreak as number) : 0;
+
+    return { correct, total, streak, bestStreak };
+  } catch {
+    return createDefaultScore();
+  }
 }
 
 function pickNextTarget(areas: QuizArea[], previousCode: string | null): string {
@@ -124,10 +149,35 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
   const [answer, setAnswer] = useState<AnswerState | null>(null);
   const [score, setScore] = useState<ScoreState>(createDefaultScore);
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
+  const [scoreLoaded, setScoreLoaded] = useState(false);
+  const skipNextScorePersistRef = useRef(false);
 
   // Keep a stable ref so the suppressClick check in the map can call this without closure issues
   const answerRef = useRef(answer);
   answerRef.current = answer;
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    setScore(parseStoredScore(window.localStorage.getItem(SCORE_STORAGE_KEY)));
+    setScoreLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!scoreLoaded || typeof window === 'undefined') {
+      return;
+    }
+
+    if (skipNextScorePersistRef.current) {
+      skipNextScorePersistRef.current = false;
+      window.localStorage.removeItem(SCORE_STORAGE_KEY);
+      return;
+    }
+
+    window.localStorage.setItem(SCORE_STORAGE_KEY, JSON.stringify(score));
+  }, [score, scoreLoaded]);
 
   const activeLevel = quiz.levels.find((level) => level.id === quizLevelId) ?? defaultLevel;
   const activeAreas = activeLevel?.areas ?? [];
@@ -303,6 +353,7 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
   }, [activeAreas, targetArea]);
 
   const clearScore = useCallback(() => {
+    skipNextScorePersistRef.current = true;
     setScore(createDefaultScore());
   }, []);
 
