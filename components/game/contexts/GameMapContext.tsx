@@ -23,6 +23,8 @@ import { useGameLayout } from './GameLayoutContext';
 const DEFAULT_ALT = 1.65;
 const MOBILE_ALT  = 1.95;
 const FOCUS_ALT   = 1.15;
+const MIN_FLAT_MAP_ZOOM = 1;
+const MAX_FLAT_MAP_ZOOM = 8;
 
 interface GameMapContextValue {
   // 3D globe
@@ -60,6 +62,7 @@ export function GameMapProvider({ children }: { children: ReactNode }) {
   const zoomBehaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   const pathRefs = useRef<Record<string, SVGPathElement | null>>({});
   const defaultTransformRef = useRef<ZoomTransform>(DESKTOP_DEFAULT_MAP_TRANSFORM);
+  const mapTransformRef = useRef<ZoomTransform>(DESKTOP_DEFAULT_MAP_TRANSFORM);
   const [mapTransform, setMapTransform] = useState<ZoomTransform>(DESKTOP_DEFAULT_MAP_TRANSFORM);
   const viewBox = quiz.viewBox;
 
@@ -96,17 +99,42 @@ export function GameMapProvider({ children }: { children: ReactNode }) {
 
     const svgSelection = select(svgElement);
     const behavior = zoom<SVGSVGElement, unknown>()
-      .scaleExtent([1, 8])
+      .scaleExtent([MIN_FLAT_MAP_ZOOM, MAX_FLAT_MAP_ZOOM])
       .on('zoom', (event) => {
+        mapTransformRef.current = event.transform;
         setMapTransform(event.transform);
       });
 
+    const preventBrowserZoomAtMax = (event: WheelEvent) => {
+      const zoomingIn = event.deltaY < 0;
+      const atOrAboveMax = mapTransformRef.current.k >= MAX_FLAT_MAP_ZOOM - 0.001;
+
+      // Trackpad pinch is delivered as ctrl/cmd + wheel in many browsers.
+      if ((event.ctrlKey || event.metaKey) && zoomingIn && atOrAboveMax) {
+        event.preventDefault();
+      }
+    };
+
+    const preventGestureZoom = (event: Event) => {
+      const atOrAboveMax = mapTransformRef.current.k >= MAX_FLAT_MAP_ZOOM - 0.001;
+      if (atOrAboveMax) {
+        event.preventDefault();
+      }
+    };
+
     zoomBehaviorRef.current = behavior;
+    mapTransformRef.current = defaultTransformRef.current;
     svgSelection.call(behavior);
     svgSelection.call(behavior.transform, defaultTransformRef.current);
+    svgElement.addEventListener('wheel', preventBrowserZoomAtMax, { passive: false });
+    svgElement.addEventListener('gesturestart', preventGestureZoom, { passive: false });
+    svgElement.addEventListener('gesturechange', preventGestureZoom, { passive: false });
     setIsMapEngineReady(true);
 
     return () => {
+      svgElement.removeEventListener('wheel', preventBrowserZoomAtMax);
+      svgElement.removeEventListener('gesturestart', preventGestureZoom);
+      svgElement.removeEventListener('gesturechange', preventGestureZoom);
       svgSelection.on('.zoom', null);
       zoomBehaviorRef.current = null;
     };
