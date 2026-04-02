@@ -49,8 +49,10 @@ export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
 
   const modeRef   = useRef(mode);
   const answerRef = useRef(answer);
+  const submitAnswerRef = useRef(submitAnswer);
   useEffect(() => { modeRef.current   = mode;   }, [mode]);
   useEffect(() => { answerRef.current = answer; }, [answer]);
+  useEffect(() => { submitAnswerRef.current = submitAnswer; }, [submitAnswer]);
 
   // ─── Build answer labels (same content as 2D: "capital · country") ───────
   const answerLabels: AnswerLabelDatum[] = (() => {
@@ -195,8 +197,8 @@ export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
         })
         .onPolygonClick((d: any) => {
           const code: string | null = d?.properties?.quizCode ?? null;
-          if (!code || answerRef.current) return;
-          submitAnswer(code);
+          if (!code || answerRef.current || !MAP_MODES.has(modeRef.current)) return;
+          submitAnswerRef.current(code);
         });
 
       const globeMaterial = globe.globeMaterial?.();
