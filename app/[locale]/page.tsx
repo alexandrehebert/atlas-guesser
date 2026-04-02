@@ -21,6 +21,7 @@ import { StatsSection } from '~/components/landing/StatsSection';
 import { MapSection } from '~/components/landing/MapSection';
 import { AnimatedSection } from '~/components/AnimatedSection';
 import { MAP_MODES, MODE_ORDER } from '~/components/game/constants';
+import { RouteLoadingLink } from '~/components/RouteLoadingLink';
 import { getCountryQuizPayload } from '~/lib/server/countryQuiz';
 
 const LANDING_MAP_VIEWBOX = { width: 420, height: 280 };
@@ -304,19 +305,19 @@ export default async function HomePage({ params }: HomePageProps) {
           description={t('hero_description')}
           cta={
             <div className="flex flex-wrap items-center gap-3">
-              <Link
+              <RouteLoadingLink
                 href="/guesser"
                 className="inline-flex items-center gap-2 rounded-full bg-amber-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-200"
               >
                 {t('cta_guesser')}
                 <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
+              </RouteLoadingLink>
+              <RouteLoadingLink
                 href="/subdivisions/france"
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/35 hover:bg-white/10"
               >
                 {t('cta_subdivisions')}
-              </Link>
+              </RouteLoadingLink>
               <PwaInstallCallToAction />
             </div>
           }

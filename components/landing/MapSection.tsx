@@ -1,8 +1,7 @@
 'use client';
 
-import { ReactNode, type ReactElement, type SVGProps } from 'react';
+import { ReactNode, useEffect, useRef, type ReactElement, type SVGProps } from 'react';
 import { AnimatedSection } from '~/components/AnimatedSection';
-import { LandingMapSVG } from './LandingMapSVG';
 
 interface MapSectionProps {
   eyebrow: ReactNode;
@@ -21,6 +20,42 @@ export function MapSection({
   sidebarContent,
   bottomRightContent,
 }: MapSectionProps) {
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const hasAnimatedRef = useRef(false);
+
+  useEffect(() => {
+    if (hasAnimatedRef.current) return;
+    hasAnimatedRef.current = true;
+
+    const mapContainer = mapContainerRef.current;
+    if (!mapContainer) return;
+
+    const svg = mapContainer.querySelector('svg[data-landing-map-preview="true"]') as SVGSVGElement | null;
+    if (!svg) return;
+
+    const pathElement = svg.querySelector('[data-animated-path="true"]') as SVGPathElement | null;
+    if (pathElement) {
+      const length = pathElement.getTotalLength();
+      pathElement.style.strokeDasharray = String(length);
+      pathElement.style.strokeDashoffset = String(length);
+      pathElement.style.opacity = '1';
+      void pathElement.getBoundingClientRect();
+      pathElement.style.transition = 'stroke-dashoffset 2.2s ease-in-out';
+      pathElement.style.strokeDashoffset = '0';
+    }
+
+    const markers = svg.querySelectorAll('[data-animated-marker="true"]') as NodeListOf<SVGGElement>;
+    markers.forEach((marker, index) => {
+      window.setTimeout(() => {
+        marker.style.transition = 'opacity 0.4s ease-out';
+        marker.style.opacity = '1';
+        window.setTimeout(() => {
+          marker.querySelector('path')?.classList.add('animate-pulse-soft');
+        }, 400);
+      }, 300 + index * 300);
+    });
+  }, []);
+
   return (
     <AnimatedSection animation="fade-in-up">
       <article className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/5 p-6 shadow-[0_24px_90px_rgba(2,6,23,0.4)] backdrop-blur-sm">
@@ -33,10 +68,8 @@ export function MapSection({
             </p>
           </div>
 
-          <div className="relative h-72 overflow-hidden rounded-[1.5rem] border border-slate-800/95 bg-slate-950/60 lg:h-80">
-            <LandingMapSVG>
-              {mapContent}
-            </LandingMapSVG>
+          <div ref={mapContainerRef} className="relative h-72 overflow-hidden rounded-[1.5rem] border border-slate-800/95 bg-slate-950/60 lg:h-80">
+            {mapContent}
             {sidebarContent && (
               <div aria-hidden="true" className="absolute inset-y-2.5 left-2.5 z-10 w-[30%] min-w-[9rem] overflow-hidden rounded-xl border border-slate-700/90 bg-slate-950/86 shadow-2xl backdrop-blur-sm opacity-0 animate-fade-in-left lg:w-[15rem]" style={{ animationDelay: '800ms' }}>
                 {sidebarContent}
