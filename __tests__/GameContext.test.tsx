@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
-import { GameProvider, useGame } from '~/components/game/contexts/GameContext';
+import { GameProvider, useGame } from '~/components/game/guess-country/contexts/GameContext';
 import type { CountryQuizPayload, QuizCountry } from '~/lib/server/countryQuiz';
 
 const SCORE_STORAGE_KEY = 'atlas-guesser-score:v1';

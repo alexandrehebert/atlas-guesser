@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createRound } from '~/components/game/rounds';
+import { createRound } from '~/components/game/guess-country/rounds';
 import type { QuizCountry } from '~/lib/server/countryQuiz';
 
 function createCountry(code: string, x: number): QuizCountry {
@@ -31,7 +31,7 @@ describe('createRound', () => {
 
     try {
       const round = createRound(countries, 'country-to-flag');
-      const nearbyDistractors = round.optionCodes.filter((code) => ['BB', 'CC', 'DD'].includes(code));
+      const nearbyDistractors = round.optionCodes.filter((code: string) => ['BB', 'CC', 'DD'].includes(code));
 
       expect(round.targetCode).toBe('AA');
       expect(nearbyDistractors).toHaveLength(1);
@@ -55,7 +55,7 @@ describe('createRound', () => {
 
     try {
       const round = createRound(countries, 'country-to-flag');
-      const nearbyDistractors = round.optionCodes.filter((code) => ['BB', 'CC', 'DD'].includes(code));
+      const nearbyDistractors = round.optionCodes.filter((code: string) => ['BB', 'CC', 'DD'].includes(code));
 
       expect(round.targetCode).toBe('AA');
       expect(nearbyDistractors).toHaveLength(2);

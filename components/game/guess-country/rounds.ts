@@ -10,6 +10,7 @@ const MAX_CLOSE_DISTRACTORS = 2;
 export interface RoundHistory {
   recentTargetCodes: string[];
   recentOptionSignatures: string[];
+  answerFrequency: Record<string, number>;
 }
 
 interface CreateRoundOptions {
@@ -62,21 +63,51 @@ function pickRandom<T>(items: T[]): T {
   return items[Math.floor(Math.random() * items.length)] || items[0];
 }
 
+function pickWeighted<T extends { code: string }>(
+  items: T[],
+  answerFrequency: Record<string, number>,
+): T {
+  if (items.length === 0) return items[0];
+  if (items.length === 1) return items[0];
+
+  // Calculate inverse frequency (lower frequency = higher weight)
+  const maxFrequency = Math.max(...items.map((item) => answerFrequency[item.code] ?? 0), 0);
+  const weights = items.map((item) => {
+    const freq = answerFrequency[item.code] ?? 0;
+    // Inverse weighting: unpicked countries (freq=0) get max weight
+    return maxFrequency - freq + 1;
+  });
+
+  // Weighted random selection
+  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+  let random = Math.random() * totalWeight;
+
+  for (let i = 0; i < items.length; i += 1) {
+    random -= weights[i];
+    if (random <= 0) {
+      return items[i];
+    }
+  }
+
+  return items[items.length - 1];
+}
+
 function addDistractorsFromPool(
   distractorCodes: string[],
   pool: QuizCountry[],
   maxCount: number,
+  answerFrequency?: Record<string, number>,
 ): void {
-  for (const country of pool) {
-    if (distractorCodes.length >= maxCount) {
-      break;
-    }
-
-    if (distractorCodes.includes(country.code)) {
-      continue;
-    }
-
-    distractorCodes.push(country.code);
+  const frequency = answerFrequency ?? {};
+  
+  // Create a mutable copy of the pool for weighted selection
+  let availablePool = [...pool];
+  
+  for (let i = distractorCodes.length; i < maxCount && availablePool.length > 0; i += 1) {
+    const selected = pickWeighted(availablePool, frequency);
+    distractorCodes.push(selected.code);
+    // Remove the selected item from the pool to avoid duplicates
+    availablePool = availablePool.filter((country) => country.code !== selected.code);
   }
 }
 
@@ -118,6 +149,7 @@ function createOptionCodes(
     return [];
   }
 
+  const answerFrequency = history?.answerFrequency ?? {};
   const allDistractors = getPreferredDistractorOrder(countries, targetCountry, mode);
   const recentTargets = new Set(history?.recentTargetCodes || []);
   const preferredDistractors = allDistractors.filter((country) => !recentTargets.has(country.code));
@@ -146,15 +178,15 @@ function createOptionCodes(
         fallbackFarDistractors.length,
       );
 
-      addDistractorsFromPool(distractorCodes, preferredCloseDistractors, closeDistractorCount);
-      addDistractorsFromPool(distractorCodes, fallbackCloseDistractors, closeDistractorCount);
-      addDistractorsFromPool(distractorCodes, shuffle(preferredFarDistractors), maxDistractors);
-      addDistractorsFromPool(distractorCodes, shuffle(fallbackFarDistractors), maxDistractors);
-      addDistractorsFromPool(distractorCodes, shuffle(preferredCloseDistractors), maxDistractors);
-      addDistractorsFromPool(distractorCodes, shuffle(fallbackCloseDistractors), maxDistractors);
+      addDistractorsFromPool(distractorCodes, preferredCloseDistractors, closeDistractorCount, answerFrequency);
+      addDistractorsFromPool(distractorCodes, fallbackCloseDistractors, closeDistractorCount, answerFrequency);
+      addDistractorsFromPool(distractorCodes, shuffle(preferredFarDistractors), maxDistractors, answerFrequency);
+      addDistractorsFromPool(distractorCodes, shuffle(fallbackFarDistractors), maxDistractors, answerFrequency);
+      addDistractorsFromPool(distractorCodes, shuffle(preferredCloseDistractors), maxDistractors, answerFrequency);
+      addDistractorsFromPool(distractorCodes, shuffle(fallbackCloseDistractors), maxDistractors, answerFrequency);
     } else {
-      addDistractorsFromPool(distractorCodes, shuffle(preferredDistractors), maxDistractors);
-      addDistractorsFromPool(distractorCodes, shuffle(allDistractors), maxDistractors);
+      addDistractorsFromPool(distractorCodes, shuffle(preferredDistractors), maxDistractors, answerFrequency);
+      addDistractorsFromPool(distractorCodes, shuffle(allDistractors), maxDistractors, answerFrequency);
     }
 
     const optionCodes = shuffle([targetCode, ...distractorCodes]);
@@ -209,6 +241,7 @@ export function createInitialRound(countries: QuizCountry[], mode: GameMode): Ro
 export function recordRoundHistory(
   history: RoundHistory | null | undefined,
   round: RoundState,
+  selectedCode?: string,
 ): RoundHistory {
   const nextRecentTargetCodes = round.targetCode
     ? trimHistory([...(history?.recentTargetCodes || []), round.targetCode], MAX_TARGET_HISTORY)
@@ -217,8 +250,15 @@ export function recordRoundHistory(
     ? trimHistory([...(history?.recentOptionSignatures || []), buildOptionSignature(round.optionCodes)], MAX_OPTION_HISTORY)
     : history?.recentOptionSignatures || [];
 
+  // Update answer frequency based on selected code
+  const nextAnswerFrequency = { ...(history?.answerFrequency ?? {}) };
+  if (selectedCode && round.optionCodes.includes(selectedCode)) {
+    nextAnswerFrequency[selectedCode] = (nextAnswerFrequency[selectedCode] ?? 0) + 1;
+  }
+
   return {
     recentTargetCodes: nextRecentTargetCodes,
     recentOptionSignatures: nextRecentOptionSignatures,
+    answerFrequency: nextAnswerFrequency,
   };
 }

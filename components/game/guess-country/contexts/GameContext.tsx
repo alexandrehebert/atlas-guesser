@@ -97,10 +97,10 @@ export function GameProvider({ quiz, children, initialMode = 'flag-to-country', 
   const roundHistoryRef = useRef<Partial<Record<GameMode, RoundHistory>>>({});
   const skipNextScorePersistRef = useRef(false);
 
-  const buildRound = useCallback((nextMode: GameMode, previousCode?: string | null) => {
+  const buildRound = useCallback((nextMode: GameMode, previousCode?: string | null, selectedCode?: string) => {
     const history = roundHistoryRef.current[nextMode];
     const nextRound = createRound(quiz.countries, nextMode, { previousCode, history });
-    roundHistoryRef.current[nextMode] = recordRoundHistory(history, nextRound);
+    roundHistoryRef.current[nextMode] = recordRoundHistory(history, nextRound, selectedCode);
     return nextRound;
   }, [quiz.countries]);
 
@@ -166,11 +166,11 @@ export function GameProvider({ quiz, children, initialMode = 'flag-to-country', 
 
   const nextRound = useCallback(() => {
     startTransition(() => {
-      setRound((current) => buildRound(mode, current.targetCode));
+      setRound((current) => buildRound(mode, current.targetCode, answer?.selectedCode));
       setAnswer(null);
       setHoveredCode(null);
     });
-  }, [buildRound, mode]);
+  }, [buildRound, mode, answer?.selectedCode]);
 
   const clearScore = useCallback(() => {
     skipNextScorePersistRef.current = true;
