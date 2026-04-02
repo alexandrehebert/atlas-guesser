@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { geoCentroid, geoMercator, geoPath } from 'd3-geo';
+import { geoMercator, geoPath } from 'd3-geo';
 import { SUPPORTED_ADMIN_QUIZ_COUNTRIES, type AdminQuizCountrySlug } from '~/lib/adminQuizCountries';
 
 const QUIZ_MAP_VIEWBOX = { width: 860, height: 920 };
@@ -45,7 +45,6 @@ interface CountryConfig {
   countryNames: string[];
   sortLocale: string;
   defaultLevelId: string;
-  ghostBounds: { minLng: number; maxLng: number; minLat: number; maxLat: number };
   levels: QuizLevelConfig[];
 }
 
@@ -55,7 +54,6 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
     countryNames: ['france'],
     sortLocale: 'fr',
     defaultLevelId: 'departements',
-    ghostBounds: { minLng: -13, maxLng: 24, minLat: 35, maxLat: 62 },
     levels: [
       {
         id: 'departements',
@@ -78,7 +76,6 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
     countryNames: ['germany', 'deutschland'],
     sortLocale: 'de',
     defaultLevelId: 'states',
-    ghostBounds: { minLng: -6, maxLng: 25, minLat: 46, maxLat: 61 },
     levels: [
       {
         id: 'states',
@@ -94,7 +91,6 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
     countryNames: ['spain', 'españa', 'espana'],
     sortLocale: 'es',
     defaultLevelId: 'communities',
-    ghostBounds: { minLng: -20, maxLng: 10, minLat: 27, maxLat: 45 },
     levels: [
       {
         id: 'communities',
@@ -110,7 +106,6 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
     countryNames: ['italy', 'italia'],
     sortLocale: 'it',
     defaultLevelId: 'regions',
-    ghostBounds: { minLng: 2, maxLng: 22, minLat: 35, maxLat: 50 },
     levels: [
       {
         id: 'regions',
@@ -126,7 +121,6 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
     countryNames: ['canada'],
     sortLocale: 'en',
     defaultLevelId: 'provinces',
-    ghostBounds: { minLng: -145, maxLng: -48, minLat: 40, maxLat: 85 },
     levels: [
       {
         id: 'provinces',
@@ -142,7 +136,6 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
     countryNames: ['united states', 'usa', 'united states of america'],
     sortLocale: 'en',
     defaultLevelId: 'states',
-    ghostBounds: { minLng: -130, maxLng: -60, minLat: 17, maxLat: 55 },
     levels: [
       {
         id: 'states',
@@ -154,10 +147,6 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
     ],
   },
 };
-
-const ALWAYS_VISIBLE_GHOST_COUNTRY_CODES = new Set(
-  SUPPORTED_ADMIN_QUIZ_COUNTRIES.map((country) => COUNTRY_CONFIGS[country].countryCode),
-);
 
 const cachedPayloadPromises: Partial<Record<AdminQuizCountrySlug, Promise<AdminSubdivisionQuizPayload>>> = {};
 
@@ -261,24 +250,7 @@ function buildGhostEuropePaths(
 
     const properties = (feature.properties || {}) as FeatureProperties;
     const countryIsoA2 = getIsoA2(properties);
-    const isAlwaysVisibleCountry = ALWAYS_VISIBLE_GHOST_COUNTRY_CODES.has(countryIsoA2);
     const isFocusedCountry = countryIsoA2 === config.countryCode;
-
-    const centroid = geoCentroid(feature as GeoFeature);
-    const lng = centroid?.[0];
-    const lat = centroid?.[1];
-    if (!Number.isFinite(lng) || !Number.isFinite(lat)) {
-      continue;
-    }
-
-    if (!isAlwaysVisibleCountry && (
-      lng < config.ghostBounds.minLng
-      || lng > config.ghostBounds.maxLng
-      || lat < config.ghostBounds.minLat
-      || lat > config.ghostBounds.maxLat
-    )) {
-      continue;
-    }
 
     const path = generator(feature as GeoFeature);
     if (!path) {
