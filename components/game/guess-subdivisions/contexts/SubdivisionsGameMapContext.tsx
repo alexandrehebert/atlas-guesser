@@ -14,6 +14,7 @@ import {
 import { select } from 'd3-selection';
 import { zoom, zoomIdentity, type ZoomBehavior } from 'd3-zoom';
 import { GameMapContext, type GameMapContextValue } from '../../contexts/GameMapContext';
+import { useGameLayout } from '../../contexts/GameLayoutContext';
 import { useSubdivisionsGame } from './SubdivisionsGameContext';
 
 const DEFAULT_HOME_ZOOM = 0.92;
@@ -26,6 +27,7 @@ const ZOOM_IN_FACTOR = 1.25;
 const ZOOM_OUT_FACTOR = 0.8;
 const ZOOM_EPSILON = 0.0001;
 const FIT_PADDING = 24;
+const FOCUS_PADDING = 28;
 
 export interface MapTransformState {
   zoom: number;
@@ -56,7 +58,8 @@ interface SubdivisionsGameMapProviderProps {
 }
 
 export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, children }: SubdivisionsGameMapProviderProps) {
-  const { activeAreas } = useSubdivisionsGame();
+  const { activeAreas, gameMode, targetCode, answer } = useSubdivisionsGame();
+  const { isMobile, sidebarOpen } = useGameLayout();
   const svgRef = useRef<SVGSVGElement | null>(null);
   const zoomBehaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   const mapTransformRef = useRef<MapTransformState>({ zoom: 1, x: 0, y: 0 });
@@ -67,6 +70,7 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
   const [isPanning, setIsPanning] = useState(false);
   const [useLargeAnswerLabels, setUseLargeAnswerLabels] = useState(false);
   const [isSmallViewport, setIsSmallViewport] = useState(false);
+  const previousGameModeRef = useRef(gameMode);
 
   const getZoomBounds = useCallback(() => {
     return isSmallViewport
@@ -121,6 +125,43 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
   }, [activeAreas, getZoomBounds, viewBoxHeight, viewBoxWidth]);
 
   const homeTransform = useMemo(() => getHomeMapTransform(DEFAULT_HOME_ZOOM), [getHomeMapTransform]);
+
+  const focusBoundsByCode = useMemo(() => {
+    return new Map(
+      activeAreas
+        .filter((area) => area.focusBounds.width > 0 && area.focusBounds.height > 0)
+        .map((area) => [area.code, area.focusBounds] as const),
+    );
+  }, [activeAreas]);
+
+  const focusArea = useCallback((areaCode: string) => {
+    if (!areaCode) return;
+
+    const boundsRect = focusBoundsByCode.get(areaCode);
+    if (!boundsRect || boundsRect.width <= 0 || boundsRect.height <= 0) return;
+
+    const svgElement = svgRef.current;
+    const behavior = zoomBehaviorRef.current;
+    if (!svgElement || !behavior) return;
+
+    const bounds = getZoomBounds();
+    const paddedWidth = boundsRect.width + FOCUS_PADDING * 2;
+    const paddedHeight = boundsRect.height + FOCUS_PADDING * 2;
+    const scaleX = viewBoxWidth / Math.max(1, paddedWidth);
+    const scaleY = viewBoxHeight / Math.max(1, paddedHeight);
+    const nextZoom = Math.max(bounds.min, Math.min(bounds.max, Math.min(scaleX, scaleY)));
+
+    const centerX = boundsRect.x + boundsRect.width / 2;
+    const centerY = boundsRect.y + boundsRect.height / 2;
+    const targetCenterX = !isMobile && sidebarOpen ? viewBoxWidth * 0.44 : viewBoxWidth / 2;
+    const targetCenterY = isMobile && sidebarOpen ? viewBoxHeight * 0.34 : viewBoxHeight / 2;
+    const nextTransform = { zoom: nextZoom, x: targetCenterX - nextZoom * centerX, y: targetCenterY - nextZoom * centerY };
+
+    select(svgElement)
+      .transition()
+      .duration(260)
+      .call(behavior.transform, d3TransformFromZoomState(nextTransform));
+  }, [d3TransformFromZoomState, focusBoundsByCode, getZoomBounds, isMobile, sidebarOpen, viewBoxHeight, viewBoxWidth]);
 
   // Track viewport for label sizing and zoom bounds
   useEffect(() => {
@@ -222,6 +263,39 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
       .call(behavior.transform, d3TransformFromZoomState(homeTransform));
   }, [d3TransformFromZoomState, homeTransform]);
 
+  useEffect(() => {
+    if (!mapVisible || !targetCode) return;
+
+    if (answer) {
+      focusArea(targetCode);
+      return;
+    }
+
+    if (gameMode === 'highlighted-to-name') {
+      focusArea(targetCode);
+    }
+  }, [answer, focusArea, gameMode, mapVisible, targetCode]);
+
+  useEffect(() => {
+    const previousMode = previousGameModeRef.current;
+    previousGameModeRef.current = gameMode;
+
+    if (!mapVisible || previousMode === gameMode) return;
+    if (gameMode !== 'map-click') return;
+
+    const svgElement = svgRef.current;
+    const behavior = zoomBehaviorRef.current;
+    if (!svgElement || !behavior) {
+      setMapTransform(homeTransform);
+      return;
+    }
+
+    select(svgElement)
+      .transition()
+      .duration(220)
+      .call(behavior.transform, d3TransformFromZoomState(homeTransform));
+  }, [d3TransformFromZoomState, gameMode, homeTransform, mapVisible]);
+
   const zoomBounds = getZoomBounds();
   const isAtMinZoom = mapTransform.zoom <= zoomBounds.min + ZOOM_EPSILON;
   const isAtMaxZoom = mapTransform.zoom >= zoomBounds.max - ZOOM_EPSILON;
@@ -238,6 +312,11 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
   }, [viewBoxWidth, viewBoxHeight]);
 
   const resetZoom = useCallback(() => {
+    if (targetCode && (answer || gameMode === 'highlighted-to-name')) {
+      focusArea(targetCode);
+      return;
+    }
+
     const svgElement = svgRef.current;
     const behavior = zoomBehaviorRef.current;
     if (!svgElement || !behavior) {
@@ -248,7 +327,7 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
       .transition()
       .duration(220)
       .call(behavior.transform, d3TransformFromZoomState(homeTransform));
-  }, [d3TransformFromZoomState, homeTransform]);
+  }, [answer, d3TransformFromZoomState, focusArea, gameMode, homeTransform, targetCode]);
 
   // Build the value that GameMapContext expects (so GameZoomControls works unchanged)
   const gameMapValue = useMemo<GameMapContextValue>(() => ({
@@ -259,10 +338,10 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
     mapTransform: zoomIdentity.translate(mapTransform.x, mapTransform.y).scale(mapTransform.zoom),
     zoomBy,
     resetZoom,
-    focusCountry: () => {},
+    focusCountry: focusArea,
     isAtMinZoom,
     isAtMaxZoom,
-  }), [isAtMaxZoom, isAtMinZoom, mapTransform, zoomBy, resetZoom]);
+  }), [focusArea, isAtMaxZoom, isAtMinZoom, mapTransform, zoomBy, resetZoom]);
 
   const adminMapValue = useMemo<SubdivisionsGameMapContextValue>(() => ({
     svgRef,
