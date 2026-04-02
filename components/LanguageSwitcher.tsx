@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { routing } from '~/i18n/routing';
 
 interface LanguageSwitcherProps {
   currentLocale: string;
@@ -10,7 +11,7 @@ interface LanguageSwitcherProps {
 export default function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const locales = ['en', 'fr', 'it', 'es', 'de'] as const;
+  const locales = routing.locales;
 
   function switchLocalePath(targetLocale: string): string {
     // Replace the locale segment in the current path
