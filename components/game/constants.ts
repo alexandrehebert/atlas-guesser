@@ -1,5 +1,5 @@
 import { zoomIdentity } from 'd3-zoom';
-import type { GameMode } from './types';
+import type { GameMode } from './guess-country/types';
 
 export const MODE_ORDER: GameMode[] = [
   'flag-to-country',
