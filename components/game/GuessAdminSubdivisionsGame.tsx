@@ -882,11 +882,11 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
       const isCorrectArea = code === targetArea.code;
       const prefix = isCorrectArea ? t('map_label_correct') : t('map_label_wrong');
       const text = `${prefix} · ${area.name}`;
-      const labelFontSize = useLargeAnswerLabels ? 18 : 12;
+      const labelFontSize = useLargeAnswerLabels ? 22 : 14;
       const labelWidth = useLargeAnswerLabels
-        ? Math.min(420, Math.max(210, text.length * 10.2 + 44))
-        : Math.min(250, Math.max(110, text.length * 6.7 + 22));
-      const labelHeight = useLargeAnswerLabels ? 46 : 28;
+        ? Math.min(460, Math.max(230, text.length * 11.5 + 52))
+        : Math.min(280, Math.max(130, text.length * 7.8 + 28));
+      const labelHeight = useLargeAnswerLabels ? 54 : 34;
 
       const anchor = {
         x: mapTransform.x + mapTransform.zoom * area.centroid.x,
@@ -1148,7 +1148,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
             {gameMode === 'highlighted-to-name' ? t('instruction_choices') : t('instruction_map')}
           </p>
         ) : (
-          <div className="mt-4 rounded-2xl border border-white/10 bg-slate-900/70 px-3 py-3 text-sm text-slate-200">
+          <div className="mt-4 rounded-2xl border border-white/10 bg-slate-900/70 px-3 py-3 text-base text-slate-200 sm:text-sm">
             <p>
               {answer.correct
                 ? t('result_correct', { areaName: targetArea?.name ?? '' })
@@ -1206,8 +1206,8 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
 
         {answer ? (
           <div className="pointer-events-auto rounded-3xl border border-white/12 bg-slate-950/88 p-4 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md">
-            <p className="text-xs uppercase tracking-[0.18em] text-sky-100">{t('result_label')}</p>
-            <p className="mt-2 text-sm text-slate-200">
+            <p className="text-sm uppercase tracking-[0.18em] text-sky-100">{t('result_label')}</p>
+            <p className="mt-2 text-base text-slate-200">
               {answer.correct
                 ? t('result_correct', { areaName: targetArea?.name ?? '' })
                 : t('result_wrong', { areaName: targetArea?.name ?? '' })}
