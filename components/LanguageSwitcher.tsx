@@ -20,7 +20,7 @@ export default function LanguageSwitcher({ currentLocale }: LanguageSwitcherProp
 
   return (
     <div className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm">
-      {(['en', 'fr'] as const).map((locale) => (
+      {(['en', 'fr', 'it', 'es', 'de'] as const).map((locale) => (
         <Link
           key={locale}
           href={switchLocalePath(locale)}
