@@ -45,6 +45,13 @@ interface DragState {
   origin: { x: number; y: number };
 }
 
+interface PinchState {
+  active: boolean;
+  startDistance: number;
+  startZoom: number;
+  center: { x: number; y: number } | null;
+}
+
 function rectsOverlap(
   first: { x: number; y: number; width: number; height: number },
   second: { x: number; y: number; width: number; height: number },
@@ -150,6 +157,14 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
     startPoint: null,
     origin: { x: 0, y: 0 },
   });
+  const mapTransformRef = useRef<MapTransformState>({ zoom: 1, x: 0, y: 0 });
+  const activePointersRef = useRef<Map<number, { clientX: number; clientY: number }>>(new Map());
+  const pinchStateRef = useRef<PinchState>({
+    active: false,
+    startDistance: 0,
+    startZoom: 1,
+    center: null,
+  });
   const suppressClickRef = useRef(false);
 
   const activeAreas = quizLevel === 'regions' ? quiz.regions : quiz.departments;
@@ -158,6 +173,10 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
     () => new Map(activeAreas.map((area) => [area.code, area])),
     [activeAreas],
   );
+
+  useEffect(() => {
+    mapTransformRef.current = mapTransform;
+  }, [mapTransform]);
 
   useEffect(() => {
     const preventBrowserZoomWheel = (event: WheelEvent | globalThis.WheelEvent) => {
@@ -486,6 +505,37 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
       return;
     }
 
+    activePointersRef.current.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
+
+    if (activePointersRef.current.size >= 2) {
+      const pointers = Array.from(activePointersRef.current.values());
+      const first = pointers[0];
+      const second = pointers[1];
+      const startDistance = Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+      const centerClientX = (first.clientX + second.clientX) / 2;
+      const centerClientY = (first.clientY + second.clientY) / 2;
+
+      pinchStateRef.current = {
+        active: startDistance > 0,
+        startDistance,
+        startZoom: mapTransformRef.current.zoom,
+        center: getSvgPointFromClient(centerClientX, centerClientY),
+      };
+
+      dragStateRef.current = {
+        active: false,
+        dragging: false,
+        pointerId: null,
+        startPoint: null,
+        origin: { x: 0, y: 0 },
+      };
+
+      setIsPanning(false);
+      suppressClickRef.current = true;
+      hasUserMovedMapRef.current = true;
+      return;
+    }
+
     const point = getSvgPointFromClient(event.clientX, event.clientY);
     if (!point) {
       return;
@@ -496,7 +546,7 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
       dragging: false,
       pointerId: event.pointerId,
       startPoint: point,
-      origin: { x: mapTransform.x, y: mapTransform.y },
+      origin: { x: mapTransformRef.current.x, y: mapTransformRef.current.y },
     };
 
     setIsPanning(false);
@@ -505,6 +555,29 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
   };
 
   const handlePointerMove = (event: PointerEvent<SVGSVGElement>) => {
+    const activePointer = activePointersRef.current.get(event.pointerId);
+    if (activePointer) {
+      activePointersRef.current.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
+    }
+
+    if (pinchStateRef.current.active && activePointersRef.current.size >= 2) {
+      const pointers = Array.from(activePointersRef.current.values());
+      const first = pointers[0];
+      const second = pointers[1];
+      const distance = Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
+      if (distance <= 0 || pinchStateRef.current.startDistance <= 0) {
+        return;
+      }
+
+      const scale = distance / pinchStateRef.current.startDistance;
+      const center = pinchStateRef.current.center ?? getMapCenterPoint();
+      hasUserMovedMapRef.current = true;
+      zoomAtPoint(pinchStateRef.current.startZoom * scale, center, { recenterOnMin: scale < 1 });
+      suppressClickRef.current = true;
+      setIsPanning(false);
+      return;
+    }
+
     const dragState = dragStateRef.current;
     if (!dragState.active || dragState.pointerId !== event.pointerId || !dragState.startPoint) {
       return;
@@ -540,6 +613,17 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
   };
 
   const endPointerPan = (event: PointerEvent<SVGSVGElement>) => {
+    activePointersRef.current.delete(event.pointerId);
+
+    if (activePointersRef.current.size < 2) {
+      pinchStateRef.current = {
+        active: false,
+        startDistance: 0,
+        startZoom: mapTransformRef.current.zoom,
+        center: null,
+      };
+    }
+
     const dragState = dragStateRef.current;
     if (!dragState.active || dragState.pointerId !== event.pointerId) {
       return;
