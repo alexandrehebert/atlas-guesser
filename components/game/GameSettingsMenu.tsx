@@ -8,8 +8,13 @@ import { Globe, Map, Settings2, Trash2 } from "lucide-react";
 import { useGame } from './contexts/GameContext';
 import { useGameLayout } from './contexts/GameLayoutContext';
 
+const PANEL_EXIT_ANIMATION_MS = 220;
+const PANEL_SHOW_DELAY_MS = 18;
+
 export default function GameSettingsMenu() {
   const [open, setOpen] = useState(false);
+  const [renderPanel, setRenderPanel] = useState(false);
+  const [panelVisible, setPanelVisible] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const t = useTranslations('guesser');
@@ -34,6 +39,23 @@ export default function GameSettingsMenu() {
     };
   }, [open]);
 
+  useEffect(() => {
+    if (open) {
+      setRenderPanel(true);
+      setPanelVisible(false);
+      const showTimeoutId = window.setTimeout(() => {
+        setPanelVisible(true);
+      }, PANEL_SHOW_DELAY_MS);
+      return () => window.clearTimeout(showTimeoutId);
+    }
+
+    setPanelVisible(false);
+    const timeoutId = window.setTimeout(() => {
+      setRenderPanel(false);
+    }, PANEL_EXIT_ANIMATION_MS);
+    return () => window.clearTimeout(timeoutId);
+  }, [open]);
+
   return (
     <div ref={containerRef} className="relative">
       <button
@@ -51,8 +73,8 @@ export default function GameSettingsMenu() {
       >
         <Settings2 className="h-5 w-5" />
       </button>
-      {open && (
-        <div className="absolute right-0 mt-2 w-[min(26rem,calc(100vw-1rem))] rounded-2xl border border-white/12 bg-slate-950/95 p-4 shadow-xl z-50 flex flex-col gap-4 sm:w-80">
+      {renderPanel && (
+        <div className={`absolute right-0 mt-2 w-[min(26rem,calc(100vw-1rem))] rounded-2xl border border-white/12 bg-slate-950/95 p-4 shadow-xl z-50 flex flex-col gap-4 will-change-[opacity,transform,filter] transition-[opacity,transform,filter] sm:w-80 ${panelVisible ? 'opacity-100 translate-y-0 scale-100 blur-0 pointer-events-auto duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]' : 'opacity-0 -translate-y-2 scale-[0.97] blur-[1.5px] pointer-events-none duration-220 ease-[cubic-bezier(0.4,0,1,1)]'}`}>
           <GameModeSelector />
           {isMobile ? (
             <div className="order-2 flex flex-col gap-1.5">
