@@ -137,6 +137,22 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
       },
     ],
   },
+  usa: {
+    countryCode: 'US',
+    countryNames: ['united states', 'usa', 'united states of america'],
+    sortLocale: 'en',
+    defaultLevelId: 'states',
+    ghostBounds: { minLng: -130, maxLng: -60, minLat: 17, maxLat: 55 },
+    levels: [
+      {
+        id: 'states',
+        fileName: 'usa-states.geojson',
+        minimumClickableSize: 1,
+        codeProperty: 'code',
+        nameProperty: 'name',
+      },
+    ],
+  },
 };
 
 const ALWAYS_VISIBLE_GHOST_COUNTRY_CODES = new Set(

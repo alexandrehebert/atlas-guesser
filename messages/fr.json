@@ -234,7 +234,8 @@
       "germany": "Allemagne",
       "spain": "Espagne",
       "italy": "Italie",
-      "canada": "Canada"
+      "canada": "Canada",
+      "usa": "États-Unis"
     },
     "top_badge": {
       "departements": "{count} departements",
