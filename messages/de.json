@@ -221,7 +221,10 @@
       "country-to-capital": "Karte → Hauptstadt",
       "country-to-name": "Karte → Ländername",
       "country-to-flag": "Karte → Flagge"
-    }
+    },
+    "game_type_label": "Spiel",
+    "game_type_world_map": "Weltkarte",
+    "game_type_subdivisions": "Regionen"
   },
   "subdivisionsGuesser": {
     "metadata_title": "{countryName} Karten-Quiz | Atlas Guesser",
@@ -312,7 +315,12 @@
       "unverified_note": "Die genaue Upstream-Quelle ist in der Repository-Historie nicht vermerkt.",
       "natural_earth_note": "Admin-0-Länder, 1:110m.",
       "open_link": "Quelle öffnen"
-    }
+    },
+    "clear_scores": "Punkte löschen",
+    "clear_scores_confirm": "Gespeicherte Punkte von diesem Gerät löschen?",
+    "clear_scores_confirm_cta": "Löschen",
+    "clear_scores_cancel": "Abbrechen",
+    "game_mode_label": "Spielmodus"
   },
   "transport": {
     "car": "Auto",

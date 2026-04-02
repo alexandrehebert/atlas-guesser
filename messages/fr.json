@@ -223,7 +223,10 @@
       "country-to-capital": "Carte → capitale",
       "country-to-name": "Carte → nom du pays",
       "country-to-flag": "Carte → drapeau"
-    }
+    },
+    "game_type_label": "Jeu",
+    "game_type_world_map": "Carte du monde",
+    "game_type_subdivisions": "Régions"
   },
   "subdivisionsGuesser": {
     "metadata_title": "Quiz de carte administrative de {countryName} | Atlas Guesser",
@@ -314,7 +317,12 @@
       "unverified_note": "La source amont exacte n'est pas enregistree dans l'historique du depot.",
       "natural_earth_note": "Pays Admin 0, 1:110m.",
       "open_link": "Ouvrir la source"
-    }
+    },
+    "clear_scores": "Effacer le score",
+    "clear_scores_confirm": "Supprimer le score sauvegardé sur cet appareil ?",
+    "clear_scores_confirm_cta": "Supprimer",
+    "clear_scores_cancel": "Annuler",
+    "game_mode_label": "Mode de jeu"
   },
   "transport": {
     "car": "Voiture",

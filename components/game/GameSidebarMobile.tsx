@@ -1,18 +1,16 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { useGameLayout } from './contexts/GameLayoutContext';
-import GameOptions from './GameOptions';
-import GamePrompt from './GamePrompt';
-import GameResult from './GameResult';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useGame } from './contexts/GameContext';
 import { useTranslations } from 'next-intl';
-import { MAP_MODES } from './constants';
 
-export default function GameSidebarMobile() {
+interface GameSidebarMobileProps {
+  children: ReactNode;
+}
+
+export default function GameSidebarMobile({ children }: GameSidebarMobileProps) {
   const t = useTranslations('guesser');
-  const { showOptions, mode, answer } = useGame();
   const { sidebarOpen, setSidebarOpen, sidebarRef, sidebarToggleRef } = useGameLayout();
   const [suppressCollapsedPreview, setSuppressCollapsedPreview] = useState(false);
 
@@ -68,20 +66,7 @@ export default function GameSidebarMobile() {
           className="w-full rounded-t-3xl rounded-b-3xl min-h-0 h-auto max-h-[90dvh] border border-white/12 bg-slate-950/88 shadow-[0_30px_90px_rgba(2,6,23,0.55)] backdrop-blur-md pointer-events-auto flex flex-col"
         >
           <div className="flex flex-col gap-4 overflow-y-auto overscroll-contain p-4 transition-all duration-300">
-            {!answer && (
-              <div className="mb-0 rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-sm text-slate-300">
-                {MAP_MODES.has(mode) ? t('instruction_map') : t('instruction_choices')}
-              </div>
-            )}
-            <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-4">
-              <GamePrompt />
-              {showOptions ? <GameOptions /> : null}
-              {answer && (
-                <div className="mt-3">
-                  <GameResult />
-                </div>
-              )}
-            </div>
+            {children}
           </div>
         </aside>
       </div>

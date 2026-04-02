@@ -166,7 +166,6 @@ export default function GuessCountryGameClient({ quiz, initialMode, initialRound
       <GameLayoutProvider>
         <GameMapProvider>
           <GuessCountryGame
-            quiz={quiz}
             mapReady={mapReady}
             handleMapReady={handleMapReady}
             loadingTargetView={loadingTargetView}

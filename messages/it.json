@@ -221,7 +221,10 @@
       "country-to-capital": "Mappa → capitale",
       "country-to-name": "Mappa → nome paese",
       "country-to-flag": "Mappa → bandiera"
-    }
+    },
+    "game_type_label": "Gioco",
+    "game_type_world_map": "Mappa del mondo",
+    "game_type_subdivisions": "Regioni"
   },
   "subdivisionsGuesser": {
     "metadata_title": "Quiz Mappa {countryName} | Atlas Guesser",
@@ -312,7 +315,12 @@
       "unverified_note": "La fonte upstream esatta non è registrata nella cronologia del repository.",
       "natural_earth_note": "Paesi Admin 0, 1:110m.",
       "open_link": "Apri fonte"
-    }
+    },
+    "clear_scores": "Cancella punteggio",
+    "clear_scores_confirm": "Eliminare il punteggio salvato da questo dispositivo?",
+    "clear_scores_confirm_cta": "Elimina",
+    "clear_scores_cancel": "Annulla",
+    "game_mode_label": "Modalità di gioco"
   },
   "transport": {
     "car": "Auto",

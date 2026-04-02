@@ -6,8 +6,14 @@ import GameZoomControls from './GameZoomControls';
 import { useGameLayout } from './contexts/GameLayoutContext';
 import { ArrowLeft } from 'lucide-react';
 import { RouteLoadingLink } from '~/components/RouteLoadingLink';
+import type { ReactNode } from 'react';
 
-export default function GameTopBar() {
+interface GameTopBarProps {
+  showMapViewToggle?: boolean;
+  settingsMenu?: ReactNode;
+}
+
+export default function GameTopBar({ showMapViewToggle = true, settingsMenu }: GameTopBarProps) {
   const { topBarRef, isMobile } = useGameLayout();
   return (
     <div ref={topBarRef} className="absolute left-4 right-4 top-4 z-50 flex flex-wrap items-center justify-between gap-2 sm:left-5 sm:right-5 sm:top-5">
@@ -44,8 +50,8 @@ export default function GameTopBar() {
       {/* Zoom controls and then settings button */}
       <div className="flex items-center gap-2">
         <GameZoomControls />
-        {!isMobile ? <GameMapViewToggle /> : null}
-        <GameSettingsMenu />
+        {showMapViewToggle && !isMobile ? <GameMapViewToggle /> : null}
+        {settingsMenu ?? <GameSettingsMenu />}
       </div>
     </div>
   );

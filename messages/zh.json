@@ -221,7 +221,10 @@
       "country-to-capital": "地图 → 首都",
       "country-to-name": "地图 → 国家名称",
       "country-to-flag": "地图 → 国旗"
-    }
+    },
+    "game_type_label": "游戏",
+    "game_type_world_map": "世界地图",
+    "game_type_subdivisions": "地区"
   },
   "subdivisionsGuesser": {
     "metadata_title": "{countryName} 地图问答 | Atlas Guesser",
@@ -312,7 +315,12 @@
       "unverified_note": "确切的上游来源未记录在仓库历史中。",
       "natural_earth_note": "Admin 0 国家，1:110m。",
       "open_link": "打开来源"
-    }
+    },
+    "clear_scores": "清除分数",
+    "clear_scores_confirm": "从此设备删除保存的分数？",
+    "clear_scores_confirm_cta": "删除",
+    "clear_scores_cancel": "取消",
+    "game_mode_label": "游戏模式"
   },
   "transport": {
     "car": "Car",

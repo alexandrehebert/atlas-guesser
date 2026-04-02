@@ -40,7 +40,8 @@ interface GameMapContextValue {
   focusCountry: (countryCode: string) => void;
 }
 
-const GameMapContext = createContext<GameMapContextValue | null>(null);
+export const GameMapContext = createContext<GameMapContextValue | null>(null);
+export type { GameMapContextValue };
 
 export function GameMapProvider({ children }: { children: ReactNode }) {
   const { mode, round, answer, quiz, mapView } = useGame();
