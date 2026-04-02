@@ -97,6 +97,10 @@ function getEdgePointToward(
   return { x: cx + t * dx, y: cy + t * dy };
 }
 
+function getSectionLabelWidth(label: string): number {
+  return Math.max(64, Math.ceil(label.length * 7.25) + 28);
+}
+
 function createDefaultScore(): ScoreState {
   return { correct: 0, total: 0, streak: 0, bestStreak: 0 };
 }
@@ -1212,6 +1216,45 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
                 strokeLinecap="round"
                 vectorEffect="non-scaling-stroke"
               />
+            ))}
+
+            {activeLevel?.sectionLabels.map((section) => (
+              <g key={`section-label-${section.id}`}>
+                {(() => {
+                  const translatedLabel = t(`section_labels.${section.labelKey}`);
+
+                  return (
+                    <>
+                <rect
+                  x={section.bounds.x}
+                  y={section.bounds.y}
+                  width={section.bounds.width}
+                  height={section.bounds.height}
+                  rx={14}
+                  ry={14}
+                  fill="rgba(148,163,184,0.06)"
+                  stroke="rgba(226,232,240,0.26)"
+                  strokeWidth={1}
+                  strokeDasharray="6 5"
+                  vectorEffect="non-scaling-stroke"
+                />
+                <foreignObject
+                  x={section.bounds.x + 10}
+                  y={section.bounds.y - 16}
+                  width={getSectionLabelWidth(translatedLabel)}
+                  height={32}
+                >
+                  <div
+                    className="flex h-full items-center rounded-full border border-slate-500 px-3 text-[12px] font-semibold tracking-[0.06em] text-slate-100 shadow-[0_8px_20px_rgba(15,23,42,0.2)]"
+                    style={{ backgroundColor: 'rgb(30 41 59)' }}
+                  >
+                    {translatedLabel}
+                  </div>
+                </foreignObject>
+                    </>
+                  );
+                })()}
+              </g>
             ))}
           </g>
 

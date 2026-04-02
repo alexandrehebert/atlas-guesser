@@ -292,7 +292,11 @@
     "area_button_aria": "Seleccionar {area}",
     "zoom_in": "Acercar",
     "zoom_out": "Alejar",
-    "reset_view": "Restablecer"
+    "reset_view": "Restablecer",
+    "section_labels": {
+      "france_overseas": "Territorios de ultramar",
+      "generic_inset": "Recuadro"
+    }
   },
   "transport": {
     "car": "Coche",

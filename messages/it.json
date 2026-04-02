@@ -292,7 +292,11 @@
     "area_button_aria": "Seleziona {area}",
     "zoom_in": "Zoom in",
     "zoom_out": "Zoom out",
-    "reset_view": "Reimposta"
+    "reset_view": "Reimposta",
+    "section_labels": {
+      "france_overseas": "Territori d'oltremare",
+      "generic_inset": "Riquadro"
+    }
   },
   "transport": {
     "car": "Auto",

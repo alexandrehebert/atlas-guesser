@@ -294,7 +294,11 @@
     "area_button_aria": "Selectionner {area}",
     "zoom_in": "Zoom avant",
     "zoom_out": "Zoom arriere",
-    "reset_view": "Reinitialiser"
+    "reset_view": "Reinitialiser",
+    "section_labels": {
+      "france_overseas": "Outre-mer",
+      "generic_inset": "Encart"
+    }
   },
   "transport": {
     "car": "Voiture",

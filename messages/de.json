@@ -292,7 +292,11 @@
     "area_button_aria": "{area} auswählen",
     "zoom_in": "Vergrößern",
     "zoom_out": "Verkleinern",
-    "reset_view": "Zurücksetzen"
+    "reset_view": "Zurücksetzen",
+    "section_labels": {
+      "france_overseas": "Überseegebiete",
+      "generic_inset": "Ausschnitt"
+    }
   },
   "transport": {
     "car": "Auto",
