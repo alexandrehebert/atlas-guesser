@@ -136,6 +136,7 @@ export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
     let mounted = true;
     const container = containerRef.current;
     const altitude  = isMobile ? MOBILE_ALT : DEFAULT_ALT;
+    let removeResizeListener: (() => void) | null = null;
 
     const init = async () => {
       // Let React paint switch/loading UI before globe setup work starts.
@@ -227,11 +228,27 @@ export default function GameMap3D({ onInitialZoomEnd }: GlobeMapProps) {
 
       setTimeout(() => { if (mounted) onInitialZoomEnd?.(); }, 450);
 
-      return () => window.removeEventListener('resize', onResize);
+      removeResizeListener = () => window.removeEventListener('resize', onResize);
     };
 
     init().catch(console.error);
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+      removeResizeListener?.();
+
+      if (globeRef.current) {
+        const globeInstance = globeRef.current as any;
+        globeInstance.pauseAnimation?.();
+        globeInstance._destructor?.();
+      }
+
+      globeRef.current = null;
+      setGlobeRef(null);
+
+      if (containerRef.current) {
+        containerRef.current.replaceChildren();
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // intentionally mount-once
 
