@@ -45,4 +45,14 @@ describe('getAdminSubdivisionQuizPayload', () => {
 
     expect(states?.sectionLabels.map((label) => label.labelKey)).toEqual(['generic_inset', 'generic_inset']);
   });
+
+  it('exposes federal districts and subjects for Russia with a districts default level', async () => {
+    const quiz = await getAdminSubdivisionQuizPayload('russia');
+    const federalDistricts = quiz.levels.find((level) => level.id === 'federal_districts');
+    const subjects = quiz.levels.find((level) => level.id === 'subjects');
+
+    expect(quiz.defaultLevelId).toBe('federal_districts');
+    expect(federalDistricts?.areas.length ?? 0).toBeGreaterThan(0);
+    expect(subjects?.areas.length ?? 0).toBeGreaterThan(0);
+  });
 });

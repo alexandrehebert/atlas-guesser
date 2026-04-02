@@ -243,7 +243,10 @@
       "canada": "Canadá",
       "usa": "Estados Unidos",
       "brazil": "Brasil",
-      "china": "China"
+      "china": "China",
+      "india": "Índia",
+      "russia": "Rússia",
+      "australia": "Austrália"
     },
     "top_badge": {
       "departements": "{count} departamentos",
@@ -251,7 +254,9 @@
       "laender": "{count} estados federais",
       "states": "{count} estados",
       "communities": "{count} comunidades",
-      "provinces": "{count} províncias"
+      "provinces": "{count} províncias",
+      "subjects": "{count} sujeitos federais",
+      "federal_districts": "{count} distritos federais"
     },
     "mode": {
       "departements": "Departamentos",
@@ -259,7 +264,9 @@
       "laender": "Estados federais",
       "states": "Estados",
       "communities": "Comunidades",
-      "provinces": "Províncias"
+      "provinces": "Províncias",
+      "subjects": "Sujeitos federais",
+      "federal_districts": "Distritos federais"
     },
     "game_mode_map_click": "Clique no mapa",
     "game_mode_highlighted_to_name": "Múltipla escolha",
@@ -269,7 +276,9 @@
       "laender": "Pista de estado federal",
       "states": "Pista de estado",
       "communities": "Pista de comunidade",
-      "provinces": "Pista de província"
+      "provinces": "Pista de província",
+      "subjects": "Sujeito federal",
+      "federal_districts": "Pista de distrito federal"
     },
     "prompt_body": {
       "departements": "Encontre este departamento no mapa de {countryName}.",
@@ -277,7 +286,9 @@
       "laender": "Encontre este estado federal no mapa de {countryName}.",
       "states": "Encontre este estado no mapa de {countryName}.",
       "communities": "Encontre esta comunidade no mapa de {countryName}.",
-      "provinces": "Encontre esta província no mapa de {countryName}."
+      "provinces": "Encontre esta província no mapa de {countryName}.",
+      "subjects": "Encontre este sujeito federal no mapa de {countryName}.",
+      "federal_districts": "Encontre este distrito federal no mapa de {countryName}."
     },
     "prompt_body_choices": {
       "departements": "Uma área está destacada no mapa. Qual departamento é este?",
@@ -285,7 +296,9 @@
       "laender": "Uma área está destacada no mapa. Qual estado federal é este?",
       "states": "Uma área está destacada no mapa. Qual estado é este?",
       "communities": "Uma área está destacada no mapa. Qual comunidade é esta?",
-      "provinces": "Uma área está destacada no mapa. Qual província é esta?"
+      "provinces": "Uma área está destacada no mapa. Qual província é esta?",
+      "subjects": "Uma área está destacada no mapa. Qual sujeito federal é?",
+      "federal_districts": "Uma área está destacada no mapa. Qual distrito federal é?"
     },
     "instruction_map": "Clique na área correspondente no mapa.",
     "instruction_choices": "Uma área destacada é exibida no mapa. Escolha o nome correto entre 4 opções.",

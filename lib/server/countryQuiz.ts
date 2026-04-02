@@ -75,9 +75,18 @@ function getFeatureFocusGeometry(feature: GeoFeature, generator: ReturnType<type
   const fullMaxDimension = Math.max(fullWidth, fullHeight);
   const largestMaxDimension = Math.max(largestWidth, largestHeight);
   const isMuchMoreSpreadThanLargest = largestMaxDimension > 0 && fullMaxDimension / largestMaxDimension > 2.5;
+
+  // Detect antimeridian outliers: polygons that project far to one side while the
+  // main body sits on the other (e.g. Russia's Chukotka at -180° appearing on the
+  // left edge of the map while the main landmass occupies the right half).
+  const leftOffset = Math.max(0, largestBounds[0][0] - fullBounds[0][0]);
+  const rightOffset = Math.max(0, fullBounds[1][0] - largestBounds[1][0]);
+  const maxHorizontalOffset = Math.max(leftOffset, rightOffset);
+  const hasDateLineOutlier = fullMaxDimension > 0 && maxHorizontalOffset / fullMaxDimension > 0.18;
+
   const largestAreaShare = largestArea / totalArea;
 
-  if (!isMuchMoreSpreadThanLargest || largestAreaShare < 0.55) {
+  if ((!isMuchMoreSpreadThanLargest && !hasDateLineOutlier) || largestAreaShare < 0.55) {
     return feature;
   }
 
@@ -85,6 +94,60 @@ function getFeatureFocusGeometry(feature: GeoFeature, generator: ReturnType<type
     type: 'Feature',
     properties: feature.properties,
     geometry: { type: 'Polygon', coordinates: largestPolygon },
+  };
+}
+
+/**
+ * For MultiPolygon features whose main body sits in the eastern hemisphere (avg
+ * longitude > 90°) but has small polygons at negative longitudes (avg < -90°),
+ * those polygons wrap around the antimeridian and render on the far-left of the
+ * map (near Alaska). Shifting by +360° places them just right of 180° so they
+ * appear contiguous with the main landmass (e.g. Russia's Chukotka peninsula).
+ */
+function normalizeAntimeridianGeometry(feature: GeoFeature, generator: ReturnType<typeof geoPath>): GeoFeature {
+  if (feature.geometry.type !== 'MultiPolygon') {
+    return feature;
+  }
+
+  const polygons = feature.geometry.coordinates;
+
+  const avgLons = polygons.map((polygon) => {
+    const ring = polygon[0];
+    if (!ring.length) return 0;
+    return ring.reduce((sum, c) => sum + (c[0] as number), 0) / ring.length;
+  });
+
+  // Find which polygon is the largest (the main body).
+  let largestIdx = 0;
+  let largestArea = -1;
+  for (let i = 0; i < polygons.length; i++) {
+    const poly: GeoFeature = {
+      type: 'Feature',
+      properties: feature.properties,
+      geometry: { type: 'Polygon', coordinates: polygons[i] },
+    };
+    const area = Math.max(0, generator.area(poly));
+    if (area > largestArea) {
+      largestArea = area;
+      largestIdx = i;
+    }
+  }
+
+  // Only act when the main body is in the eastern hemisphere and antimeridian
+  // outlier polygons exist in the western hemisphere.
+  if (avgLons[largestIdx] <= 90) return feature;
+  if (!avgLons.some((lon) => lon < -90)) return feature;
+
+  const normalizedPolygons = polygons.map((polygon, i) => {
+    if (avgLons[i] >= -90) return polygon;
+    return polygon.map((ring) =>
+      ring.map((coord) => [(coord[0] as number) + 360, coord[1]] as GeoJSON.Position),
+    );
+  });
+
+  return {
+    ...feature,
+    geometry: { type: 'MultiPolygon', coordinates: normalizedPolygons },
   };
 }
 
@@ -289,7 +352,7 @@ async function buildCountryQuizPayload(locale: string): Promise<CountryQuizPaylo
     const country = resolveCountryMetadata(properties, indexes);
     if (!country || seenCodes.has(country.cca2)) continue;
 
-    const rawFeature = feature as GeoFeature;
+    const rawFeature = normalizeAntimeridianGeometry(feature as GeoFeature, generator);
     const focusFeature = getFeatureFocusGeometry(rawFeature, generator);
 
     const path = generator(rawFeature);

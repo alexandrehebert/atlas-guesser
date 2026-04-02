@@ -24,7 +24,7 @@ const DEFAULT_ALT = 1.65;
 const MOBILE_ALT  = 1.95;
 const FOCUS_ALT   = 1.15;
 const MIN_FLAT_MAP_ZOOM = 1;
-const MAX_FLAT_MAP_ZOOM = 8;
+const MAX_FLAT_MAP_ZOOM = 12;
 
 export function GameMapProvider({ children }: { children: ReactNode }) {
   const { mode, round, answer, quiz, mapView } = useGame();

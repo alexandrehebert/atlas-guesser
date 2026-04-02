@@ -29,6 +29,12 @@ export default function SubdivisionsGameSettingsMenu() {
   const isWorldMap = !pathname.includes('/subdivisions');
   const hasMultipleLevels = quiz.levels.length > 1;
 
+  const handleGameModeChange = (nextMode: 'map-click' | 'highlighted-to-name') => {
+    switchGameMode(nextMode);
+    setConfirmClear(false);
+    setOpen(false);
+  };
+
   useEffect(() => {
     if (!open) return;
     const handlePointerDown = (event: PointerEvent) => {
@@ -121,14 +127,14 @@ export default function SubdivisionsGameSettingsMenu() {
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() => switchGameMode('map-click')}
+                  onClick={() => handleGameModeChange('map-click')}
                   className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm transition-[background-color,border-color,color] duration-150 ${gameMode === 'map-click' ? 'border-sky-400/50 bg-sky-500/15 text-sky-100' : 'border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/10 hover:border-white/16'}`}
                 >
                   {tSub('game_mode_map_click')}
                 </button>
                 <button
                   type="button"
-                  onClick={() => switchGameMode('highlighted-to-name')}
+                  onClick={() => handleGameModeChange('highlighted-to-name')}
                   className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm transition-[background-color,border-color,color] duration-150 ${gameMode === 'highlighted-to-name' ? 'border-sky-400/50 bg-sky-500/15 text-sky-100' : 'border-white/10 bg-white/[0.03] text-slate-300 hover:bg-white/10 hover:border-white/16'}`}
                 >
                   {tSub('game_mode_highlighted_to_name')}

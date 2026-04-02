@@ -139,13 +139,21 @@ interface SubdivisionsGameProviderProps {
 export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGameProviderProps) {
   const t = useTranslations('subdivisionsGuesser');
   const defaultLevel = getDefaultLevel(quiz);
+  const initialRoundRef = useRef<{ targetCode: string; optionCodes: string[] } | null>(null);
+
+  if (!initialRoundRef.current) {
+    const initialAreas = defaultLevel?.areas ?? [];
+    const initialTargetCode = pickNextTarget(initialAreas, null);
+    initialRoundRef.current = {
+      targetCode: initialTargetCode,
+      optionCodes: createOptionCodes(initialAreas, initialTargetCode, false),
+    };
+  }
 
   const [quizLevelId, setQuizLevelId] = useState<QuizLevelId>(() => defaultLevel?.id ?? '');
   const [gameMode, setGameMode] = useState<SubdivisionsGameMode>('map-click');
-  const [targetCode, setTargetCode] = useState(() => defaultLevel?.areas[0]?.code ?? '');
-  const [optionCodes, setOptionCodes] = useState<string[]>(() =>
-    createOptionCodes(defaultLevel?.areas ?? [], defaultLevel?.areas[0]?.code ?? '', false),
-  );
+  const [targetCode, setTargetCode] = useState(() => initialRoundRef.current?.targetCode ?? '');
+  const [optionCodes, setOptionCodes] = useState<string[]>(() => initialRoundRef.current?.optionCodes ?? []);
   const [answer, setAnswer] = useState<AnswerState | null>(null);
   const [score, setScore] = useState<ScoreState>(createDefaultScore);
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
@@ -279,6 +287,41 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
     if (quiz.country === 'china') {
       playableItems.push({
         filePath: 'public/maps/china-provinces.geojson',
+        sourceLabel: 'codeforgermany/click_that_hood',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
+    if (quiz.country === 'india') {
+      playableItems.push({
+        filePath: 'public/maps/india-states.geojson',
+        sourceLabel: 'codeforgermany/click_that_hood',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
+    if (quiz.country === 'russia') {
+      playableItems.push(
+        {
+          filePath: 'public/maps/russia-federal-districts.geojson',
+          sourceLabel: 'codeforgermany/click_that_hood',
+          note: t('sources.unverified_note'),
+          url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+        },
+        {
+          filePath: 'public/maps/russia-subjects.geojson',
+          sourceLabel: 'codeforgermany/click_that_hood',
+          note: t('sources.unverified_note'),
+          url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+        },
+      );
+    }
+
+    if (quiz.country === 'australia') {
+      playableItems.push({
+        filePath: 'public/maps/australia-states.geojson',
         sourceLabel: 'codeforgermany/click_that_hood',
         note: t('sources.unverified_note'),
         url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
