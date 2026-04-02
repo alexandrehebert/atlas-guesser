@@ -238,6 +238,7 @@
     "top_badge": {
       "departements": "{count} departments",
       "regions": "{count} regions",
+      "laender": "{count} federal states",
       "states": "{count} states",
       "communities": "{count} communities",
       "provinces": "{count} provinces"
@@ -245,6 +246,7 @@
     "mode": {
       "departements": "Departments",
       "regions": "Regions",
+      "laender": "Federal states",
       "states": "States",
       "communities": "Communities",
       "provinces": "Provinces"
@@ -254,6 +256,7 @@
     "prompt_eyebrow": {
       "departements": "Department prompt",
       "regions": "Region prompt",
+      "laender": "Federal state prompt",
       "states": "State prompt",
       "communities": "Community prompt",
       "provinces": "Province prompt"
@@ -261,6 +264,7 @@
     "prompt_body": {
       "departements": "Find this department on the map of {countryName}.",
       "regions": "Find this region on the map of {countryName}.",
+      "laender": "Find this federal state on the map of {countryName}.",
       "states": "Find this state on the map of {countryName}.",
       "communities": "Find this community on the map of {countryName}.",
       "provinces": "Find this province on the map of {countryName}."
@@ -268,6 +272,7 @@
     "prompt_body_choices": {
       "departements": "An area is highlighted on the map. Which department is it?",
       "regions": "An area is highlighted on the map. Which region is it?",
+      "laender": "An area is highlighted on the map. Which federal state is it?",
       "states": "An area is highlighted on the map. Which state is it?",
       "communities": "An area is highlighted on the map. Which community is it?",
       "provinces": "An area is highlighted on the map. Which province is it?"

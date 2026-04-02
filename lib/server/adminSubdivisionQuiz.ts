@@ -75,10 +75,10 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
     countryCode: 'DE',
     countryNames: ['germany', 'deutschland'],
     sortLocale: 'de',
-    defaultLevelId: 'states',
+    defaultLevelId: 'laender',
     levels: [
       {
-        id: 'states',
+        id: 'laender',
         fileName: 'germany-states.geojson',
         minimumClickableSize: 2,
         codeProperty: 'id',

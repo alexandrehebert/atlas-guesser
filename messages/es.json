@@ -238,6 +238,7 @@
     "top_badge": {
       "departements": "{count} departamentos",
       "regions": "{count} regiones",
+      "laender": "{count} estados federados",
       "states": "{count} estados",
       "communities": "{count} comunidades",
       "provinces": "{count} provincias"
@@ -245,6 +246,7 @@
     "mode": {
       "departements": "Departamentos",
       "regions": "Regiones",
+      "laender": "Estados federados",
       "states": "Estados",
       "communities": "Comunidades",
       "provinces": "Provincias"
@@ -254,6 +256,7 @@
     "prompt_eyebrow": {
       "departements": "Pista departamento",
       "regions": "Pista región",
+      "laender": "Pista estado federado",
       "states": "Pista estado",
       "communities": "Pista comunidad",
       "provinces": "Pista provincia"
@@ -261,6 +264,7 @@
     "prompt_body": {
       "departements": "Encuentra este departamento en el mapa de {countryName}.",
       "regions": "Encuentra esta región en el mapa de {countryName}.",
+      "laender": "Encuentra este estado federado en el mapa de {countryName}.",
       "states": "Encuentra este estado en el mapa de {countryName}.",
       "communities": "Encuentra esta comunidad en el mapa de {countryName}.",
       "provinces": "Encuentra esta provincia en el mapa de {countryName}."
@@ -268,6 +272,7 @@
     "prompt_body_choices": {
       "departements": "Un área está resaltada en el mapa. ¿Qué departamento es?",
       "regions": "Un área está resaltada en el mapa. ¿Qué región es?",
+      "laender": "Un área está resaltada en el mapa. ¿Qué estado federado es?",
       "states": "Un área está resaltada en el mapa. ¿Qué estado es?",
       "communities": "Un área está resaltada en el mapa. ¿Qué comunidad es?",
       "provinces": "Un área está resaltada en el mapa. ¿Qué provincia es?"

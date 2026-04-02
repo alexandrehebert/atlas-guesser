@@ -238,14 +238,16 @@
     "top_badge": {
       "departements": "{count} dipartimenti",
       "regions": "{count} regioni",
-      "states": "{count} Länder",
+      "laender": "{count} Länder",
+      "states": "{count} stati",
       "communities": "{count} comunità",
       "provinces": "{count} province"
     },
     "mode": {
       "departements": "Dipartimenti",
       "regions": "Regioni",
-      "states": "Länder",
+      "laender": "Länder",
+      "states": "Stati",
       "communities": "Comunità",
       "provinces": "Province"
     },
@@ -254,21 +256,24 @@
     "prompt_eyebrow": {
       "departements": "Indizio dipartimento",
       "regions": "Indizio regione",
-      "states": "Indizio Land",
+      "laender": "Indizio Land",
+      "states": "Indizio stato",
       "communities": "Indizio comunità",
       "provinces": "Indizio provincia"
     },
     "prompt_body": {
       "departements": "Trova questo dipartimento sulla mappa di {countryName}.",
       "regions": "Trova questa regione sulla mappa di {countryName}.",
-      "states": "Trova questo Land sulla mappa di {countryName}.",
+      "laender": "Trova questo Land sulla mappa di {countryName}.",
+      "states": "Trova questo stato sulla mappa di {countryName}.",
       "communities": "Trova questa comunità sulla mappa di {countryName}.",
       "provinces": "Trova questa provincia sulla mappa di {countryName}."
     },
     "prompt_body_choices": {
       "departements": "Un'area è evidenziata sulla mappa. Quale dipartimento è?",
       "regions": "Un'area è evidenziata sulla mappa. Quale regione è?",
-      "states": "Un'area è evidenziata sulla mappa. Quale Land è?",
+      "laender": "Un'area è evidenziata sulla mappa. Quale Land è?",
+      "states": "Un'area è evidenziata sulla mappa. Quale stato è?",
       "communities": "Un'area è evidenziata sulla mappa. Quale comunità è?",
       "provinces": "Un'area è evidenziata sulla mappa. Quale provincia è?"
     },

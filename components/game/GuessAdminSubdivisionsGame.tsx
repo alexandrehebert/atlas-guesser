@@ -179,6 +179,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
   const activeLevelId = activeLevel?.id ?? quiz.defaultLevelId;
   const activeAreas = activeLevel?.areas ?? [];
   const countryName = t(`countries.${quiz.country}`);
+  const hasMultipleLevels = quiz.levels.length > 1;
 
   const areasByCode = useMemo(
     () => new Map(activeAreas.map((area) => [area.code, area])),
@@ -826,11 +827,11 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
         }}
       />
 
-      <div ref={topControlsRef} className="absolute left-4 right-4 top-4 z-30 flex items-start justify-between gap-3 sm:left-5 sm:right-5 sm:top-5">
+      <div ref={topControlsRef} className="pointer-events-none absolute left-4 right-4 top-4 z-30 flex items-start justify-between gap-3 sm:left-5 sm:right-5 sm:top-5">
         <Link
           href="/"
           aria-label="Go to landing page"
-          className="group inline-flex h-8 items-center gap-1 overflow-visible rounded-full border border-white/10 bg-white/5 pl-0 pr-3 shadow-lg backdrop-blur-sm transition-[background-color,border-color,box-shadow] duration-200 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_8px_20px_rgba(2,6,23,0.45)] focus-visible:bg-white/10 focus-visible:border-white/20"
+          className="pointer-events-auto group inline-flex h-8 items-center gap-1 overflow-visible rounded-full border border-white/10 bg-white/5 pl-0 pr-3 shadow-lg backdrop-blur-sm transition-[background-color,border-color,box-shadow] duration-200 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_8px_20px_rgba(2,6,23,0.45)] focus-visible:bg-white/10 focus-visible:border-white/20"
         >
           <span
             aria-hidden="true"
@@ -856,16 +857,18 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
           <span className="text-[0.68rem] font-medium uppercase tracking-[0.2em] text-slate-300">Atlas Guesser</span>
         </Link>
 
-        <div className="flex flex-col items-end gap-2">
+        <div className="pointer-events-auto flex flex-col items-end gap-2">
           <div ref={countryDropdownRef} className="relative">
-            <button
-              type="button"
-              onClick={() => setIsCountryDropdownOpen((open) => !open)}
-              className="flex items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] text-white transition hover:bg-white/10"
-            >
-              {t(`countries.${quiz.country}`)}
-              <ChevronDown className={`h-3 w-3 text-slate-400 transition-transform duration-200 ${isCountryDropdownOpen ? 'rotate-180' : ''}`} />
-            </button>
+            <div className="rounded-2xl border border-white/12 bg-slate-950/80 p-1">
+              <button
+                type="button"
+                onClick={() => setIsCountryDropdownOpen((open) => !open)}
+                className="flex items-center gap-2 rounded-xl px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] text-white transition hover:bg-white/10"
+              >
+                {t(`countries.${quiz.country}`)}
+                <ChevronDown className={`h-3 w-3 text-slate-400 transition-transform duration-200 ${isCountryDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+            </div>
 
             {isCountryDropdownOpen && (
               <div className="absolute right-0 top-full mt-1.5 min-w-full overflow-hidden rounded-2xl border border-white/12 bg-slate-950/95 py-1 shadow-[0_20px_60px_rgba(2,6,23,0.6)] backdrop-blur-md">
@@ -886,18 +889,20 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
             )}
           </div>
 
-          <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/80 p-1">
-            {quiz.levels.map((level) => (
-              <button
-                key={level.id}
-                type="button"
-                onClick={() => switchQuizLevel(level.id)}
-                className={`rounded-xl px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] transition ${quizLevelId === level.id ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
-              >
-                {t(`mode.${level.id}`)}
-              </button>
-            ))}
-          </div>
+          {hasMultipleLevels ? (
+            <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/80 p-1">
+              {quiz.levels.map((level) => (
+                <button
+                  key={level.id}
+                  type="button"
+                  onClick={() => switchQuizLevel(level.id)}
+                  className={`rounded-xl px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] transition ${quizLevelId === level.id ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
+                >
+                  {t(`mode.${level.id}`)}
+                </button>
+              ))}
+            </div>
+          ) : null}
 
           <div className="rounded-2xl border border-white/12 bg-slate-950/80 px-4 py-2 text-xs uppercase tracking-[0.16em] text-slate-300">
             {t(`top_badge.${activeLevelId}`, { count: activeAreas.length })}
@@ -1029,8 +1034,8 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
         </div>
       </div>
 
-      <div className="absolute bottom-5 left-5 z-30 hidden w-[min(92vw,26rem)] flex-col gap-3 sm:flex">
-        <div className="flex w-fit self-start items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/88 p-1 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md">
+      <div className="pointer-events-none absolute bottom-5 left-5 z-30 hidden w-[min(92vw,26rem)] flex-col gap-3 sm:flex">
+        <div className="pointer-events-auto flex w-fit self-start items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/88 p-1 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md">
           <button
             type="button"
             onClick={() => switchGameMode('map-click')}
@@ -1048,7 +1053,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
         </div>
 
         {answer ? (
-          <div className="rounded-3xl border border-white/12 bg-slate-950/88 p-4 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md">
+          <div className="pointer-events-auto rounded-3xl border border-white/12 bg-slate-950/88 p-4 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md">
             <p className="text-xs uppercase tracking-[0.18em] text-sky-100">{t('result_label')}</p>
             <p className="mt-2 text-sm text-slate-200">
               {answer.correct
@@ -1065,7 +1070,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
           </div>
         ) : null}
 
-        <div className="rounded-3xl border border-white/12 bg-slate-950/88 p-4 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md">
+        <div className="pointer-events-auto rounded-3xl border border-white/12 bg-slate-950/88 p-4 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md">
           <p className="text-xs uppercase tracking-[0.18em] text-rose-100">{t(`prompt_eyebrow.${activeLevelId}`)}</p>
           <p className="mt-2 text-2xl font-semibold text-white">{promptAreaLabel}</p>
           <p className="mt-1 text-sm text-slate-300">{promptBodyLabel}</p>
@@ -1107,7 +1112,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
           ) : null}
         </div>
 
-        <div className="rounded-3xl border border-white/12 bg-slate-950/88 px-4 py-3 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md">
+        <div className="pointer-events-auto rounded-3xl border border-white/12 bg-slate-950/88 px-4 py-3 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md">
           <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
             <div>
               <p className="text-[0.65rem] uppercase tracking-[0.16em] text-slate-400">{t('score_correct_label')}</p>

@@ -240,14 +240,16 @@
     "top_badge": {
       "departements": "{count} departements",
       "regions": "{count} regions",
-      "states": "{count} Länder",
+      "laender": "{count} Länder",
+      "states": "{count} etats",
       "communities": "{count} communautes",
       "provinces": "{count} provinces"
     },
     "mode": {
       "departements": "Departements",
       "regions": "Regions",
-      "states": "Länder",
+      "laender": "Länder",
+      "states": "Etats",
       "communities": "Communautes",
       "provinces": "Provinces"
     },
@@ -256,21 +258,24 @@
     "prompt_eyebrow": {
       "departements": "Indice departement",
       "regions": "Indice region",
-      "states": "Indice Land",
+      "laender": "Indice Land",
+      "states": "Indice etat",
       "communities": "Indice communaute",
       "provinces": "Indice province"
     },
     "prompt_body": {
       "departements": "Retrouvez ce departement sur la carte de {countryName}.",
       "regions": "Retrouvez cette region sur la carte de {countryName}.",
-      "states": "Retrouvez ce Land sur la carte de {countryName}.",
+      "laender": "Retrouvez ce Land sur la carte de {countryName}.",
+      "states": "Retrouvez cet etat sur la carte de {countryName}.",
       "communities": "Retrouvez cette communaute sur la carte de {countryName}.",
       "provinces": "Retrouvez cette province sur la carte de {countryName}."
     },
     "prompt_body_choices": {
       "departements": "De quel departement s'agit-il ?",
       "regions": "De quelle region s'agit-il ?",
-      "states": "Quel Land est surligne sur la carte ?",
+      "laender": "Quel Land est surligne sur la carte ?",
+      "states": "Quel etat est surligne sur la carte ?",
       "communities": "De quelle communaute s'agit-il ?",
       "provinces": "De quelle province s'agit-il ?"
     },
