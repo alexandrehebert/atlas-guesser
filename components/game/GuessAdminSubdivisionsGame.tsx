@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEven
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, Map as MapIcon, Minus, Plus, RotateCcw } from 'lucide-react';
 import { Link } from '~/i18n/navigation';
-import type { FranceAdminQuizPayload, QuizArea } from '~/lib/server/franceDepartmentQuiz';
+import type { AdminQuizLevel, AdminSubdivisionQuizPayload, QuizArea } from '~/lib/server/adminSubdivisionQuiz';
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 6;
@@ -13,12 +13,12 @@ const MOBILE_MAX_ZOOM = 8;
 const ZOOM_STEP = 0.25;
 const ZOOM_EPSILON = 0.0001;
 
-interface GuessFranceDepartmentsGameProps {
-  quiz: FranceAdminQuizPayload;
+interface GuessAdminSubdivisionsGameProps {
+  quiz: AdminSubdivisionQuizPayload;
 }
 
-type QuizLevel = 'departements' | 'regions';
-type FranceGameMode = 'map-click' | 'highlighted-to-name';
+type QuizLevelId = string;
+type AdminGameMode = 'map-click' | 'highlighted-to-name';
 
 interface ScoreState {
   correct: number;
@@ -131,18 +131,23 @@ function createOptionCodes(areas: QuizArea[], targetCode: string, randomize: boo
   return randomize ? shuffle(base) : base;
 }
 
-export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartmentsGameProps) {
-  const t = useTranslations('departmentsGuesser');
+function getDefaultLevel(quiz: AdminSubdivisionQuizPayload): AdminQuizLevel | undefined {
+  return quiz.levels.find((level) => level.id === quiz.defaultLevelId) ?? quiz.levels[0];
+}
+
+export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisionsGameProps) {
+  const t = useTranslations('subdivisionsGuesser');
+  const defaultLevel = getDefaultLevel(quiz);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const topControlsRef = useRef<HTMLDivElement | null>(null);
   const mobileQuestionRef = useRef<HTMLDivElement | null>(null);
   const mobileScoreRef = useRef<HTMLDivElement | null>(null);
   const homeOffsetYRef = useRef(0);
   const hasUserMovedMapRef = useRef(false);
-  const [quizLevel, setQuizLevel] = useState<QuizLevel>('departements');
-  const [gameMode, setGameMode] = useState<FranceGameMode>('map-click');
-  const [targetCode, setTargetCode] = useState(() => quiz.departments[0]?.code ?? '');
-  const [optionCodes, setOptionCodes] = useState<string[]>(() => createOptionCodes(quiz.departments, quiz.departments[0]?.code ?? '', false));
+  const [quizLevelId, setQuizLevelId] = useState<QuizLevelId>(() => defaultLevel?.id ?? '');
+  const [gameMode, setGameMode] = useState<AdminGameMode>('map-click');
+  const [targetCode, setTargetCode] = useState(() => defaultLevel?.areas[0]?.code ?? '');
+  const [optionCodes, setOptionCodes] = useState<string[]>(() => createOptionCodes(defaultLevel?.areas ?? [], defaultLevel?.areas[0]?.code ?? '', false));
   const [answer, setAnswer] = useState<AnswerState | null>(null);
   const [score, setScore] = useState<ScoreState>(createDefaultScore);
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
@@ -168,7 +173,10 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
   });
   const suppressClickRef = useRef(false);
 
-  const activeAreas = quizLevel === 'regions' ? quiz.regions : quiz.departments;
+  const activeLevel = quiz.levels.find((level) => level.id === quizLevelId) ?? defaultLevel;
+  const activeLevelId = activeLevel?.id ?? quiz.defaultLevelId;
+  const activeAreas = activeLevel?.areas ?? [];
+  const countryName = t(`countries.${quiz.country}`);
 
   const areasByCode = useMemo(
     () => new Map(activeAreas.map((area) => [area.code, area])),
@@ -337,24 +345,29 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
   const isChoiceMode = gameMode === 'highlighted-to-name';
   const promptAreaLabel = isChoiceMode ? '' : (targetArea?.name ?? '');
   const promptBodyLabel = isChoiceMode
-    ? (quizLevel === 'regions' ? t('prompt_body_regions_choices') : t('prompt_body_departements_choices'))
-    : (quizLevel === 'regions' ? t('prompt_body_regions') : t('prompt_body_departements'));
+    ? t(`prompt_body_choices.${activeLevelId}`, { countryName })
+    : t(`prompt_body.${activeLevelId}`, { countryName });
 
-  const switchQuizLevel = (nextLevel: QuizLevel) => {
-    if (nextLevel === quizLevel) {
+  const switchQuizLevel = (nextLevelId: QuizLevelId) => {
+    if (nextLevelId === quizLevelId) {
       return;
     }
 
-    const nextAreas = nextLevel === 'regions' ? quiz.regions : quiz.departments;
+    const nextLevel = quiz.levels.find((level) => level.id === nextLevelId);
+    if (!nextLevel) {
+      return;
+    }
+
+    const nextAreas = nextLevel.areas;
     const nextTargetCode = pickNextTarget(nextAreas, null);
-    setQuizLevel(nextLevel);
+    setQuizLevelId(nextLevelId);
     setTargetCode(nextTargetCode);
     setOptionCodes(createOptionCodes(nextAreas, nextTargetCode, true));
     setAnswer(null);
     setHoveredCode(null);
   };
 
-  const switchGameMode = (nextMode: FranceGameMode) => {
+  const switchGameMode = (nextMode: AdminGameMode) => {
     if (nextMode === gameMode) return;
     setGameMode(nextMode);
     setAnswer(null);
@@ -825,29 +838,40 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
           <span className="text-[0.68rem] font-medium uppercase tracking-[0.2em] text-slate-300">Atlas Guesser</span>
         </Link>
 
-        <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/80 p-1">
-          <button
-            type="button"
-            onClick={() => switchQuizLevel('departements')}
-            className={`rounded-xl px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] transition ${quizLevel === 'departements' ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
-          >
-            {t('mode_departements')}
-          </button>
-          <button
-            type="button"
-            onClick={() => switchQuizLevel('regions')}
-            className={`rounded-xl px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] transition ${quizLevel === 'regions' ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
-          >
-            {t('mode_regions')}
-          </button>
+        <div className="flex flex-col items-end gap-2">
+          <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/80 p-1">
+            {quiz.availableCountries.map((country) => {
+              const isActiveCountry = country === quiz.country;
+              return (
+                <Link
+                  key={country}
+                  href={`/subdivisions/${country}`}
+                  className={`rounded-xl px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] transition ${isActiveCountry ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
+                >
+                  {t(`countries.${country}`)}
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/80 p-1">
+            {quiz.levels.map((level) => (
+              <button
+                key={level.id}
+                type="button"
+                onClick={() => switchQuizLevel(level.id)}
+                className={`rounded-xl px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] transition ${quizLevelId === level.id ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
+              >
+                {t(`mode.${level.id}`)}
+              </button>
+            ))}
+          </div>
+
+          <div className="rounded-2xl border border-white/12 bg-slate-950/80 px-4 py-2 text-xs uppercase tracking-[0.16em] text-slate-300">
+            {t(`top_badge.${activeLevelId}`, { count: activeAreas.length })}
+          </div>
         </div>
       </div>
-
-      <div className="absolute right-4 top-16 z-30 rounded-2xl border border-white/12 bg-slate-950/80 px-4 py-2 text-xs uppercase tracking-[0.16em] text-slate-300 sm:right-5 sm:top-20">
-        {quizLevel === 'regions'
-          ? t('top_badge_regions', { count: activeAreas.length })
-          : t('top_badge_departements', { count: activeAreas.length })}
-        </div>
 
       <div ref={mobileQuestionRef} className="absolute bottom-3 left-3 right-3 z-30 rounded-3xl border border-white/12 bg-slate-950/88 p-4 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md sm:hidden">
         <div className="absolute -top-12 right-0 flex w-fit items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/88 p-1 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md sm:hidden">
@@ -896,9 +920,7 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
           </button>
         </div>
 
-        <p className="text-xs uppercase tracking-[0.18em] text-rose-100">
-          {quizLevel === 'regions' ? t('prompt_eyebrow_regions') : t('prompt_eyebrow_departements')}
-        </p>
+        <p className="text-xs uppercase tracking-[0.18em] text-rose-100">{t(`prompt_eyebrow.${activeLevelId}`)}</p>
         <p className="mt-2 text-2xl font-semibold text-white">{promptAreaLabel}</p>
         <p className="mt-1 text-sm text-slate-300">{promptBodyLabel}</p>
 
@@ -1012,9 +1034,7 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
         ) : null}
 
         <div className="rounded-3xl border border-white/12 bg-slate-950/88 p-4 shadow-[0_20px_60px_rgba(2,6,23,0.45)] backdrop-blur-md">
-          <p className="text-xs uppercase tracking-[0.18em] text-rose-100">
-            {quizLevel === 'regions' ? t('prompt_eyebrow_regions') : t('prompt_eyebrow_departements')}
-          </p>
+          <p className="text-xs uppercase tracking-[0.18em] text-rose-100">{t(`prompt_eyebrow.${activeLevelId}`)}</p>
           <p className="mt-2 text-2xl font-semibold text-white">{promptAreaLabel}</p>
           <p className="mt-1 text-sm text-slate-300">{promptBodyLabel}</p>
 
@@ -1126,6 +1146,17 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
           transform={`translate(${mapTransform.x}, ${mapTransform.y}) scale(${mapTransform.zoom})`}
         >
           <g pointerEvents="none">
+            {quiz.ghostFocusedCountryPaths.map((path, index) => (
+              <path
+                key={`ghost-focused-${index}`}
+                d={path}
+                className="fill-slate-700/8 stroke-slate-500/18"
+                strokeWidth={0.7}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
             {quiz.ghostEuropePaths.map((path, index) => (
               <path
                 key={`ghost-europe-${index}`}

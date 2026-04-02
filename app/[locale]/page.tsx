@@ -312,10 +312,10 @@ export default async function HomePage({ params }: HomePageProps) {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                href="/departements"
+                href="/subdivisions/france"
                 className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/35 hover:bg-white/10"
               >
-                {t('cta_departements')}
+                {t('cta_subdivisions')}
               </Link>
               <PwaInstallCallToAction />
             </div>

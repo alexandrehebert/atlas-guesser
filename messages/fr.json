@@ -5,7 +5,7 @@
     "hero_description": "Atlas Guesser transforme la carte du monde en quiz rapide avec drapeaux, capitales et manches inversées pour renforcer vos réflexes géographiques.",
     "cta_trips": "Ouvrir l'atlas",
     "cta_guesser": "Jouer maintenant",
-    "cta_departements": "Jouer les departements",
+    "cta_subdivisions": "Jouer les cartes administratives",
     "install_cta": "Installer l'application",
     "install_cta_pending": "Ouverture de l'invite d'installation...",
     "install_ios_title": "Installer sur iPhone ou iPad",
@@ -225,22 +225,41 @@
       "country-to-flag": "Carte → drapeau"
     }
   },
-  "departmentsGuesser": {
-    "metadata_title": "Guesser des departements | Atlas Guesser",
-    "metadata_description": "Un quiz centré sur la France avec bascule departements ou regions, et des limites adaptees.",
+  "subdivisionsGuesser": {
+    "metadata_title": "Quiz de carte administrative de {countryName} | Atlas Guesser",
+    "metadata_description": "Un quiz de carte administrative pour {countryName}, avec bascule entre les niveaux disponibles et des reponses au clic.",
     "back_to_home": "Retour a l'atlas",
-    "top_badge_departements": "{count} departements",
-    "top_badge_regions": "{count} regions",
-    "mode_departements": "Departements",
-    "mode_regions": "Regions",
+    "countries": {
+      "france": "France",
+      "germany": "Allemagne"
+    },
+    "top_badge": {
+      "departements": "{count} departements",
+      "regions": "{count} regions",
+      "states": "{count} Länder"
+    },
+    "mode": {
+      "departements": "Departements",
+      "regions": "Regions",
+      "states": "Länder"
+    },
     "game_mode_map_click": "Clic carte",
     "game_mode_highlighted_to_name": "Choix multiple",
-    "prompt_eyebrow_departements": "Indice departement",
-    "prompt_eyebrow_regions": "Indice region",
-    "prompt_body_departements": "Retrouvez ce departement sur la carte de France.",
-    "prompt_body_regions": "Retrouvez cette region sur la carte de France.",
-    "prompt_body_departements_choices": "De quel departement s'agit-il ?",
-    "prompt_body_regions_choices": "De quelle region s'agit-il ?",
+    "prompt_eyebrow": {
+      "departements": "Indice departement",
+      "regions": "Indice region",
+      "states": "Indice Land"
+    },
+    "prompt_body": {
+      "departements": "Retrouvez ce departement sur la carte de {countryName}.",
+      "regions": "Retrouvez cette region sur la carte de {countryName}.",
+      "states": "Retrouvez ce Land sur la carte de {countryName}."
+    },
+    "prompt_body_choices": {
+      "departements": "De quel departement s'agit-il ?",
+      "regions": "De quelle region s'agit-il ?",
+      "states": "Quel Land est surligne sur la carte ?"
+    },
     "instruction_map": "Cliquez sur la bonne limite sur la carte.",
     "instruction_choices": "Une zone surlignee apparait sur la carte. Choisissez le bon nom parmi 4 options.",
     "result_label": "Resultat",

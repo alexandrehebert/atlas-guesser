@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation';
 
-interface DepartementsPageProps {
+interface SubdivisionsIndexPageProps {
   params: Promise<{ locale: string }>;
 }
 
-export default async function DepartementsPage({ params }: DepartementsPageProps) {
+export default async function SubdivisionsIndexPage({ params }: SubdivisionsIndexPageProps) {
   const { locale } = await params;
   redirect(`/${locale}/subdivisions/france`);
 }
