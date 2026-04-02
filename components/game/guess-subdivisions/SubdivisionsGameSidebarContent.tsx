@@ -5,9 +5,9 @@ import { useTranslations } from 'next-intl';
 import { ChevronDown } from 'lucide-react';
 import { useRouter } from '~/i18n/navigation';
 import { useGlobalRouteLoading } from '~/components/GlobalRouteLoadingProvider';
-import { useAdminGame } from './contexts/AdminGameContext';
+import { useSubdivisionsGame } from './contexts/SubdivisionsGameContext';
 
-export default function AdminGameSidebarContent() {
+export default function SubdivisionsGameSidebarContent() {
   const t = useTranslations('subdivisionsGuesser');
   const router = useRouter();
   const { startRouteLoading } = useGlobalRouteLoading();
@@ -33,7 +33,7 @@ export default function AdminGameSidebarContent() {
     submitAnswer,
     nextRound,
     clearScore,
-  } = useAdminGame();
+  } = useSubdivisionsGame();
 
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [isSourcesModalOpen, setIsSourcesModalOpen] = useState(false);

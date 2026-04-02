@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { useGame } from './contexts/GameContext';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { MODE_ORDER } from './constants';
+import { MODE_ORDER } from '../constants';
 
 export default function GameModeSelector() {
   const t = useTranslations('guesser');

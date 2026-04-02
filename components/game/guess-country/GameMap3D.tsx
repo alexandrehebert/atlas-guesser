@@ -2,9 +2,9 @@
 
 import { useEffect, useRef } from 'react';
 import { useGame } from './contexts/GameContext';
-import { useGameLayout } from './contexts/GameLayoutContext';
-import { useGameMap } from './contexts/GameMapContext';
-import { MAP_MODES } from './constants';
+import { useGameLayout } from '../contexts/GameLayoutContext';
+import { useGameMap } from '../contexts/GameMapContext';
+import { MAP_MODES } from '../constants';
 
 interface GlobeMapProps {
   onInitialZoomEnd?: () => void;

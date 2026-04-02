@@ -2,7 +2,6 @@
 
 import { useState, useEffect, type ReactNode } from 'react';
 import GameBackground from './GameBackground';
-import GameTopBar from './GameTopBar';
 import GameSidebarDesktop from './GameSidebarDesktop';
 import GameSidebarMobile from './GameSidebarMobile';
 import { useGameLayout } from './contexts/GameLayoutContext';
@@ -46,7 +45,7 @@ export default function GameShell({
   return (
     <div className="relative h-full w-full overflow-hidden bg-slate-950 text-slate-100">
       <GameBackground showGrid={showBackgroundGrid} />
-      {topBar ?? <GameTopBar />}
+      {topBar ?? null}
       {/* Map area: always rendered, fade in when ready */}
       <div className={`transition-opacity duration-700 ${isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         {mapContent}

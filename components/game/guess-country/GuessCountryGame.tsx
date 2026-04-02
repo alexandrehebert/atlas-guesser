@@ -2,7 +2,10 @@
 import { Globe, Map } from 'lucide-react';
 import type { MapView } from './contexts/GameContext';
 import GameMap from './GameMap';
-import GameShell from './GameShell';
+import GameMapViewToggle from './GameMapViewToggle';
+import GameSettingsMenu from './GameSettingsMenu';
+import GameShell from '../GameShell';
+import GameTopBar from '../GameTopBar';
 import { CountryGameSidebarContent, CountryGameSidebarFooter } from './CountryGameSidebarContent';
 
 interface GuessCountryGameProps {
@@ -22,6 +25,12 @@ export default function GuessCountryGame({ mapReady, handleMapReady, loadingTarg
         loadingTargetView === 'globe'
           ? <Globe className="animate-spin text-sky-400" size={64} strokeWidth={2.5} />
           : <Map className="animate-spin text-sky-400" size={64} strokeWidth={2.5} />
+      }
+      topBar={
+        <GameTopBar
+          extraControls={<GameMapViewToggle />}
+          settingsMenu={<GameSettingsMenu />}
+        />
       }
     />
   );

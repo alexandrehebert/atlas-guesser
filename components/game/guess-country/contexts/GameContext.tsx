@@ -14,8 +14,8 @@ import {
   type ReactNode,
 } from 'react';
 import type { CountryQuizPayload, QuizCountry } from '~/lib/server/countryQuiz';
-import { MAP_MODES, MODE_ACCENTS } from '../constants';
-import { createRound, recordRoundHistory, type RoundHistory } from '~/components/game/rounds';
+import { MAP_MODES, MODE_ACCENTS } from '../../constants';
+import { createRound, recordRoundHistory, type RoundHistory } from '../rounds';
 import type { AnswerState, GameMode, RoundState, ScoreState } from '../types';
 
 const SCORE_STORAGE_KEY = 'atlas-guesser-score:v1';

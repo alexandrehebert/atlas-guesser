@@ -13,7 +13,7 @@ import { useTranslations } from 'next-intl';
 import type { AdminQuizLevel, AdminSubdivisionQuizPayload, QuizArea } from '~/lib/server/adminSubdivisionQuiz';
 
 export type QuizLevelId = string;
-export type AdminGameMode = 'map-click' | 'highlighted-to-name';
+export type SubdivisionsGameMode = 'map-click' | 'highlighted-to-name';
 
 export interface ScoreState {
   correct: number;
@@ -78,10 +78,10 @@ function getDefaultLevel(quiz: AdminSubdivisionQuizPayload): AdminQuizLevel | un
   return quiz.levels.find((level) => level.id === quiz.defaultLevelId) ?? quiz.levels[0];
 }
 
-interface AdminGameContextValue {
+interface SubdivisionsGameContextValue {
   quiz: AdminSubdivisionQuizPayload;
   quizLevelId: QuizLevelId;
-  gameMode: AdminGameMode;
+  gameMode: SubdivisionsGameMode;
   targetCode: string;
   targetArea: QuizArea | undefined;
   optionCodes: string[];
@@ -97,26 +97,26 @@ interface AdminGameContextValue {
   countryName: string;
   dataSourceSections: MapSourceSection[];
   switchQuizLevel: (levelId: QuizLevelId) => void;
-  switchGameMode: (mode: AdminGameMode) => void;
+  switchGameMode: (mode: SubdivisionsGameMode) => void;
   submitAnswer: (code: string) => void;
   nextRound: () => void;
   clearScore: () => void;
   setHoveredCode: (code: string | null) => void;
 }
 
-const AdminGameContext = createContext<AdminGameContextValue | null>(null);
+const SubdivisionsGameContext = createContext<SubdivisionsGameContextValue | null>(null);
 
-interface AdminGameProviderProps {
+interface SubdivisionsGameProviderProps {
   quiz: AdminSubdivisionQuizPayload;
   children: ReactNode;
 }
 
-export function AdminGameProvider({ quiz, children }: AdminGameProviderProps) {
+export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGameProviderProps) {
   const t = useTranslations('subdivisionsGuesser');
   const defaultLevel = getDefaultLevel(quiz);
 
   const [quizLevelId, setQuizLevelId] = useState<QuizLevelId>(() => defaultLevel?.id ?? '');
-  const [gameMode, setGameMode] = useState<AdminGameMode>('map-click');
+  const [gameMode, setGameMode] = useState<SubdivisionsGameMode>('map-click');
   const [targetCode, setTargetCode] = useState(() => defaultLevel?.areas[0]?.code ?? '');
   const [optionCodes, setOptionCodes] = useState<string[]>(() =>
     createOptionCodes(defaultLevel?.areas ?? [], defaultLevel?.areas[0]?.code ?? '', false),
@@ -269,7 +269,7 @@ export function AdminGameProvider({ quiz, children }: AdminGameProviderProps) {
     setHoveredCode(null);
   }, [quiz.levels, quizLevelId]);
 
-  const switchGameMode = useCallback((nextMode: AdminGameMode) => {
+  const switchGameMode = useCallback((nextMode: SubdivisionsGameMode) => {
     if (nextMode === gameMode) return;
     setGameMode(nextMode);
     setAnswer(null);
@@ -306,7 +306,7 @@ export function AdminGameProvider({ quiz, children }: AdminGameProviderProps) {
     setScore(createDefaultScore());
   }, []);
 
-  const value = useMemo<AdminGameContextValue>(() => ({
+  const value = useMemo<SubdivisionsGameContextValue>(() => ({
     quiz,
     quizLevelId,
     gameMode,
@@ -355,13 +355,13 @@ export function AdminGameProvider({ quiz, children }: AdminGameProviderProps) {
     clearScore,
   ]);
 
-  return <AdminGameContext.Provider value={value}>{children}</AdminGameContext.Provider>;
+  return <SubdivisionsGameContext.Provider value={value}>{children}</SubdivisionsGameContext.Provider>;
 }
 
-export function useAdminGame(): AdminGameContextValue {
-  const context = useContext(AdminGameContext);
+export function useSubdivisionsGame(): SubdivisionsGameContextValue {
+  const context = useContext(SubdivisionsGameContext);
   if (!context) {
-    throw new Error('useAdminGame must be used within an AdminGameProvider');
+    throw new Error('useSubdivisionsGame must be used within an SubdivisionsGameProvider');
   }
   return context;
 }

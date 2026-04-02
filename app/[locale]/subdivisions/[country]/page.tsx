@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import GuessAdminSubdivisionsGame from '~/components/game/GuessAdminSubdivisionsGame';
+import GuessSubdivisionsGame from '~/components/game/guess-subdivisions/GuessSubdivisionsGame';
 import { SUPPORTED_ADMIN_QUIZ_COUNTRIES, isAdminQuizCountrySlug } from '~/lib/adminQuizCountries';
 import { getAdminSubdivisionQuizPayload } from '~/lib/server/adminSubdivisionQuiz';
 
@@ -43,7 +43,7 @@ export default async function SubdivisionsPage({ params }: SubdivisionsPageProps
 
   return (
     <main className="h-[100svh] w-full overflow-hidden bg-slate-950 text-slate-100">
-      <GuessAdminSubdivisionsGame key={quiz.country} quiz={quiz} />
+      <GuessSubdivisionsGame key={quiz.country} quiz={quiz} />
     </main>
   );
 }

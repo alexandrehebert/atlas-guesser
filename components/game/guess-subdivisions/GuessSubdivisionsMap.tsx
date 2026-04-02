@@ -4,8 +4,8 @@ import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { Map as MapIcon } from 'lucide-react';
 import type { QuizArea } from '~/lib/server/adminSubdivisionQuiz';
-import { useAdminGame } from './contexts/AdminGameContext';
-import { useAdminGameMap } from './contexts/AdminGameMapContext';
+import { useSubdivisionsGame } from './contexts/SubdivisionsGameContext';
+import { useSubdivisionsGameMap } from './contexts/SubdivisionsGameMapContext';
 
 function rectsOverlap(
   first: { x: number; y: number; width: number; height: number },
@@ -91,7 +91,7 @@ export default function GuessAdminSubdivisionsMap() {
     hoveredCode,
     setHoveredCode,
     submitAnswer,
-  } = useAdminGame();
+  } = useSubdivisionsGame();
 
   const {
     svgRef,
@@ -100,7 +100,7 @@ export default function GuessAdminSubdivisionsMap() {
     mapVisible,
     suppressClickRef,
     useLargeAnswerLabels,
-  } = useAdminGameMap();
+  } = useSubdivisionsGameMap();
 
   const handleMapClick = (selectedCode: string) => {
     if (suppressClickRef.current) {

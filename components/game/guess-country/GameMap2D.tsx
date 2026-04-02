@@ -3,9 +3,9 @@
 import { useTranslations } from 'next-intl';
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
 import { useGame } from './contexts/GameContext';
-import { useGameLayout } from './contexts/GameLayoutContext';
-import { useGameMap } from './contexts/GameMapContext';
-import { MAP_MODES } from './constants';
+import { useGameLayout } from '../contexts/GameLayoutContext';
+import { useGameMap } from '../contexts/GameMapContext';
+import { MAP_MODES } from '../constants';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { AnswerState, RoundState } from './types';
 

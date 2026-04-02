@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { useGame } from './contexts/GameContext';
-import { MAP_MODES } from './constants';
+import { MAP_MODES } from '../constants';
 import GameOptions from './GameOptions';
 import GamePrompt from './GamePrompt';
 import GameResult from './GameResult';

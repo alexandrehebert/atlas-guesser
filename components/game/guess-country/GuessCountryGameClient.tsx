@@ -7,8 +7,8 @@ import type { MapView } from "./contexts/GameContext";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { GameProvider, useGame } from "./contexts/GameContext";
-import { GameLayoutProvider } from "./contexts/GameLayoutContext";
-import { GameMapProvider } from "./contexts/GameMapContext";
+import { GameLayoutProvider } from "../contexts/GameLayoutContext";
+import { GameMapProvider } from "./contexts/GameMapProvider";
 
 const GAME_MODES: GameMode[] = [
   "flag-to-country",

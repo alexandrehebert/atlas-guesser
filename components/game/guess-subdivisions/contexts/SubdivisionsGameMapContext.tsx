@@ -13,7 +13,7 @@ import {
 } from 'react';
 import { select } from 'd3-selection';
 import { zoom, zoomIdentity, type ZoomBehavior } from 'd3-zoom';
-import { GameMapContext, type GameMapContextValue } from './GameMapContext';
+import { GameMapContext, type GameMapContextValue } from '../../contexts/GameMapContext';
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 6;
@@ -29,7 +29,7 @@ export interface MapTransformState {
   y: number;
 }
 
-interface AdminGameMapContextValue {
+interface SubdivisionsGameMapContextValue {
   svgRef: RefObject<SVGSVGElement | null>;
   mapTransform: MapTransformState;
   isPanning: boolean;
@@ -43,15 +43,15 @@ interface AdminGameMapContextValue {
   resetZoom: () => void;
 }
 
-const AdminGameMapContext = createContext<AdminGameMapContextValue | null>(null);
+const SubdivisionsGameMapContext = createContext<SubdivisionsGameMapContextValue | null>(null);
 
-interface AdminGameMapProviderProps {
+interface SubdivisionsGameMapProviderProps {
   viewBoxWidth: number;
   viewBoxHeight: number;
   children: ReactNode;
 }
 
-export function AdminGameMapProvider({ viewBoxWidth, viewBoxHeight, children }: AdminGameMapProviderProps) {
+export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, children }: SubdivisionsGameMapProviderProps) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const zoomBehaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   const mapTransformRef = useRef<MapTransformState>({ zoom: 1, x: 0, y: 0 });
@@ -212,7 +212,7 @@ export function AdminGameMapProvider({ viewBoxWidth, viewBoxHeight, children }: 
     focusCountry: () => {},
   }), [mapTransform, zoomBy, resetZoom]);
 
-  const adminMapValue = useMemo<AdminGameMapContextValue>(() => ({
+  const adminMapValue = useMemo<SubdivisionsGameMapContextValue>(() => ({
     svgRef,
     mapTransform,
     isPanning,
@@ -237,17 +237,17 @@ export function AdminGameMapProvider({ viewBoxWidth, viewBoxHeight, children }: 
 
   return (
     <GameMapContext.Provider value={gameMapValue}>
-      <AdminGameMapContext.Provider value={adminMapValue}>
+      <SubdivisionsGameMapContext.Provider value={adminMapValue}>
         {children}
-      </AdminGameMapContext.Provider>
+      </SubdivisionsGameMapContext.Provider>
     </GameMapContext.Provider>
   );
 }
 
-export function useAdminGameMap(): AdminGameMapContextValue {
-  const context = useContext(AdminGameMapContext);
+export function useSubdivisionsGameMap(): SubdivisionsGameMapContextValue {
+  const context = useContext(SubdivisionsGameMapContext);
   if (!context) {
-    throw new Error('useAdminGameMap must be used within an AdminGameMapProvider');
+    throw new Error('useSubdivisionsGameMap must be used within an SubdivisionsGameMapProvider');
   }
   return context;
 }

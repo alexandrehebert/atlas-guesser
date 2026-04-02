@@ -5,13 +5,13 @@ import { useTranslations } from 'next-intl';
 import { Globe, Map, Settings2, Trash2 } from 'lucide-react';
 import { usePathname } from '~/i18n/navigation';
 import { RouteLoadingLink } from '~/components/RouteLoadingLink';
-import { useAdminGame } from './contexts/AdminGameContext';
-import { useGameLayout } from './contexts/GameLayoutContext';
+import { useSubdivisionsGame } from './contexts/SubdivisionsGameContext';
+import { useGameLayout } from '../contexts/GameLayoutContext';
 
 const PANEL_EXIT_ANIMATION_MS = 220;
 const PANEL_SHOW_DELAY_MS = 18;
 
-export default function AdminGameSettingsMenu() {
+export default function SubdivisionsGameSettingsMenu() {
   const [open, setOpen] = useState(false);
   const [renderPanel, setRenderPanel] = useState(false);
   const [panelVisible, setPanelVisible] = useState(false);
@@ -19,7 +19,7 @@ export default function AdminGameSettingsMenu() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const t = useTranslations('guesser');
   const tAdmin = useTranslations('subdivisionsGuesser');
-  const { score, clearScore, gameMode, switchGameMode } = useAdminGame();
+  const { score, clearScore, gameMode, switchGameMode } = useSubdivisionsGame();
   const { isMobile } = useGameLayout();
   const pathname = usePathname();
   const hasScore = score.correct > 0 || score.total > 0 || score.streak > 0 || score.bestStreak > 0;

@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { useIsMobile } from '../hooks/useIsMobile';
-export { useGame } from './GameContext';
 
 interface GameLayoutContextValue {
   isMobile: boolean;

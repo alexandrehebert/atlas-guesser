@@ -6,7 +6,7 @@ import GameModeSelector from "./GameModeSelector";
 import GameScore from "./GameScore";
 import { Globe, Map, Settings2, Trash2 } from "lucide-react";
 import { useGame } from './contexts/GameContext';
-import { useGameLayout } from './contexts/GameLayoutContext';
+import { useGameLayout } from '../contexts/GameLayoutContext';
 import { usePathname } from '~/i18n/navigation';
 import { RouteLoadingLink } from '~/components/RouteLoadingLink';
 

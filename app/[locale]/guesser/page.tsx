@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import GuesserClientWrapper from './GuesserClientWrapper';
 import { getCountryQuizPayload } from '~/lib/server/countryQuiz';
-import { createRound } from '~/components/game/rounds';
-import type { GameMode } from '~/components/game/types';
+import { createRound } from '~/components/game/guess-country/rounds';
+import type { GameMode } from '~/components/game/guess-country/types';
 
 interface GuesserPageProps {
   params: Promise<{ locale: string }>;
