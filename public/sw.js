@@ -1,5 +1,5 @@
-const STATIC_CACHE = 'atlas-guesser-static-v1';
-const RUNTIME_CACHE = 'atlas-guesser-runtime-v1';
+const STATIC_CACHE = 'atlas-guesser-static-v2';
+const RUNTIME_CACHE = 'atlas-guesser-runtime-v2';
 const OFFLINE_URL = '/offline.html';
 
 const PRECACHE_URLS = [
@@ -63,6 +63,17 @@ self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(request.url);
 
   if (requestUrl.origin !== self.location.origin) {
+    return;
+  }
+
+  // Never cache Next internals/data requests to avoid stale JS/RSC payloads
+  // being mixed with fresh HTML, which can trigger hydration mismatches.
+  if (
+    requestUrl.pathname.startsWith('/_next/')
+    || requestUrl.pathname === '/sw.js'
+    || requestUrl.searchParams.has('_rsc')
+    || requestUrl.searchParams.has('__nextDataReq')
+  ) {
     return;
   }
 
