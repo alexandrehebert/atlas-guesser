@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent, type WheelEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, ChevronDown, Map as MapIcon, Minus, Plus, RotateCcw } from 'lucide-react';
-import { Link } from '~/i18n/navigation';
+import { Link, useRouter } from '~/i18n/navigation';
 import type { AdminQuizLevel, AdminSubdivisionQuizPayload, QuizArea } from '~/lib/server/adminSubdivisionQuiz';
 
 const MIN_ZOOM = 1;
@@ -137,6 +137,7 @@ function getDefaultLevel(quiz: AdminSubdivisionQuizPayload): AdminQuizLevel | un
 
 export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisionsGameProps) {
   const t = useTranslations('subdivisionsGuesser');
+  const router = useRouter();
   const defaultLevel = getDefaultLevel(quiz);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const topControlsRef = useRef<HTMLDivElement | null>(null);
@@ -155,6 +156,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
   const [mapTransform, setMapTransform] = useState<MapTransformState>({ zoom: 1, x: 0, y: 0 });
   const [mapVisible, setMapVisible] = useState(false);
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [useLargeAnswerLabels, setUseLargeAnswerLabels] = useState(false);
   const [isSmallViewport, setIsSmallViewport] = useState(false);
@@ -875,14 +877,20 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
                 {quiz.availableCountries.map((country) => {
                   const isActiveCountry = country === quiz.country;
                   return (
-                    <Link
+                    <button
                       key={country}
-                      href={`/subdivisions/${country}`}
-                      onClick={() => setIsCountryDropdownOpen(false)}
-                      className={`block px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] transition ${isActiveCountry ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
+                      type="button"
+                      onClick={() => {
+                        setIsCountryDropdownOpen(false);
+                        if (!isActiveCountry) {
+                          setIsNavigating(true);
+                          router.push(`/subdivisions/${country}`);
+                        }
+                      }}
+                      className={`block w-full px-3 py-1.5 text-left text-[11px] font-semibold uppercase tracking-[0.13em] transition ${isActiveCountry ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
                     >
                       {t(`countries.${country}`)}
-                    </Link>
+                    </button>
                   );
                 })}
               </div>
@@ -1286,7 +1294,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
       </svg>
 
       <div
-        className={`absolute inset-0 z-50 flex items-center justify-center bg-slate-950/82 transition-opacity duration-500 ${mapVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        className={`absolute inset-0 z-50 flex items-center justify-center bg-slate-950/82 transition-opacity duration-500 ${mapVisible && !isNavigating ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
       >
         <MapIcon className="animate-spin text-sky-400" size={64} strokeWidth={2.5} />
       </div>
