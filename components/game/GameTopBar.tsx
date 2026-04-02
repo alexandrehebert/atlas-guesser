@@ -5,14 +5,14 @@ import GameMapViewToggle from './GameMapViewToggle';
 import GameZoomControls from './GameZoomControls';
 import { useGameLayout } from './contexts/GameLayoutContext';
 import { ArrowLeft } from 'lucide-react';
-import { Link } from '~/i18n/navigation';
+import { RouteLoadingLink } from '~/components/RouteLoadingLink';
 
 export default function GameTopBar() {
   const { topBarRef, isMobile } = useGameLayout();
   return (
     <div ref={topBarRef} className="absolute left-4 right-4 top-4 z-50 flex flex-wrap items-center justify-between gap-2 sm:left-5 sm:right-5 sm:top-5">
       <div className="flex items-center gap-3 select-none">
-        <Link
+        <RouteLoadingLink
           href="/"
           aria-label="Go to landing page"
           className="group inline-flex h-8 items-center gap-1 overflow-visible rounded-full border border-white/10 bg-white/5 pl-0 pr-3 shadow-lg backdrop-blur-sm transition-[background-color,border-color,box-shadow] duration-200 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_8px_20px_rgba(2,6,23,0.45)] focus-visible:bg-white/10 focus-visible:border-white/20"
@@ -39,7 +39,7 @@ export default function GameTopBar() {
             />
           </svg>
           <span className="text-[0.68rem] font-medium uppercase tracking-[0.2em] text-slate-300">Atlas Guesser</span>
-        </Link>
+        </RouteLoadingLink>
       </div>
       {/* Zoom controls and then settings button */}
       <div className="flex items-center gap-2">

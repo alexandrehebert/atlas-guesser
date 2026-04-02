@@ -1,16 +1,20 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent, type WheelEvent } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { select } from 'd3-selection';
+import { zoom, zoomIdentity, type ZoomBehavior, type ZoomTransform as D3ZoomTransform } from 'd3-zoom';
 import { ArrowLeft, ChevronDown, Map as MapIcon, Minus, Plus, RotateCcw } from 'lucide-react';
 import { Link, useRouter } from '~/i18n/navigation';
+import { useGlobalRouteLoading } from '~/components/GlobalRouteLoadingProvider';
 import type { AdminQuizLevel, AdminSubdivisionQuizPayload, QuizArea } from '~/lib/server/adminSubdivisionQuiz';
 
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 6;
 const MOBILE_MIN_ZOOM = 0.7;
 const MOBILE_MAX_ZOOM = 8;
-const ZOOM_STEP = 0.25;
+const ZOOM_IN_FACTOR = 1.25;
+const ZOOM_OUT_FACTOR = 0.8;
 const ZOOM_EPSILON = 0.0001;
 
 interface GuessAdminSubdivisionsGameProps {
@@ -36,21 +40,6 @@ interface MapTransformState {
   zoom: number;
   x: number;
   y: number;
-}
-
-interface DragState {
-  active: boolean;
-  dragging: boolean;
-  pointerId: number | null;
-  startPoint: { x: number; y: number } | null;
-  origin: { x: number; y: number };
-}
-
-interface PinchState {
-  active: boolean;
-  startDistance: number;
-  startZoom: number;
-  center: { x: number; y: number } | null;
 }
 
 interface MapSourceItem {
@@ -155,6 +144,7 @@ function getDefaultLevel(quiz: AdminSubdivisionQuizPayload): AdminQuizLevel | un
 export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisionsGameProps) {
   const t = useTranslations('subdivisionsGuesser');
   const router = useRouter();
+  const { startRouteLoading } = useGlobalRouteLoading();
   const defaultLevel = getDefaultLevel(quiz);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const topControlsRef = useRef<HTMLDivElement | null>(null);
@@ -174,25 +164,11 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
   const [mapVisible, setMapVisible] = useState(false);
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [isSourcesModalOpen, setIsSourcesModalOpen] = useState(false);
-  const [isNavigating, setIsNavigating] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [useLargeAnswerLabels, setUseLargeAnswerLabels] = useState(false);
   const [isSmallViewport, setIsSmallViewport] = useState(false);
-  const dragStateRef = useRef<DragState>({
-    active: false,
-    dragging: false,
-    pointerId: null,
-    startPoint: null,
-    origin: { x: 0, y: 0 },
-  });
+  const zoomBehaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
   const mapTransformRef = useRef<MapTransformState>({ zoom: 1, x: 0, y: 0 });
-  const activePointersRef = useRef<Map<number, { clientX: number; clientY: number }>>(new Map());
-  const pinchStateRef = useRef<PinchState>({
-    active: false,
-    startDistance: 0,
-    startZoom: 1,
-    center: null,
-  });
   const suppressClickRef = useRef(false);
 
   const activeLevel = quiz.levels.find((level) => level.id === quizLevelId) ?? defaultLevel;
@@ -206,6 +182,26 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
     [activeAreas],
   );
 
+  const getZoomBounds = useCallback(() => {
+    if (isSmallViewport) {
+      return { min: MOBILE_MIN_ZOOM, max: MOBILE_MAX_ZOOM };
+    }
+
+    return { min: MIN_ZOOM, max: MAX_ZOOM };
+  }, [isSmallViewport]);
+
+  const zoomStateFromD3Transform = useCallback((transform: D3ZoomTransform): MapTransformState => (
+    {
+      zoom: transform.k,
+      x: transform.x,
+      y: transform.y,
+    }
+  ), []);
+
+  const d3TransformFromZoomState = useCallback((transform: MapTransformState) => (
+    zoomIdentity.translate(transform.x, transform.y).scale(transform.zoom)
+  ), []);
+
   useEffect(() => {
     mapTransformRef.current = mapTransform;
   }, [mapTransform]);
@@ -214,16 +210,56 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
     const svgElement = svgRef.current;
     if (!svgElement) return;
 
+    const bounds = getZoomBounds();
+    const behavior = zoom<SVGSVGElement, unknown>()
+      .scaleExtent([bounds.min, bounds.max])
+      .on('start', (event) => {
+        const sourceEventType = event.sourceEvent?.type;
+        if (sourceEventType === 'pointerdown' || sourceEventType === 'mousedown' || sourceEventType === 'touchstart') {
+          setIsPanning(true);
+        }
+      })
+      .on('zoom', (event) => {
+        const nextTransform = zoomStateFromD3Transform(event.transform);
+        mapTransformRef.current = nextTransform;
+        setMapTransform(nextTransform);
+
+        const sourceEventType = event.sourceEvent?.type ?? '';
+        if (event.sourceEvent) {
+          hasUserMovedMapRef.current = true;
+        }
+        if (sourceEventType.includes('move')) {
+          suppressClickRef.current = true;
+        }
+      })
+      .on('end', () => {
+        setIsPanning(false);
+        window.setTimeout(() => {
+          suppressClickRef.current = false;
+        }, 0);
+      });
+
     const preventBrowserPinchZoom = (event: globalThis.WheelEvent) => {
+      const zoomingIn = event.deltaY < 0;
+      const atOrAboveMax = mapTransformRef.current.zoom >= bounds.max - 0.001;
+
       // Trackpad pinch is exposed as ctrl/cmd + wheel in Chromium/WebKit.
-      if (event.ctrlKey || event.metaKey) {
+      if ((event.ctrlKey || event.metaKey) && zoomingIn && atOrAboveMax) {
         event.preventDefault();
       }
     };
 
     const preventGestureZoom = (event: Event) => {
-      event.preventDefault();
+      const atOrAboveMax = mapTransformRef.current.zoom >= bounds.max - 0.001;
+      if (atOrAboveMax) {
+        event.preventDefault();
+      }
     };
+
+    zoomBehaviorRef.current = behavior;
+    const svgSelection = select(svgElement);
+    svgSelection.call(behavior);
+    svgSelection.call(behavior.transform, d3TransformFromZoomState(mapTransformRef.current));
 
     svgElement.addEventListener('wheel', preventBrowserPinchZoom, { passive: false });
     svgElement.addEventListener('gesturestart', preventGestureZoom, { passive: false });
@@ -231,12 +267,33 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
     svgElement.addEventListener('gestureend', preventGestureZoom, { passive: false });
 
     return () => {
+      zoomBehaviorRef.current = null;
       svgElement.removeEventListener('wheel', preventBrowserPinchZoom);
       svgElement.removeEventListener('gesturestart', preventGestureZoom);
       svgElement.removeEventListener('gesturechange', preventGestureZoom);
       svgElement.removeEventListener('gestureend', preventGestureZoom);
+      svgSelection.on('.zoom', null);
     };
-  }, []);
+  }, [d3TransformFromZoomState, getZoomBounds, zoomStateFromD3Transform]);
+
+  useEffect(() => {
+    const svgElement = svgRef.current;
+    const behavior = zoomBehaviorRef.current;
+    if (!svgElement || !behavior) {
+      return;
+    }
+
+    const currentTransform = mapTransformRef.current;
+    if (
+      Math.abs(currentTransform.zoom - mapTransform.zoom) < ZOOM_EPSILON
+      && Math.abs(currentTransform.x - mapTransform.x) < ZOOM_EPSILON
+      && Math.abs(currentTransform.y - mapTransform.y) < ZOOM_EPSILON
+    ) {
+      return;
+    }
+
+    select(svgElement).call(behavior.transform, d3TransformFromZoomState(mapTransform));
+  }, [d3TransformFromZoomState, mapTransform]);
 
   useEffect(() => {
     const updateViewport = () => {
@@ -554,14 +611,6 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
     setHoveredCode(null);
   };
 
-  const getZoomBounds = () => {
-    if (isSmallViewport) {
-      return { min: MOBILE_MIN_ZOOM, max: MOBILE_MAX_ZOOM };
-    }
-
-    return { min: MIN_ZOOM, max: MAX_ZOOM };
-  };
-
   const clampZoom = (value: number) => {
     const bounds = getZoomBounds();
     return Math.max(bounds.min, Math.min(bounds.max, value));
@@ -579,36 +628,25 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
     };
   };
 
-  const zoomAtPoint = (
-    nextZoomRaw: number,
-    point: { x: number; y: number },
-    options: { recenterOnMin?: boolean } = {},
-  ) => {
-    setMapTransform((current) => {
-      const nextZoom = clampZoom(nextZoomRaw);
-      const bounds = getZoomBounds();
-
-      if (options.recenterOnMin && nextZoom === bounds.min) {
-        return getHomeMapTransform(bounds.min);
-      }
-
-      if (nextZoom === current.zoom) {
-        return current;
-      }
-
-      const ratio = nextZoom / current.zoom;
-      return {
-        zoom: nextZoom,
-        x: (1 - ratio) * point.x + ratio * current.x,
-        y: (1 - ratio) * point.y + ratio * current.y,
-      };
-    });
-  };
-
   const getMapCenterPoint = () => ({
     x: quiz.viewBox.width / 2,
     y: quiz.viewBox.height / 2,
   });
+
+  const zoomBy = (factor: number) => {
+    const svgElement = svgRef.current;
+    const behavior = zoomBehaviorRef.current;
+    if (!svgElement || !behavior) {
+      return;
+    }
+
+    const center = getMapCenterPoint();
+    hasUserMovedMapRef.current = true;
+    select(svgElement)
+      .transition()
+      .duration(180)
+      .call(behavior.scaleBy, factor, [center.x, center.y]);
+  };
 
   const zoomBounds = getZoomBounds();
   const isAtMinZoom = mapTransform.zoom <= zoomBounds.min + ZOOM_EPSILON;
@@ -619,9 +657,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
       return;
     }
 
-    const center = getMapCenterPoint();
-    hasUserMovedMapRef.current = true;
-    zoomAtPoint(mapTransform.zoom + ZOOM_STEP, center);
+    zoomBy(ZOOM_IN_FACTOR);
   };
 
   const handleZoomOut = () => {
@@ -629,217 +665,23 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
       return;
     }
 
-    const center = getMapCenterPoint();
-    hasUserMovedMapRef.current = true;
-    zoomAtPoint(mapTransform.zoom - ZOOM_STEP, center, { recenterOnMin: true });
+    zoomBy(ZOOM_OUT_FACTOR);
   };
 
   const handleResetZoom = () => {
     hasUserMovedMapRef.current = false;
-    setMapTransform(getHomeMapTransform(1));
-  };
-
-  const handleWheelZoom = (event: WheelEvent<SVGSVGElement>) => {
-    event.preventDefault();
     const svgElement = svgRef.current;
-    const ctm = svgElement?.getScreenCTM();
-    if (!svgElement || !ctm) {
+    const behavior = zoomBehaviorRef.current;
+    const homeTransform = getHomeMapTransform(1);
+    if (!svgElement || !behavior) {
+      setMapTransform(homeTransform);
       return;
     }
 
-    const pointer = svgElement.createSVGPoint();
-    pointer.x = event.clientX;
-    pointer.y = event.clientY;
-
-    let svgPoint: { x: number; y: number } | null = null;
-    try {
-      const transformed = pointer.matrixTransform(ctm.inverse());
-      svgPoint = { x: transformed.x, y: transformed.y };
-    } catch {
-      svgPoint = null;
-    }
-
-    if (!svgPoint) {
-      return;
-    }
-
-    const delta = event.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP;
-    hasUserMovedMapRef.current = true;
-    zoomAtPoint(mapTransform.zoom + delta, svgPoint, { recenterOnMin: delta < 0 });
-  };
-
-  const getSvgPointFromClient = (clientX: number, clientY: number): { x: number; y: number } | null => {
-    const svgElement = svgRef.current;
-    const ctm = svgElement?.getScreenCTM();
-    if (!svgElement || !ctm) {
-      return null;
-    }
-
-    const pointer = svgElement.createSVGPoint();
-    pointer.x = clientX;
-    pointer.y = clientY;
-
-    try {
-      const point = pointer.matrixTransform(ctm.inverse());
-      return { x: point.x, y: point.y };
-    } catch {
-      return null;
-    }
-  };
-
-  const handlePointerDown = (event: PointerEvent<SVGSVGElement>) => {
-    if (event.pointerType === 'mouse' && event.button !== 0) {
-      return;
-    }
-
-    activePointersRef.current.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
-
-    if (activePointersRef.current.size >= 2) {
-      const pointers = Array.from(activePointersRef.current.values());
-      const first = pointers[0];
-      const second = pointers[1];
-      const startDistance = Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
-      const centerClientX = (first.clientX + second.clientX) / 2;
-      const centerClientY = (first.clientY + second.clientY) / 2;
-
-      pinchStateRef.current = {
-        active: startDistance > 0,
-        startDistance,
-        startZoom: mapTransformRef.current.zoom,
-        center: getSvgPointFromClient(centerClientX, centerClientY),
-      };
-
-      dragStateRef.current = {
-        active: false,
-        dragging: false,
-        pointerId: null,
-        startPoint: null,
-        origin: { x: 0, y: 0 },
-      };
-
-      setIsPanning(false);
-      suppressClickRef.current = true;
-      hasUserMovedMapRef.current = true;
-      return;
-    }
-
-    const point = getSvgPointFromClient(event.clientX, event.clientY);
-    if (!point) {
-      return;
-    }
-
-    dragStateRef.current = {
-      active: true,
-      dragging: false,
-      pointerId: event.pointerId,
-      startPoint: point,
-      origin: { x: mapTransformRef.current.x, y: mapTransformRef.current.y },
-    };
-
-    setIsPanning(false);
-    suppressClickRef.current = false;
-    hasUserMovedMapRef.current = true;
-  };
-
-  const handlePointerMove = (event: PointerEvent<SVGSVGElement>) => {
-    const activePointer = activePointersRef.current.get(event.pointerId);
-    if (activePointer) {
-      activePointersRef.current.set(event.pointerId, { clientX: event.clientX, clientY: event.clientY });
-    }
-
-    if (pinchStateRef.current.active && activePointersRef.current.size >= 2) {
-      const pointers = Array.from(activePointersRef.current.values());
-      const first = pointers[0];
-      const second = pointers[1];
-      const distance = Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
-      if (distance <= 0 || pinchStateRef.current.startDistance <= 0) {
-        return;
-      }
-
-      const scale = distance / pinchStateRef.current.startDistance;
-      const centerClientX = (first.clientX + second.clientX) / 2;
-      const centerClientY = (first.clientY + second.clientY) / 2;
-      const center = getSvgPointFromClient(centerClientX, centerClientY)
-        ?? pinchStateRef.current.center
-        ?? getMapCenterPoint();
-      hasUserMovedMapRef.current = true;
-      zoomAtPoint(pinchStateRef.current.startZoom * scale, center, { recenterOnMin: scale < 1 });
-      suppressClickRef.current = true;
-      setIsPanning(false);
-      return;
-    }
-
-    const dragState = dragStateRef.current;
-    if (!dragState.active || dragState.pointerId !== event.pointerId || !dragState.startPoint) {
-      return;
-    }
-
-    const point = getSvgPointFromClient(event.clientX, event.clientY);
-    if (!point) {
-      return;
-    }
-
-    const dx = point.x - dragState.startPoint.x;
-    const dy = point.y - dragState.startPoint.y;
-
-    if (!dragState.dragging) {
-      if (Math.hypot(dx, dy) < 6) {
-        return;
-      }
-
-      dragStateRef.current = {
-        ...dragState,
-        dragging: true,
-      };
-      setIsPanning(true);
-      suppressClickRef.current = true;
-      event.currentTarget.setPointerCapture(event.pointerId);
-    }
-
-    setMapTransform((current) => ({
-      ...current,
-      x: dragState.origin.x + dx,
-      y: dragState.origin.y + dy,
-    }));
-  };
-
-  const endPointerPan = (event: PointerEvent<SVGSVGElement>) => {
-    activePointersRef.current.delete(event.pointerId);
-
-    if (activePointersRef.current.size < 2) {
-      pinchStateRef.current = {
-        active: false,
-        startDistance: 0,
-        startZoom: mapTransformRef.current.zoom,
-        center: null,
-      };
-    }
-
-    const dragState = dragStateRef.current;
-    if (!dragState.active || dragState.pointerId !== event.pointerId) {
-      return;
-    }
-
-    const wasDragging = dragState.dragging;
-
-    dragStateRef.current = {
-      active: false,
-      dragging: false,
-      pointerId: null,
-      startPoint: null,
-      origin: { x: 0, y: 0 },
-    };
-
-    setIsPanning(false);
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-
-    if (wasDragging) {
-      window.setTimeout(() => {
-        suppressClickRef.current = false;
-      }, 0);
-    }
+    select(svgElement)
+      .transition()
+      .duration(220)
+      .call(behavior.transform, d3TransformFromZoomState(homeTransform));
   };
 
   const getAreaClasses = (area: QuizArea): string => {
@@ -969,6 +811,17 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
         <Link
           href="/"
           aria-label="Go to landing page"
+          onClick={(event) => {
+            if (
+              event.button === 0
+              && !event.metaKey
+              && !event.altKey
+              && !event.ctrlKey
+              && !event.shiftKey
+            ) {
+              startRouteLoading();
+            }
+          }}
           className="pointer-events-auto group inline-flex h-8 items-center gap-1 overflow-visible rounded-full border border-white/10 bg-white/5 pl-0 pr-3 shadow-lg backdrop-blur-sm transition-[background-color,border-color,box-shadow] duration-200 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_8px_20px_rgba(2,6,23,0.45)] focus-visible:bg-white/10 focus-visible:border-white/20"
         >
           <span
@@ -1019,7 +872,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
                       onClick={() => {
                         setIsCountryDropdownOpen(false);
                         if (!isActiveCountry) {
-                          setIsNavigating(true);
+                          startRouteLoading();
                           router.push(`/subdivisions/${country}`);
                         }
                       }}
@@ -1325,11 +1178,6 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
         preserveAspectRatio="xMidYMid meet"
         className={`absolute inset-0 h-full w-full select-none transition-opacity duration-300 ${mapVisible ? 'opacity-100' : 'opacity-0'} ${isPanning ? 'cursor-grabbing' : 'cursor-grab'}`}
         style={{ touchAction: 'none' }}
-        onWheel={handleWheelZoom}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={endPointerPan}
-        onPointerCancel={endPointerPan}
       >
         <g
           transform={`translate(${mapTransform.x}, ${mapTransform.y}) scale(${mapTransform.zoom})`}
@@ -1477,7 +1325,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
       </svg>
 
       <div
-        className={`absolute inset-0 z-50 flex items-center justify-center bg-slate-950/82 transition-opacity duration-500 ${mapVisible && !isNavigating ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        className={`absolute inset-0 z-50 flex items-center justify-center bg-slate-950/80 transition-opacity duration-700 ${mapVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
       >
         <MapIcon className="animate-spin text-sky-400" size={64} strokeWidth={2.5} />
       </div>

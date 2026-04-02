@@ -7,6 +7,7 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '~/i18n/routing';
 import { PwaInit } from '~/components/PwaInit';
+import { GlobalRouteLoadingProvider } from '~/components/GlobalRouteLoadingProvider';
 
 export const metadata: Metadata = {
   title: 'Atlas Guesser',
@@ -37,7 +38,9 @@ export default async function LocaleLayout({
       <body className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}>
         <PwaInit />
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <GlobalRouteLoadingProvider>
+            {children}
+          </GlobalRouteLoadingProvider>
         </NextIntlClientProvider>
         <Analytics />
       </body>
