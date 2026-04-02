@@ -310,6 +310,11 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
   }, [mapVisible]);
 
   const targetArea = areasByCode.get(targetCode) ?? activeAreas[0];
+  const isChoiceMode = gameMode === 'highlighted-to-name';
+  const promptAreaLabel = isChoiceMode ? '' : (targetArea?.name ?? '');
+  const promptBodyLabel = isChoiceMode
+    ? (quizLevel === 'regions' ? t('prompt_body_regions_choices') : t('prompt_body_departements_choices'))
+    : (quizLevel === 'regions' ? t('prompt_body_regions') : t('prompt_body_departements'));
 
   const switchQuizLevel = (nextLevel: QuizLevel) => {
     if (nextLevel === quizLevel) {
@@ -789,10 +794,8 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
         <p className="text-xs uppercase tracking-[0.18em] text-rose-100">
           {quizLevel === 'regions' ? t('prompt_eyebrow_regions') : t('prompt_eyebrow_departements')}
         </p>
-        <p className="mt-2 text-2xl font-semibold text-white">{targetArea?.name}</p>
-        <p className="mt-1 text-sm text-slate-300">
-          {quizLevel === 'regions' ? t('prompt_body_regions') : t('prompt_body_departements')}
-        </p>
+        <p className="mt-2 text-2xl font-semibold text-white">{promptAreaLabel}</p>
+        <p className="mt-1 text-sm text-slate-300">{promptBodyLabel}</p>
 
         {gameMode === 'highlighted-to-name' ? (
           <div className="mt-4 grid grid-cols-2 gap-2">
@@ -907,10 +910,8 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
           <p className="text-xs uppercase tracking-[0.18em] text-rose-100">
             {quizLevel === 'regions' ? t('prompt_eyebrow_regions') : t('prompt_eyebrow_departements')}
           </p>
-          <p className="mt-2 text-2xl font-semibold text-white">{targetArea?.name}</p>
-          <p className="mt-1 text-sm text-slate-300">
-            {quizLevel === 'regions' ? t('prompt_body_regions') : t('prompt_body_departements')}
-          </p>
+          <p className="mt-2 text-2xl font-semibold text-white">{promptAreaLabel}</p>
+          <p className="mt-1 text-sm text-slate-300">{promptBodyLabel}</p>
 
           {gameMode === 'highlighted-to-name' ? (
             <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">

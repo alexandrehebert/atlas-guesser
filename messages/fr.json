@@ -239,6 +239,8 @@
     "prompt_eyebrow_regions": "Indice region",
     "prompt_body_departements": "Retrouvez ce departement sur la carte de France.",
     "prompt_body_regions": "Retrouvez cette region sur la carte de France.",
+    "prompt_body_departements_choices": "De quel departement s'agit-il ?",
+    "prompt_body_regions_choices": "De quelle region s'agit-il ?",
     "instruction_map": "Cliquez sur la bonne limite sur la carte.",
     "instruction_choices": "Une zone surlignee apparait sur la carte. Choisissez le bon nom parmi 4 options.",
     "result_label": "Resultat",

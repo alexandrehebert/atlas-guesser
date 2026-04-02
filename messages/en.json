@@ -237,6 +237,8 @@
     "prompt_eyebrow_regions": "Region prompt",
     "prompt_body_departements": "Find this department on the map of France.",
     "prompt_body_regions": "Find this region on the map of France.",
+    "prompt_body_departements_choices": "An area is highlighted on the map. Which department is it?",
+    "prompt_body_regions_choices": "An area is highlighted on the map. Which region is it?",
     "instruction_map": "Click the matching border area on the map.",
     "instruction_choices": "A highlighted area is shown on the map. Choose the correct name among 4 options.",
     "result_label": "Result",
