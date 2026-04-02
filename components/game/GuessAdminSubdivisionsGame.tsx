@@ -533,6 +533,24 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
       });
     }
 
+    if (quiz.country === 'brazil') {
+      playableItems.push({
+        filePath: 'public/maps/brazil-states.geojson',
+        sourceLabel: 'codeforgermany/click_that_hood',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
+    if (quiz.country === 'china') {
+      playableItems.push({
+        filePath: 'public/maps/china-provinces.geojson',
+        sourceLabel: 'codeforgermany/click_that_hood',
+        note: t('sources.unverified_note'),
+        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
     return [
       {
         id: 'playable',

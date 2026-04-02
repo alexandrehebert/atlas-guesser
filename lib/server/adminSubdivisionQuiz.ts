@@ -182,6 +182,36 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
       },
     ],
   },
+  brazil: {
+    countryCode: 'BR',
+    countryNames: ['brazil', 'brasil'],
+    sortLocale: 'pt',
+    defaultLevelId: 'states',
+    levels: [
+      {
+        id: 'states',
+        fileName: 'brazil-states.geojson',
+        minimumClickableSize: 1,
+        codeProperty: 'code',
+        nameProperty: 'name',
+      },
+    ],
+  },
+  china: {
+    countryCode: 'CN',
+    countryNames: ['china', 'zhongguo', '中国'],
+    sortLocale: 'zh',
+    defaultLevelId: 'provinces',
+    levels: [
+      {
+        id: 'provinces',
+        fileName: 'china-provinces.geojson',
+        minimumClickableSize: 1,
+        codeProperty: 'code',
+        nameProperty: 'name',
+      },
+    ],
+  },
 };
 
 const cachedPayloadPromises: Partial<Record<AdminQuizCountrySlug, Promise<AdminSubdivisionQuizPayload>>> = {};
