@@ -320,7 +320,8 @@
     "clear_scores_confirm": "从此设备删除保存的分数？",
     "clear_scores_confirm_cta": "删除",
     "clear_scores_cancel": "取消",
-    "game_mode_label": "游戏模式"
+    "game_mode_label": "游戏模式",
+    "level_label": "级别"
   },
   "transport": {
     "car": "Car",

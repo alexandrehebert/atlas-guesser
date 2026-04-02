@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Map as MapIcon } from 'lucide-react';
 import type { QuizArea } from '~/lib/server/adminSubdivisionQuiz';
@@ -91,6 +91,7 @@ export default function GuessSubdivisionsMap() {
     hoveredCode,
     setHoveredCode,
     submitAnswer,
+    dataSourceSections,
   } = useSubdivisionsGame();
 
   const {
@@ -101,6 +102,10 @@ export default function GuessSubdivisionsMap() {
     suppressClickRef,
     useLargeAnswerLabels,
   } = useSubdivisionsGameMap();
+
+  const [isSourcesModalOpen, setIsSourcesModalOpen] = useState(false);
+
+  const activeLevelId = activeLevel?.id ?? quiz.defaultLevelId;
 
   const handleMapClick = (selectedCode: string) => {
     if (suppressClickRef.current) {
@@ -329,6 +334,79 @@ export default function GuessSubdivisionsMap() {
       >
         <MapIcon className="animate-spin text-sky-400" size={64} strokeWidth={2.5} />
       </div>
+
+      {/* Area count badge — desktop only, bottom-left watermark */}
+      <div className="pointer-events-none absolute bottom-4 left-4 z-10 hidden sm:block">
+        <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-300/45">
+          {t(`top_badge.${activeLevelId}`, { count: activeAreas.length })}
+        </span>
+      </div>
+
+      {/* Data sources watermark — desktop only, bottom-right */}
+      <button
+        type="button"
+        onClick={() => setIsSourcesModalOpen(true)}
+        className="absolute bottom-4 right-4 z-10 hidden sm:block text-[10px] font-medium uppercase tracking-[0.18em] text-slate-300/45 transition-[color] duration-150 hover:text-slate-100/90 focus-visible:text-slate-100/90"
+      >
+        {t('sources.open_button')}
+      </button>
+
+      {/* Sources modal */}
+      {isSourcesModalOpen ? (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/62 p-4 backdrop-blur-sm"
+          onClick={() => setIsSourcesModalOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="geojson-sources-title"
+            className="w-full max-w-2xl rounded-[1.75rem] border border-white/12 bg-slate-950/96 p-5 shadow-[0_32px_90px_rgba(2,6,23,0.6)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-sky-200/82">{t('sources.open_button')}</p>
+                <h2 id="geojson-sources-title" className="mt-2 text-xl font-semibold text-white">{t('sources.modal_title')}</h2>
+                <p className="mt-1 text-sm text-slate-300">{t('sources.modal_body')}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSourcesModalOpen(false)}
+                className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-200 transition hover:border-white/22 hover:bg-white/10"
+              >
+                {t('sources.close')}
+              </button>
+            </div>
+            <div className="mt-5 max-h-[min(70vh,36rem)] space-y-4 overflow-y-auto pr-1">
+              {dataSourceSections.map((section) => (
+                <section key={section.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                  <h3 className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-slate-300">{section.title}</h3>
+                  <div className="mt-3 space-y-3">
+                    {section.items.map((item) => (
+                      <div key={`${section.id}-${item.filePath}`} className="rounded-2xl border border-white/8 bg-slate-900/72 p-3">
+                        <p className="text-[0.68rem] font-medium uppercase tracking-[0.14em] text-slate-400">{item.filePath}</p>
+                        <p className="mt-1 text-sm font-semibold text-slate-100">{item.sourceLabel}</p>
+                        <p className="mt-1 text-sm text-slate-300">{item.note}</p>
+                        {item.url ? (
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mt-2 inline-flex rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-200 transition hover:border-white/22 hover:bg-white/10"
+                          >
+                            {t('sources.open_link')}
+                          </a>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }

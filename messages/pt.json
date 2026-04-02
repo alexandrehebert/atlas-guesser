@@ -320,7 +320,8 @@
     "clear_scores_confirm": "Excluir a pontuação salva deste dispositivo?",
     "clear_scores_confirm_cta": "Excluir",
     "clear_scores_cancel": "Cancelar",
-    "game_mode_label": "Modo de jogo"
+    "game_mode_label": "Modo de jogo",
+    "level_label": "Nível"
   },
   "transport": {
     "car": "Car",

@@ -320,7 +320,8 @@
     "clear_scores_confirm": "Delete the saved score from this device?",
     "clear_scores_confirm_cta": "Delete",
     "clear_scores_cancel": "Cancel",
-    "game_mode_label": "Game mode"
+    "game_mode_label": "Game mode",
+    "level_label": "Level"
   },
   "transport": {
     "car": "Car",

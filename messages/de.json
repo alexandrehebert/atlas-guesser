@@ -320,7 +320,8 @@
     "clear_scores_confirm": "Gespeicherte Punkte von diesem Gerät löschen?",
     "clear_scores_confirm_cta": "Löschen",
     "clear_scores_cancel": "Abbrechen",
-    "game_mode_label": "Spielmodus"
+    "game_mode_label": "Spielmodus",
+    "level_label": "Ebene"
   },
   "transport": {
     "car": "Auto",

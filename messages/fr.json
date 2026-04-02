@@ -322,7 +322,8 @@
     "clear_scores_confirm": "Supprimer le score sauvegardé sur cet appareil ?",
     "clear_scores_confirm_cta": "Supprimer",
     "clear_scores_cancel": "Annuler",
-    "game_mode_label": "Mode de jeu"
+    "game_mode_label": "Mode de jeu",
+    "level_label": "Niveau"
   },
   "transport": {
     "car": "Voiture",

@@ -6,8 +6,10 @@ import { SubdivisionsGameMapProvider } from './contexts/SubdivisionsGameMapConte
 import { GameLayoutProvider } from '../contexts/GameLayoutContext';
 import GameShell from '../GameShell';
 import GameTopBar from '../GameTopBar';
+import SubdivisionsGameTopBarControls from './SubdivisionsGameTopBarControls';
 import SubdivisionsGameSettingsMenu from './SubdivisionsGameSettingsMenu';
 import SubdivisionsGameSidebarContent from './SubdivisionsGameSidebarContent';
+import SubdivisionsGameScore from './SubdivisionsGameScore';
 import GuessSubdivisionsMap from './GuessSubdivisionsMap';
 
 interface GuessSubdivisionsGameClientProps {
@@ -22,9 +24,11 @@ export default function GuessSubdivisionsGameClient({ quiz }: GuessSubdivisionsG
           <GameShell
             mapContent={<GuessSubdivisionsMap />}
             sidebarContent={<SubdivisionsGameSidebarContent />}
+            sidebarFooter={<SubdivisionsGameScore />}
             showBackgroundGrid
             topBar={
               <GameTopBar
+                extraControls={<SubdivisionsGameTopBarControls />}
                 settingsMenu={<SubdivisionsGameSettingsMenu />}
               />
             }
