@@ -11,6 +11,7 @@ const MAX_ZOOM = 6;
 const MOBILE_MIN_ZOOM = 0.7;
 const MOBILE_MAX_ZOOM = 8;
 const ZOOM_STEP = 0.25;
+const ZOOM_EPSILON = 0.0001;
 
 interface GuessFranceDepartmentsGameProps {
   quiz: FranceAdminQuizPayload;
@@ -179,26 +180,33 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
   }, [mapTransform]);
 
   useEffect(() => {
-    const preventBrowserZoomWheel = (event: WheelEvent | globalThis.WheelEvent) => {
-      if (event.ctrlKey || event.metaKey) {
+    const svgElement = svgRef.current;
+    if (!svgElement) return;
+
+    const preventBrowserZoomAtMax = (event: globalThis.WheelEvent) => {
+      const zoomingIn = event.deltaY < 0;
+      const atOrAboveMax = mapTransformRef.current.zoom >= getZoomBounds().max - ZOOM_EPSILON;
+
+      if ((event.ctrlKey || event.metaKey) && zoomingIn && atOrAboveMax) {
         event.preventDefault();
       }
     };
 
-    const preventGesture = (event: Event) => {
-      event.preventDefault();
+    const preventGestureZoomAtMax = (event: Event) => {
+      const atOrAboveMax = mapTransformRef.current.zoom >= getZoomBounds().max - ZOOM_EPSILON;
+      if (atOrAboveMax) {
+        event.preventDefault();
+      }
     };
 
-    window.addEventListener('wheel', preventBrowserZoomWheel as EventListener, { passive: false });
-    window.addEventListener('gesturestart', preventGesture, { passive: false });
-    window.addEventListener('gesturechange', preventGesture, { passive: false });
-    window.addEventListener('gestureend', preventGesture, { passive: false });
+    svgElement.addEventListener('wheel', preventBrowserZoomAtMax, { passive: false });
+    svgElement.addEventListener('gesturestart', preventGestureZoomAtMax, { passive: false });
+    svgElement.addEventListener('gesturechange', preventGestureZoomAtMax, { passive: false });
 
     return () => {
-      window.removeEventListener('wheel', preventBrowserZoomWheel as EventListener);
-      window.removeEventListener('gesturestart', preventGesture);
-      window.removeEventListener('gesturechange', preventGesture);
-      window.removeEventListener('gestureend', preventGesture);
+      svgElement.removeEventListener('wheel', preventBrowserZoomAtMax);
+      svgElement.removeEventListener('gesturestart', preventGestureZoomAtMax);
+      svgElement.removeEventListener('gesturechange', preventGestureZoomAtMax);
     };
   }, []);
 
@@ -435,13 +443,25 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
     y: quiz.viewBox.height / 2,
   });
 
+  const zoomBounds = getZoomBounds();
+  const isAtMinZoom = mapTransform.zoom <= zoomBounds.min + ZOOM_EPSILON;
+  const isAtMaxZoom = mapTransform.zoom >= zoomBounds.max - ZOOM_EPSILON;
+
   const handleZoomIn = () => {
+    if (isAtMaxZoom) {
+      return;
+    }
+
     const center = getMapCenterPoint();
     hasUserMovedMapRef.current = true;
     zoomAtPoint(mapTransform.zoom + ZOOM_STEP, center);
   };
 
   const handleZoomOut = () => {
+    if (isAtMinZoom) {
+      return;
+    }
+
     const center = getMapCenterPoint();
     hasUserMovedMapRef.current = true;
     zoomAtPoint(mapTransform.zoom - ZOOM_STEP, center, { recenterOnMin: true });
@@ -570,7 +590,11 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
       }
 
       const scale = distance / pinchStateRef.current.startDistance;
-      const center = pinchStateRef.current.center ?? getMapCenterPoint();
+      const centerClientX = (first.clientX + second.clientX) / 2;
+      const centerClientY = (first.clientY + second.clientY) / 2;
+      const center = getSvgPointFromClient(centerClientX, centerClientY)
+        ?? pinchStateRef.current.center
+        ?? getMapCenterPoint();
       hasUserMovedMapRef.current = true;
       zoomAtPoint(pinchStateRef.current.startZoom * scale, center, { recenterOnMin: scale < 1 });
       suppressClickRef.current = true;
@@ -852,7 +876,7 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
             onClick={handleZoomOut}
             className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-slate-100 transition hover:border-white/30 hover:bg-white/10"
             aria-label={t('zoom_out')}
-            disabled={mapTransform.zoom <= getZoomBounds().min}
+            disabled={isAtMinZoom}
           >
             <Minus className="h-4 w-4" />
           </button>
@@ -869,7 +893,7 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
             onClick={handleZoomIn}
             className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-slate-100 transition hover:border-white/30 hover:bg-white/10"
             aria-label={t('zoom_in')}
-            disabled={mapTransform.zoom >= getZoomBounds().max}
+            disabled={isAtMaxZoom}
           >
             <Plus className="h-4 w-4" />
           </button>
@@ -1062,7 +1086,7 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
           onClick={handleZoomOut}
           className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-slate-100 transition hover:border-white/30 hover:bg-white/10"
           aria-label={t('zoom_out')}
-          disabled={mapTransform.zoom <= getZoomBounds().min}
+          disabled={isAtMinZoom}
         >
           <Minus className="h-4 w-4" />
         </button>
@@ -1079,7 +1103,7 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
           onClick={handleZoomIn}
           className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-slate-100 transition hover:border-white/30 hover:bg-white/10"
           aria-label={t('zoom_in')}
-          disabled={mapTransform.zoom >= getZoomBounds().max}
+          disabled={isAtMaxZoom}
         >
           <Plus className="h-4 w-4" />
         </button>
