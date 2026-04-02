@@ -183,30 +183,27 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
     const svgElement = svgRef.current;
     if (!svgElement) return;
 
-    const preventBrowserZoomAtMax = (event: globalThis.WheelEvent) => {
-      const zoomingIn = event.deltaY < 0;
-      const atOrAboveMax = mapTransformRef.current.zoom >= getZoomBounds().max - ZOOM_EPSILON;
-
-      if ((event.ctrlKey || event.metaKey) && zoomingIn && atOrAboveMax) {
+    const preventBrowserPinchZoom = (event: globalThis.WheelEvent) => {
+      // Trackpad pinch is exposed as ctrl/cmd + wheel in Chromium/WebKit.
+      if (event.ctrlKey || event.metaKey) {
         event.preventDefault();
       }
     };
 
-    const preventGestureZoomAtMax = (event: Event) => {
-      const atOrAboveMax = mapTransformRef.current.zoom >= getZoomBounds().max - ZOOM_EPSILON;
-      if (atOrAboveMax) {
-        event.preventDefault();
-      }
+    const preventGestureZoom = (event: Event) => {
+      event.preventDefault();
     };
 
-    svgElement.addEventListener('wheel', preventBrowserZoomAtMax, { passive: false });
-    svgElement.addEventListener('gesturestart', preventGestureZoomAtMax, { passive: false });
-    svgElement.addEventListener('gesturechange', preventGestureZoomAtMax, { passive: false });
+    svgElement.addEventListener('wheel', preventBrowserPinchZoom, { passive: false });
+    svgElement.addEventListener('gesturestart', preventGestureZoom, { passive: false });
+    svgElement.addEventListener('gesturechange', preventGestureZoom, { passive: false });
+    svgElement.addEventListener('gestureend', preventGestureZoom, { passive: false });
 
     return () => {
-      svgElement.removeEventListener('wheel', preventBrowserZoomAtMax);
-      svgElement.removeEventListener('gesturestart', preventGestureZoomAtMax);
-      svgElement.removeEventListener('gesturechange', preventGestureZoomAtMax);
+      svgElement.removeEventListener('wheel', preventBrowserPinchZoom);
+      svgElement.removeEventListener('gesturestart', preventGestureZoom);
+      svgElement.removeEventListener('gesturechange', preventGestureZoom);
+      svgElement.removeEventListener('gestureend', preventGestureZoom);
     };
   }, []);
 
