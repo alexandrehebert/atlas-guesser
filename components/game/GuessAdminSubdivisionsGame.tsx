@@ -808,7 +808,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
         }}
       />
 
-      <div ref={topControlsRef} className="absolute left-4 right-4 top-4 z-30 flex items-center justify-between gap-3 sm:left-5 sm:right-5 sm:top-5">
+      <div ref={topControlsRef} className="absolute left-4 right-4 top-4 z-30 flex items-start justify-between gap-3 sm:left-5 sm:right-5 sm:top-5">
         <Link
           href="/"
           aria-label="Go to landing page"
