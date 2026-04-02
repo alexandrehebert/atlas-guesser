@@ -1081,7 +1081,9 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
         <button
           type="button"
           onClick={handleZoomOut}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-slate-100 transition hover:border-white/30 hover:bg-white/10"
+          className={`inline-flex h-9 w-9 items-center justify-center rounded-lg border transition ${isAtMinZoom
+            ? 'cursor-not-allowed border-white/8 bg-white/[0.03] text-slate-500 opacity-55'
+            : 'border-white/15 bg-white/5 text-slate-100 hover:border-white/30 hover:bg-white/10'}`}
           aria-label={t('zoom_out')}
           disabled={isAtMinZoom}
         >
@@ -1098,7 +1100,9 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
         <button
           type="button"
           onClick={handleZoomIn}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-slate-100 transition hover:border-white/30 hover:bg-white/10"
+          className={`inline-flex h-9 w-9 items-center justify-center rounded-lg border transition ${isAtMaxZoom
+            ? 'cursor-not-allowed border-white/8 bg-white/[0.03] text-slate-500 opacity-55'
+            : 'border-white/15 bg-white/5 text-slate-100 hover:border-white/30 hover:bg-white/10'}`}
           aria-label={t('zoom_in')}
           disabled={isAtMaxZoom}
         >
