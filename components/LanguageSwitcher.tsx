@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface LanguageSwitcherProps {
   currentLocale: string;
@@ -9,6 +9,8 @@ interface LanguageSwitcherProps {
 
 export default function LanguageSwitcher({ currentLocale }: LanguageSwitcherProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const locales = ['en', 'fr', 'it', 'es', 'de'] as const;
 
   function switchLocalePath(targetLocale: string): string {
     // Replace the locale segment in the current path
@@ -18,22 +20,55 @@ export default function LanguageSwitcher({ currentLocale }: LanguageSwitcherProp
     return segments.join('/') || '/';
   }
 
+  function handleLocaleChange(locale: string) {
+    router.push(switchLocalePath(locale));
+  }
+
   return (
-    <div className="flex items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm">
-      {(['en', 'fr', 'it', 'es', 'de'] as const).map((locale) => (
-        <Link
-          key={locale}
-          href={switchLocalePath(locale)}
-          className={`rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wider transition ${
-            currentLocale === locale
-              ? 'bg-amber-300 text-slate-950'
-              : 'text-slate-300 hover:text-white'
-          }`}
-          aria-current={currentLocale === locale ? 'true' : undefined}
+    <>
+      <div className="relative flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 backdrop-blur-sm md:hidden">
+        <label htmlFor="language-switcher" className="sr-only">
+          Select language
+        </label>
+        <select
+          id="language-switcher"
+          value={currentLocale}
+          onChange={(event) => handleLocaleChange(event.target.value)}
+          className="appearance-none bg-transparent pr-5 text-xs font-medium uppercase tracking-wider text-slate-100 focus:outline-none"
         >
-          {locale}
-        </Link>
-      ))}
-    </div>
+          {locales.map((locale) => (
+            <option key={locale} value={locale}>
+              {locale}
+            </option>
+          ))}
+        </select>
+        <svg
+          className="pointer-events-none absolute right-2 h-3 w-3 text-slate-300"
+          viewBox="0 0 12 12"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+
+      <div className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-sm md:flex">
+        {locales.map((locale) => (
+          <Link
+            key={locale}
+            href={switchLocalePath(locale)}
+            className={`rounded-full px-3 py-1 text-xs font-medium uppercase tracking-wider transition ${
+              currentLocale === locale
+                ? 'bg-amber-300 text-slate-950'
+                : 'text-slate-300 hover:text-white'
+            }`}
+            aria-current={currentLocale === locale ? 'true' : undefined}
+          >
+            {locale}
+          </Link>
+        ))}
+      </div>
+    </>
   );
 }
