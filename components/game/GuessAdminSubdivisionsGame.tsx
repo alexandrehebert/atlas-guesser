@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent, type WheelEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, Map as MapIcon, Minus, Plus, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ChevronDown, Map as MapIcon, Minus, Plus, RotateCcw } from 'lucide-react';
 import { Link } from '~/i18n/navigation';
 import type { AdminQuizLevel, AdminSubdivisionQuizPayload, QuizArea } from '~/lib/server/adminSubdivisionQuiz';
 
@@ -142,6 +142,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
   const topControlsRef = useRef<HTMLDivElement | null>(null);
   const mobileQuestionRef = useRef<HTMLDivElement | null>(null);
   const mobileScoreRef = useRef<HTMLDivElement | null>(null);
+  const countryDropdownRef = useRef<HTMLDivElement | null>(null);
   const homeOffsetYRef = useRef(0);
   const hasUserMovedMapRef = useRef(false);
   const [quizLevelId, setQuizLevelId] = useState<QuizLevelId>(() => defaultLevel?.id ?? '');
@@ -153,6 +154,7 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
   const [hoveredCode, setHoveredCode] = useState<string | null>(null);
   const [mapTransform, setMapTransform] = useState<MapTransformState>({ zoom: 1, x: 0, y: 0 });
   const [mapVisible, setMapVisible] = useState(false);
+  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [useLargeAnswerLabels, setUseLargeAnswerLabels] = useState(false);
   const [isSmallViewport, setIsSmallViewport] = useState(false);
@@ -232,6 +234,22 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
       window.removeEventListener('orientationchange', updateViewport);
     };
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (countryDropdownRef.current && !countryDropdownRef.current.contains(event.target as Node)) {
+        setIsCountryDropdownOpen(false);
+      }
+    };
+
+    if (isCountryDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isCountryDropdownOpen]);
 
   useLayoutEffect(() => {
     const computeMobileHomeOffset = (options: { forceApply?: boolean } = {}) => {
@@ -839,19 +857,33 @@ export default function GuessAdminSubdivisionsGame({ quiz }: GuessAdminSubdivisi
         </Link>
 
         <div className="flex flex-col items-end gap-2">
-          <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/80 p-1">
-            {quiz.availableCountries.map((country) => {
-              const isActiveCountry = country === quiz.country;
-              return (
-                <Link
-                  key={country}
-                  href={`/subdivisions/${country}`}
-                  className={`rounded-xl px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] transition ${isActiveCountry ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
-                >
-                  {t(`countries.${country}`)}
-                </Link>
-              );
-            })}
+          <div ref={countryDropdownRef} className="relative">
+            <button
+              type="button"
+              onClick={() => setIsCountryDropdownOpen((open) => !open)}
+              className="flex items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] text-white transition hover:bg-white/10"
+            >
+              {t(`countries.${quiz.country}`)}
+              <ChevronDown className={`h-3 w-3 text-slate-400 transition-transform duration-200 ${isCountryDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isCountryDropdownOpen && (
+              <div className="absolute right-0 top-full mt-1.5 min-w-full overflow-hidden rounded-2xl border border-white/12 bg-slate-950/95 py-1 shadow-[0_20px_60px_rgba(2,6,23,0.6)] backdrop-blur-md">
+                {quiz.availableCountries.map((country) => {
+                  const isActiveCountry = country === quiz.country;
+                  return (
+                    <Link
+                      key={country}
+                      href={`/subdivisions/${country}`}
+                      onClick={() => setIsCountryDropdownOpen(false)}
+                      className={`block px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.13em] transition ${isActiveCountry ? 'bg-white/18 text-white' : 'text-slate-300 hover:bg-white/10'}`}
+                    >
+                      {t(`countries.${country}`)}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/80 p-1">
