@@ -50,7 +50,7 @@ export default function GameSidebar() {
       aria-label={!sidebarOpen ? t('expand_sidebar') : undefined}
     >
       <aside
-        className="relative h-fit max-h-[calc(100vh-6.5rem)] rounded-3xl border border-white/12 bg-slate-950/88 shadow-[0_30px_90px_rgba(2,6,23,0.55)] backdrop-blur-md pointer-events-auto flex flex-col"
+        className="relative h-fit max-h-[calc(100dvh-6.5rem)] rounded-3xl border border-white/12 bg-slate-950/88 shadow-[0_30px_90px_rgba(2,6,23,0.55)] backdrop-blur-md pointer-events-auto flex flex-col"
       >
         {/* Sidebar toggle at the edge of the sidebar on desktop */}
         {(() => {

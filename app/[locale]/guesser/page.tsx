@@ -40,7 +40,7 @@ export default async function GuesserPage({ params, searchParams }: GuesserPageP
   const initialRound = createRound(quiz.countries, initialMode);
 
   return (
-    <main className="h-screen w-screen overflow-hidden bg-slate-950 text-slate-100">
+    <main className="h-[100dvh] w-screen overflow-hidden bg-slate-950 text-slate-100">
       <GuesserClientWrapper quiz={quiz} initialMode={initialMode} initialRound={initialRound} />
     </main>
   );

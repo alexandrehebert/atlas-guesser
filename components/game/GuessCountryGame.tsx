@@ -28,7 +28,7 @@ export default function GuessCountryGame({ quiz, mapReady, handleMapReady, loadi
   }
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-slate-950 text-slate-100">
+    <div className="relative h-[100dvh] w-screen overflow-hidden bg-slate-950 text-slate-100">
       <GameBackground />
       <GameTopBar />
       {/* Always render GameMap, fade in when ready */}

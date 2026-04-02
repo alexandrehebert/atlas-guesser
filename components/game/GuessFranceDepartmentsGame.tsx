@@ -667,7 +667,7 @@ export default function GuessFranceDepartmentsGame({ quiz }: GuessFranceDepartme
   }, [answer, targetArea, quiz.viewBox.width, quiz.viewBox.height, areasByCode, mapTransform.x, mapTransform.y, mapTransform.zoom, t, useLargeAnswerLabels]);
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-slate-950 text-slate-100">
+    <div className="relative h-[100dvh] w-screen overflow-hidden bg-slate-950 text-slate-100">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"

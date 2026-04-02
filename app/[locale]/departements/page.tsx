@@ -21,7 +21,7 @@ export default async function DepartementsPage() {
   const quiz = await getFranceAdminQuizPayload();
 
   return (
-    <main className="h-screen w-screen overflow-hidden bg-slate-950 text-slate-100">
+    <main className="h-[100dvh] w-screen overflow-hidden bg-slate-950 text-slate-100">
       <GuessFranceDepartmentsGame quiz={quiz} />
     </main>
   );

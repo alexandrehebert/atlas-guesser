@@ -21,7 +21,7 @@ export default function GameSidebarMobile() {
     <div
       ref={sidebarRef}
       className={
-        `fixed left-3 right-3 bottom-3 z-40 flex flex-col items-center transition-all duration-300` +
+        `fixed left-3 right-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 flex flex-col items-center transition-all duration-300` +
         (sidebarOpen
           ? ' translate-y-0 opacity-100 pointer-events-auto'
           : ` translate-y-[90%] opacity-100 pointer-events-auto ${suppressCollapsedPreview ? '' : 'hover:translate-y-[86%] focus-visible:translate-y-[86%]'}`)
@@ -65,7 +65,7 @@ export default function GameSidebarMobile() {
       <div className="relative w-full">
         {/* Sidebar: always rendered, animates in/out */}
         <aside
-          className="w-full rounded-t-3xl rounded-b-3xl min-h-0 h-auto max-h-[90vh] border border-white/12 bg-slate-950/88 shadow-[0_30px_90px_rgba(2,6,23,0.55)] backdrop-blur-md pointer-events-auto flex flex-col"
+          className="w-full rounded-t-3xl rounded-b-3xl min-h-0 h-auto max-h-[90dvh] border border-white/12 bg-slate-950/88 shadow-[0_30px_90px_rgba(2,6,23,0.55)] backdrop-blur-md pointer-events-auto flex flex-col"
         >
           <div className="flex flex-col gap-4 overflow-y-auto overscroll-contain p-4 transition-all duration-300">
             {!answer && (
