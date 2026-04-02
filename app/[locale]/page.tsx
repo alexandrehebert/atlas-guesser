@@ -365,7 +365,7 @@ export default async function HomePage({ params }: HomePageProps) {
             heading={t('map_heading')}
             description={t('map_description')}
             mapContent={
-              <svg aria-hidden="true" className="absolute inset-0 h-full w-full" viewBox="0 0 420 280" preserveAspectRatio="xMidYMid slice">
+              <svg aria-hidden="true" className="absolute inset-0 h-full w-full" viewBox="0 0 420 280" preserveAspectRatio="xMidYMid slice" data-landing-map-preview="true">
                 <defs>
                   <pattern id="preview-map-grid" width="24" height="24" patternUnits="userSpaceOnUse">
                     <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(148,163,184,0.12)" strokeWidth="0.7" />

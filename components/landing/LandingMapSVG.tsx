@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactElement } from 'react';
 
 interface LandingMapSVGProps {
-  children: React.ReactNode;
+  children: ReactElement<React.SVGProps<SVGSVGElement>>;
 }
 
 /**
@@ -11,7 +11,6 @@ interface LandingMapSVGProps {
  * Animates the route path and markers on component mount
  */
 export function LandingMapSVG({ children }: LandingMapSVGProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const hasAnimated = useRef(false);
 
   useEffect(() => {
@@ -19,11 +18,11 @@ export function LandingMapSVG({ children }: LandingMapSVGProps) {
     if (hasAnimated.current) return;
     hasAnimated.current = true;
 
-    const container = containerRef.current;
-    if (!container) return;
+    const svg = document.querySelector('svg[data-landing-map-preview="true"]') as SVGSVGElement | null;
+    if (!svg) return;
 
     // Animate the route path using CSS transition so the actual path length is used
-    const pathElement = container.querySelector('[data-animated-path="true"]') as SVGPathElement | null;
+    const pathElement = svg.querySelector('[data-animated-path="true"]') as SVGPathElement | null;
     if (pathElement) {
       const length = pathElement.getTotalLength();
       pathElement.style.strokeDasharray = String(length);
@@ -37,7 +36,7 @@ export function LandingMapSVG({ children }: LandingMapSVGProps) {
 
     // Animate markers with staggered opacity fade-in
     // (CSS transform on SVG <g> requires transform-box:fill-box; opacity is more reliable)
-    const markers = container.querySelectorAll('[data-animated-marker="true"]') as NodeListOf<SVGGElement>;
+    const markers = svg.querySelectorAll('[data-animated-marker="true"]') as NodeListOf<SVGGElement>;
     markers.forEach((marker, index) => {
       setTimeout(() => {
         marker.style.transition = 'opacity 0.4s ease-out';
@@ -49,5 +48,5 @@ export function LandingMapSVG({ children }: LandingMapSVGProps) {
     });
   }, []);
 
-  return <div ref={containerRef}>{children}</div>;
+  return children;
 }

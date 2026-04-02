@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, type ReactElement, type SVGProps } from 'react';
 import { AnimatedSection } from '~/components/AnimatedSection';
 import { LandingMapSVG } from './LandingMapSVG';
 
@@ -8,7 +8,7 @@ interface MapSectionProps {
   eyebrow: ReactNode;
   heading: ReactNode;
   description: ReactNode;
-  mapContent: ReactNode;
+  mapContent: ReactElement<SVGProps<SVGSVGElement>>;
   sidebarContent?: ReactNode;
   bottomRightContent?: ReactNode;
 }
