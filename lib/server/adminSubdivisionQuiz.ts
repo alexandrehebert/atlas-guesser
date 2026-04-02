@@ -36,6 +36,11 @@ export interface AdminSubdivisionQuizPayload {
   viewBox: typeof QUIZ_MAP_VIEWBOX;
 }
 
+export interface AdminSubdivisionCatalogStats {
+  adminMapsCount: number;
+  totalRegionsCount: number;
+}
+
 type GeoFeature = GeoJSON.Feature<GeoJSON.Geometry>;
 type FeatureProperties = Record<string, unknown>;
 
@@ -215,6 +220,7 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
 };
 
 const cachedPayloadPromises: Partial<Record<AdminQuizCountrySlug, Promise<AdminSubdivisionQuizPayload>>> = {};
+let cachedCatalogStatsPromise: Promise<AdminSubdivisionCatalogStats> | null = null;
 
 const FRANCE_OVERSEAS_FILE_NAME = 'france-overseas.geojson';
 
@@ -704,4 +710,24 @@ export async function getAdminSubdivisionQuizPayload(country: AdminQuizCountrySl
 
 export async function getFranceAdminQuizPayload(): Promise<AdminSubdivisionQuizPayload> {
   return getAdminSubdivisionQuizPayload('france');
+}
+
+export async function getAdminSubdivisionCatalogStats(): Promise<AdminSubdivisionCatalogStats> {
+  if (!cachedCatalogStatsPromise) {
+    cachedCatalogStatsPromise = Promise.all(
+      SUPPORTED_ADMIN_QUIZ_COUNTRIES.map((country) => getAdminSubdivisionQuizPayload(country)),
+    ).then((payloads) => {
+      const totalRegionsCount = payloads.reduce((acc, payload) => {
+        const defaultLevel = payload.levels.find((level) => level.id === payload.defaultLevelId) ?? payload.levels[0];
+        return acc + (defaultLevel?.areas.length ?? 0);
+      }, 0);
+
+      return {
+        adminMapsCount: payloads.length,
+        totalRegionsCount,
+      };
+    });
+  }
+
+  return cachedCatalogStatsPromise;
 }

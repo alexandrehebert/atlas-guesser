@@ -16,6 +16,10 @@
     "metric_trips_helper": "可用",
     "metric_countries_label": "国家",
     "metric_countries_helper": "可玩池",
+    "metric_admin_maps_label": "行政地图",
+    "metric_admin_maps_helper": "可用",
+    "metric_total_regions_label": "区域总数",
+    "metric_total_regions_helper": "跨所有地图",
     "metric_distance_label": "准确率",
     "metric_distance_helper": "近期会话",
     "stats_eyebrow": "游戏模式",
@@ -189,6 +193,7 @@
     "score_correct_label": "正确",
     "score_total_label": "回合",
     "score_streak_label": "连击",
+    "score_section_title": "得分",
     "score_best_streak": "最佳连击：{count}",
     "clear_scores": "清除已保存的分数",
     "clear_scores_confirm": "从此设备删除已保存的分数？",
@@ -221,7 +226,10 @@
       "country-to-capital": "地图 → 首都",
       "country-to-name": "地图 → 国家名称",
       "country-to-flag": "地图 → 国旗"
-    }
+    },
+    "game_type_label": "游戏",
+    "game_type_world_map": "世界地图",
+    "game_type_subdivisions": "地区"
   },
   "subdivisionsGuesser": {
     "metadata_title": "{countryName} 地图问答 | Atlas Guesser",
@@ -290,6 +298,7 @@
     "score_correct_label": "正确",
     "score_total_label": "回合",
     "score_streak_label": "连击",
+    "score_section_title": "得分",
     "score_best_streak": "最佳",
     "area_button_aria": "选择 {area}",
     "zoom_in": "放大",
@@ -312,7 +321,14 @@
       "unverified_note": "确切的上游来源未记录在仓库历史中。",
       "natural_earth_note": "Admin 0 国家，1:110m。",
       "open_link": "打开来源"
-    }
+    },
+    "clear_scores": "清除分数",
+    "clear_scores_confirm": "从此设备删除保存的分数？",
+    "clear_scores_confirm_cta": "删除",
+    "clear_scores_cancel": "取消",
+    "game_mode_label": "游戏模式",
+    "level_label": "级别",
+    "country_label": "国家"
   },
   "transport": {
     "car": "Car",

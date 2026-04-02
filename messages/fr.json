@@ -16,6 +16,10 @@
     "metric_trips_helper": "disponibles",
     "metric_countries_label": "Pays",
     "metric_countries_helper": "pool jouable",
+    "metric_admin_maps_label": "Cartes administratives",
+    "metric_admin_maps_helper": "disponibles",
+    "metric_total_regions_label": "Total de regions",
+    "metric_total_regions_helper": "toutes cartes",
     "metric_distance_label": "Précision",
     "metric_distance_helper": "sessions récentes",
     "stats_eyebrow": "Modes de jeu",
@@ -191,6 +195,7 @@
     "score_correct_label": "Bonnes réponses",
     "score_total_label": "Manches",
     "score_streak_label": "Série",
+    "score_section_title": "Score",
     "score_best_streak": "Meilleure série : {count}",
     "clear_scores": "Effacer le score enregistré",
     "clear_scores_confirm": "Supprimer le score enregistré sur cet appareil ?",
@@ -223,7 +228,10 @@
       "country-to-capital": "Carte → capitale",
       "country-to-name": "Carte → nom du pays",
       "country-to-flag": "Carte → drapeau"
-    }
+    },
+    "game_type_label": "Jeu",
+    "game_type_world_map": "Carte du monde",
+    "game_type_subdivisions": "Régions"
   },
   "subdivisionsGuesser": {
     "metadata_title": "Quiz de carte administrative de {countryName} | Atlas Guesser",
@@ -292,6 +300,7 @@
     "score_correct_label": "Bonnes reponses",
     "score_total_label": "Manches",
     "score_streak_label": "Serie",
+    "score_section_title": "Score",
     "score_best_streak": "Record",
     "area_button_aria": "Selectionner {area}",
     "zoom_in": "Zoom avant",
@@ -314,7 +323,14 @@
       "unverified_note": "La source amont exacte n'est pas enregistree dans l'historique du depot.",
       "natural_earth_note": "Pays Admin 0, 1:110m.",
       "open_link": "Ouvrir la source"
-    }
+    },
+    "clear_scores": "Effacer le score",
+    "clear_scores_confirm": "Supprimer le score sauvegardé sur cet appareil ?",
+    "clear_scores_confirm_cta": "Supprimer",
+    "clear_scores_cancel": "Annuler",
+    "game_mode_label": "Mode de jeu",
+    "level_label": "Niveau",
+    "country_label": "Pays"
   },
   "transport": {
     "car": "Voiture",

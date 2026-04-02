@@ -1,13 +1,19 @@
 'use client';
 
-import GameSettingsMenu from './GameSettingsMenu';
-import GameMapViewToggle from './GameMapViewToggle';
 import GameZoomControls from './GameZoomControls';
 import { useGameLayout } from './contexts/GameLayoutContext';
 import { ArrowLeft } from 'lucide-react';
 import { RouteLoadingLink } from '~/components/RouteLoadingLink';
+import type { ReactNode } from 'react';
 
-export default function GameTopBar() {
+interface GameTopBarProps {
+  /** Extra controls rendered between zoom controls and the settings menu (desktop only). */
+  extraControls?: ReactNode;
+  /** Settings menu override — required if the game needs one. */
+  settingsMenu?: ReactNode;
+}
+
+export default function GameTopBar({ extraControls, settingsMenu }: GameTopBarProps) {
   const { topBarRef, isMobile } = useGameLayout();
   return (
     <div ref={topBarRef} className="absolute left-4 right-4 top-4 z-50 flex flex-wrap items-center justify-between gap-2 sm:left-5 sm:right-5 sm:top-5">
@@ -41,11 +47,11 @@ export default function GameTopBar() {
           <span className="text-[0.68rem] font-medium uppercase tracking-[0.2em] text-slate-300">Atlas Guesser</span>
         </RouteLoadingLink>
       </div>
-      {/* Zoom controls and then settings button */}
+      {/* Zoom controls, optional extra controls (desktop only), settings */}
       <div className="flex items-center gap-2">
         <GameZoomControls />
-        {!isMobile ? <GameMapViewToggle /> : null}
-        <GameSettingsMenu />
+        {!isMobile && extraControls ? extraControls : null}
+        {settingsMenu}
       </div>
     </div>
   );

@@ -19,10 +19,12 @@ import { PwaInstallCallToAction } from '~/components/PwaInstallCallToAction';
 import { HeroSection } from '~/components/landing/HeroSection';
 import { StatsSection } from '~/components/landing/StatsSection';
 import { MapSection } from '~/components/landing/MapSection';
+import { LandingMapPreviewNoSSR } from '~/components/landing/LandingMapPreviewNoSSR';
 import { AnimatedSection } from '~/components/AnimatedSection';
 import { MAP_MODES, MODE_ORDER } from '~/components/game/constants';
 import { RouteLoadingLink } from '~/components/RouteLoadingLink';
 import { getCountryQuizPayload } from '~/lib/server/countryQuiz';
+import { getAdminSubdivisionCatalogStats } from '~/lib/server/adminSubdivisionQuiz';
 
 const LANDING_MAP_VIEWBOX = { width: 420, height: 280 };
 const FALLBACK_PARIS_POINT = { x: 228, y: 86 };
@@ -38,14 +40,6 @@ interface LandingMapPreviewData {
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
-}
-
-function getMarkerPinPath(size: number): string {
-  const xOuter = size * 0.95;
-  const yMid = size * 0.9;
-  const yTop = size * 2.15;
-  const xInner = size * 1.15;
-  return `M 0 0 C ${-xOuter} ${-yMid} ${-xInner} ${-yTop} 0 ${-yTop} C ${xInner} ${-yTop} ${xOuter} ${-yMid} 0 0 Z`;
 }
 
 function getEdgePointToward(
@@ -178,7 +172,7 @@ function MetricCard({ label, value, helper, compact = false }: { label: string; 
     <div
       className={compact
         ? 'rounded-xl border border-white/10 bg-white/5 p-3 shadow-[0_12px_36px_rgba(2,6,23,0.28)] backdrop-blur-sm flex flex-col items-center justify-center text-center'
-        : 'rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_60px_rgba(2,6,23,0.35)] backdrop-blur-sm flex flex-col items-center justify-center text-center'}
+        : 'rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_60px_rgba(2,6,23,0.35)] backdrop-blur-sm flex flex-col items-center justify-center text-center lg:aspect-square'}
     >
       <p className={compact ? 'text-[0.56rem] uppercase tracking-[0.2em] text-slate-400' : 'text-[0.65rem] uppercase tracking-[0.24em] text-slate-400'}>{label}</p>
       <p className={compact ? 'mt-1.5 text-xl font-semibold text-white' : 'mt-2 text-2xl font-semibold text-white'}>{value}</p>
@@ -239,6 +233,7 @@ export default async function HomePage({ params }: HomePageProps) {
   const tGuesser = await getTranslations({ locale, namespace: 'guesser' });
 
   const quiz = await getCountryQuizPayload(locale);
+  const adminCatalogStats = await getAdminSubdivisionCatalogStats();
   const landingMap = await getLandingMapPreviewData();
   const playableCountriesCount = quiz.countries.length;
   const gameModeCount = MODE_ORDER.length;
@@ -325,6 +320,8 @@ export default async function HomePage({ params }: HomePageProps) {
             <>
               <MetricCard label={t('metric_trips_label')} value={String(gameModeCount)} helper={t('metric_trips_helper')} />
               <MetricCard label={t('metric_countries_label')} value={String(playableCountriesCount)} helper={t('metric_countries_helper')} />
+              <MetricCard label={t('metric_admin_maps_label')} value={String(adminCatalogStats.adminMapsCount)} helper={t('metric_admin_maps_helper')} />
+              <MetricCard label={t('metric_total_regions_label')} value={String(adminCatalogStats.totalRegionsCount)} helper={t('metric_total_regions_helper')} />
             </>
           }
         />
@@ -365,92 +362,6 @@ export default async function HomePage({ params }: HomePageProps) {
             eyebrow={<SectionEyebrow icon={MapPinned}>{t('map_eyebrow')}</SectionEyebrow>}
             heading={t('map_heading')}
             description={t('map_description')}
-            mapContent={
-              <svg aria-hidden="true" className="absolute inset-0 h-full w-full" viewBox="0 0 420 280" preserveAspectRatio="xMidYMid slice" data-landing-map-preview="true">
-                <defs>
-                  <pattern id="preview-map-grid" width="24" height="24" patternUnits="userSpaceOnUse">
-                    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(148,163,184,0.12)" strokeWidth="0.7" />
-                  </pattern>
-                  <radialGradient id="preview-map-glow" cx="50%" cy="45%" r="70%">
-                    <stop offset="0%" stopColor="rgba(56,189,248,0.2)" />
-                    <stop offset="60%" stopColor="rgba(15,23,42,0.16)" />
-                    <stop offset="100%" stopColor="rgba(2,6,23,0)" />
-                  </radialGradient>
-                </defs>
-
-                <rect x="0" y="0" width="420" height="280" fill="rgba(7,26,49,0.7)" />
-                <rect x="0" y="0" width="420" height="280" fill="url(#preview-map-grid)" />
-                <rect x="0" y="0" width="420" height="280" fill="url(#preview-map-glow)" />
-
-                <g>
-                  {landingMap.paths.map((pathValue, index) => (
-                    <path
-                      key={`landing-map-country-${index}`}
-                      d={pathValue}
-                      fill="rgba(30,41,59,0.88)"
-                      stroke="rgba(148,163,184,0.72)"
-                      strokeWidth="0.7"
-                    />
-                  ))}
-                </g>
-
-                {highlightedCountryPath ? (
-                  <path
-                    d={highlightedCountryPath}
-                    fill="rgba(52,211,153,0.85)"
-                    stroke="rgba(209, 250, 229, 1)"
-                    strokeWidth="1.35"
-                    vectorEffect="non-scaling-stroke"
-                    style={{ filter: 'drop-shadow(0 0 16px rgba(16,185,129,0.95))' }}
-                  />
-                ) : null}
-
-                {highlightedCountryPath ? (
-                  <g>
-                    <path
-                      d={previewConnectorPath}
-                      fill="none"
-                      stroke="rgba(125,211,252,0.88)"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      opacity="0.62"
-                    />
-                    <g transform={`translate(${previewPinPoint.x}, ${previewPinPoint.y})`}>
-                      <path
-                        d={getMarkerPinPath(6.2)}
-                        fill="rgba(56,189,248,0.98)"
-                        stroke="rgba(248,250,252,0.95)"
-                        strokeWidth="1.1"
-                      />
-                    </g>
-                    <rect
-                      x={previewLabelX}
-                      y={previewLabelY}
-                      rx={8.5}
-                      ry={8.5}
-                      width={previewLabelWidth}
-                      height={previewLabelHeight}
-                      fill="rgba(2,6,23,0.72)"
-                      stroke="rgba(125,211,252,0.55)"
-                      strokeWidth="1.1"
-                    />
-                    <text
-                      x={previewLabelX + previewLabelWidth / 2}
-                      y={previewLabelY + previewLabelHeight / 2 + 0.5}
-                      dominantBaseline="central"
-                      textAnchor="middle"
-                      fill="rgba(226,232,240,0.94)"
-                      fontSize="12.2"
-                      fontWeight="600"
-                    >
-                      {previewCountryLabel}
-                    </text>
-                  </g>
-                ) : null}
-
-              </svg>
-            }
             sidebarContent={
               <>
                 <div className="border-b border-slate-800 px-3 py-2.5">
@@ -486,7 +397,19 @@ export default async function HomePage({ params }: HomePageProps) {
                 </div>
               </>
             }
-          />
+          >
+            <LandingMapPreviewNoSSR
+              paths={landingMap.paths}
+              highlightedCountryPath={highlightedCountryPath}
+              previewConnectorPath={previewConnectorPath}
+              previewPinPoint={previewPinPoint}
+              previewLabelX={previewLabelX}
+              previewLabelY={previewLabelY}
+              previewLabelWidth={previewLabelWidth}
+              previewLabelHeight={previewLabelHeight}
+              previewCountryLabel={previewCountryLabel}
+            />
+          </MapSection>
         </section>
 
         <AnimatedSection animation="fade-in-up">

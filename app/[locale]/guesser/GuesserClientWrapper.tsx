@@ -1,7 +1,7 @@
 "use client";
-import GuessCountryGameClient from "~/components/game/GuessCountryGameClient";
+import GuessCountryGameClient from "~/components/game/guess-country/GuessCountryGameClient";
 import type { CountryQuizPayload } from "~/lib/server/countryQuiz";
-import type { GameMode, RoundState } from "~/components/game/types";
+import type { GameMode, RoundState } from "~/components/game/guess-country/types";
 
 interface GuesserClientWrapperProps {
   quiz: CountryQuizPayload;

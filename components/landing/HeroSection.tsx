@@ -20,7 +20,7 @@ export function HeroSection({
   metrics,
 }: HeroSectionProps) {
   return (
-    <section className="grid items-stretch gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,0.4fr)]">
+    <section className="grid items-stretch gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
       <div className="lg:self-stretch lg:flex lg:flex-col lg:justify-center">
         <AnimatedSection animation="fade-in-down">
           <h1 className="text-4xl font-semibold leading-[0.95] text-white sm:text-5xl lg:text-6xl">
@@ -39,7 +39,7 @@ export function HeroSection({
         </AnimatedSection>
       </div>
 
-      <StaggeredAnimation animation="fade-in-up" staggerDelay={100} className="grid grid-cols-1 gap-3 h-full [&>*]:flex-1 content-center sm:grid-cols-2 lg:grid-cols-1">
+      <StaggeredAnimation animation="fade-in-up" staggerDelay={100} className="grid grid-cols-1 gap-3 h-full [&>*]:flex-1 content-center sm:grid-cols-2 lg:grid-cols-2 lg:max-w-[26rem] lg:justify-self-end">
         {metrics}
       </StaggeredAnimation>
     </section>

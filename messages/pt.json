@@ -16,6 +16,10 @@
     "metric_trips_helper": "disponíveis",
     "metric_countries_label": "Países",
     "metric_countries_helper": "no banco de jogos",
+    "metric_admin_maps_label": "Mapas administrativos",
+    "metric_admin_maps_helper": "disponíveis",
+    "metric_total_regions_label": "Total de regiões",
+    "metric_total_regions_helper": "em todos os mapas",
     "metric_distance_label": "Precisão",
     "metric_distance_helper": "sessões recentes",
     "stats_eyebrow": "Modos de jogo",
@@ -189,6 +193,7 @@
     "score_correct_label": "Corretas",
     "score_total_label": "Rodadas",
     "score_streak_label": "Sequência",
+    "score_section_title": "Pontuação",
     "score_best_streak": "Melhor sequência: {count}",
     "clear_scores": "Limpar pontuação salva",
     "clear_scores_confirm": "Excluir a pontuação salva deste dispositivo?",
@@ -221,7 +226,10 @@
       "country-to-capital": "Mapa → capital",
       "country-to-name": "Mapa → nome do país",
       "country-to-flag": "Mapa → bandeira"
-    }
+    },
+    "game_type_label": "Jogo",
+    "game_type_world_map": "Mapa do mundo",
+    "game_type_subdivisions": "Regiões"
   },
   "subdivisionsGuesser": {
     "metadata_title": "Quiz de {countryName} | Atlas Guesser",
@@ -290,6 +298,7 @@
     "score_correct_label": "Corretas",
     "score_total_label": "Rodadas",
     "score_streak_label": "Sequência",
+    "score_section_title": "Pontuação",
     "score_best_streak": "Melhor",
     "area_button_aria": "Selecionar {area}",
     "zoom_in": "Ampliar",
@@ -312,7 +321,14 @@
       "unverified_note": "A fonte original exata não está registrada no histórico do repositório.",
       "natural_earth_note": "Países Admin 0, 1:110m.",
       "open_link": "Abrir fonte"
-    }
+    },
+    "clear_scores": "Limpar pontuação",
+    "clear_scores_confirm": "Excluir a pontuação salva deste dispositivo?",
+    "clear_scores_confirm_cta": "Excluir",
+    "clear_scores_cancel": "Cancelar",
+    "game_mode_label": "Modo de jogo",
+    "level_label": "Nível",
+    "country_label": "País"
   },
   "transport": {
     "car": "Car",

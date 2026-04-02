@@ -16,6 +16,10 @@
     "metric_trips_helper": "disponibles",
     "metric_countries_label": "Países",
     "metric_countries_helper": "pool jugable",
+    "metric_admin_maps_label": "Mapas administrativos",
+    "metric_admin_maps_helper": "disponibles",
+    "metric_total_regions_label": "Total de regiones",
+    "metric_total_regions_helper": "en todos los mapas",
     "metric_distance_label": "Precisión",
     "metric_distance_helper": "sesiones recientes",
     "stats_eyebrow": "Modos de juego",
@@ -189,6 +193,7 @@
     "score_correct_label": "Correctas",
     "score_total_label": "Rondas",
     "score_streak_label": "Racha",
+    "score_section_title": "Puntuación",
     "score_best_streak": "Mejor racha: {count}",
     "clear_scores": "Borrar puntuación guardada",
     "clear_scores_confirm": "¿Eliminar la puntuación guardada de este dispositivo?",
@@ -221,7 +226,10 @@
       "country-to-capital": "Mapa → capital",
       "country-to-name": "Mapa → nombre país",
       "country-to-flag": "Mapa → bandera"
-    }
+    },
+    "game_type_label": "Juego",
+    "game_type_world_map": "Mapa del mundo",
+    "game_type_subdivisions": "Regiones"
   },
   "subdivisionsGuesser": {
     "metadata_title": "Quiz Mapa {countryName} | Atlas Guesser",
@@ -290,6 +298,7 @@
     "score_correct_label": "Correctas",
     "score_total_label": "Rondas",
     "score_streak_label": "Racha",
+    "score_section_title": "Puntuación",
     "score_best_streak": "Récord",
     "area_button_aria": "Seleccionar {area}",
     "zoom_in": "Acercar",
@@ -312,7 +321,14 @@
       "unverified_note": "La fuente ascendente exacta no quedó registrada en el historial del repositorio.",
       "natural_earth_note": "Países Admin 0, 1:110m.",
       "open_link": "Abrir fuente"
-    }
+    },
+    "clear_scores": "Borrar puntuación",
+    "clear_scores_confirm": "¿Borrar la puntuación guardada en este dispositivo?",
+    "clear_scores_confirm_cta": "Borrar",
+    "clear_scores_cancel": "Cancelar",
+    "game_mode_label": "Modo de juego",
+    "level_label": "Nivel",
+    "country_label": "País"
   },
   "transport": {
     "car": "Coche",

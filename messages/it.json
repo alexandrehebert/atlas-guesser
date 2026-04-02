@@ -16,6 +16,10 @@
     "metric_trips_helper": "disponibili",
     "metric_countries_label": "Paesi",
     "metric_countries_helper": "pool giocabile",
+    "metric_admin_maps_label": "Mappe amministrative",
+    "metric_admin_maps_helper": "disponibili",
+    "metric_total_regions_label": "Regioni totali",
+    "metric_total_regions_helper": "su tutte le mappe",
     "metric_distance_label": "Precisione",
     "metric_distance_helper": "sessioni recenti",
     "stats_eyebrow": "Modalità di gioco",
@@ -189,6 +193,7 @@
     "score_correct_label": "Corrette",
     "score_total_label": "Round",
     "score_streak_label": "Serie",
+    "score_section_title": "Punteggio",
     "score_best_streak": "Migliore serie: {count}",
     "clear_scores": "Cancella punteggio salvato",
     "clear_scores_confirm": "Eliminare il punteggio salvato da questo dispositivo?",
@@ -221,7 +226,10 @@
       "country-to-capital": "Mappa → capitale",
       "country-to-name": "Mappa → nome paese",
       "country-to-flag": "Mappa → bandiera"
-    }
+    },
+    "game_type_label": "Gioco",
+    "game_type_world_map": "Mappa del mondo",
+    "game_type_subdivisions": "Regioni"
   },
   "subdivisionsGuesser": {
     "metadata_title": "Quiz Mappa {countryName} | Atlas Guesser",
@@ -290,6 +298,7 @@
     "score_correct_label": "Corrette",
     "score_total_label": "Round",
     "score_streak_label": "Serie",
+    "score_section_title": "Punteggio",
     "score_best_streak": "Record",
     "area_button_aria": "Seleziona {area}",
     "zoom_in": "Zoom in",
@@ -312,7 +321,14 @@
       "unverified_note": "La fonte upstream esatta non è registrata nella cronologia del repository.",
       "natural_earth_note": "Paesi Admin 0, 1:110m.",
       "open_link": "Apri fonte"
-    }
+    },
+    "clear_scores": "Cancella punteggio",
+    "clear_scores_confirm": "Eliminare il punteggio salvato da questo dispositivo?",
+    "clear_scores_confirm_cta": "Elimina",
+    "clear_scores_cancel": "Annulla",
+    "game_mode_label": "Modalità di gioco",
+    "level_label": "Livello",
+    "country_label": "Paese"
   },
   "transport": {
     "car": "Auto",
