@@ -42,7 +42,7 @@ export default async function SubdivisionsPage({ params }: SubdivisionsPageProps
   const quiz = await getAdminSubdivisionQuizPayload(country);
 
   return (
-    <main className="h-[100dvh] w-screen overflow-hidden bg-slate-950 text-slate-100">
+    <main className="h-[100svh] w-full overflow-hidden bg-slate-950 text-slate-100">
       <GuessAdminSubdivisionsGame key={quiz.country} quiz={quiz} />
     </main>
   );
