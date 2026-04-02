@@ -247,7 +247,7 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
 export function useSubdivisionsGameMap(): SubdivisionsGameMapContextValue {
   const context = useContext(SubdivisionsGameMapContext);
   if (!context) {
-    throw new Error('useSubdivisionsGameMap must be used within an SubdivisionsGameMapProvider');
+    throw new Error('useSubdivisionsGameMap must be used within a SubdivisionsGameMapProvider');
   }
   return context;
 }

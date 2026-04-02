@@ -78,7 +78,7 @@ function getAreaClasses(
   return 'fill-slate-800/84 stroke-slate-400/58';
 }
 
-export default function GuessAdminSubdivisionsMap() {
+export default function GuessSubdivisionsMap() {
   const t = useTranslations('subdivisionsGuesser');
   const {
     quiz,

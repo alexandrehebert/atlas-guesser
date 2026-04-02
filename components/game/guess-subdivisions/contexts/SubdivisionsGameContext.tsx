@@ -361,7 +361,7 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
 export function useSubdivisionsGame(): SubdivisionsGameContextValue {
   const context = useContext(SubdivisionsGameContext);
   if (!context) {
-    throw new Error('useSubdivisionsGame must be used within an SubdivisionsGameProvider');
+    throw new Error('useSubdivisionsGame must be used within a SubdivisionsGameProvider');
   }
   return context;
 }
