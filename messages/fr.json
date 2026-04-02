@@ -257,7 +257,8 @@
       "states": "{count} etats",
       "communities": "{count} communautes",
       "provinces": "{count} provinces",
-      "subjects": "{count} sujets fédéraux"
+      "subjects": "{count} sujets fédéraux",
+      "federal_districts": "{count} districts fédéraux"
     },
     "mode": {
       "departements": "Departements",
@@ -266,7 +267,8 @@
       "states": "Etats",
       "communities": "Communautes",
       "provinces": "Provinces",
-      "subjects": "Sujets fédéraux"
+      "subjects": "Sujets fédéraux",
+      "federal_districts": "Districts fédéraux"
     },
     "game_mode_map_click": "Clic carte",
     "game_mode_highlighted_to_name": "Choix multiple",
@@ -277,7 +279,8 @@
       "states": "Indice etat",
       "communities": "Indice communaute",
       "provinces": "Indice province",
-      "subjects": "Sujet fédéral"
+      "subjects": "Sujet fédéral",
+      "federal_districts": "Indice district fédéral"
     },
     "prompt_body": {
       "departements": "Retrouvez ce departement sur la carte de {countryName}.",
@@ -286,7 +289,8 @@
       "states": "Retrouvez cet etat sur la carte de {countryName}.",
       "communities": "Retrouvez cette communaute sur la carte de {countryName}.",
       "provinces": "Retrouvez cette province sur la carte de {countryName}.",
-      "subjects": "Trouvez ce sujet fédéral sur la carte de {countryName}."
+      "subjects": "Trouvez ce sujet fédéral sur la carte de {countryName}.",
+      "federal_districts": "Trouvez ce district fédéral sur la carte de {countryName}."
     },
     "prompt_body_choices": {
       "departements": "De quel departement s'agit-il ?",
@@ -295,7 +299,8 @@
       "states": "Quel etat est surligne sur la carte ?",
       "communities": "De quelle communaute s'agit-il ?",
       "provinces": "De quelle province s'agit-il ?",
-      "subjects": "Une zone est mise en évidence sur la carte. Quel est ce sujet fédéral ?"
+      "subjects": "Une zone est mise en évidence sur la carte. Quel est ce sujet fédéral ?",
+      "federal_districts": "Une zone est mise en évidence sur la carte. Quel district fédéral est-ce ?"
     },
     "instruction_map": "Cliquez sur la bonne limite sur la carte.",
     "instruction_choices": "Une zone surlignee apparait sur la carte. Choisissez le bon nom parmi 4 options.",

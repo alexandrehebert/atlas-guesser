@@ -236,8 +236,15 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
     countryCode: 'RU',
     countryNames: ['russia', 'russian federation', 'rossiya'],
     sortLocale: 'en',
-    defaultLevelId: 'subjects',
+    defaultLevelId: 'federal_districts',
     levels: [
+      {
+        id: 'federal_districts',
+        fileName: 'russia-federal-districts.geojson',
+        minimumClickableSize: 2,
+        codeProperty: 'code',
+        nameProperty: 'name',
+      },
       {
         id: 'subjects',
         fileName: 'russia-subjects.geojson',
@@ -595,6 +602,66 @@ function buildQuizAreas(
   const areas: QuizArea[] = [];
   const seenCodes = new Set<string>();
 
+  const getFeatureFocusGeometry = (feature: GeoFeature): GeoFeature => {
+    if (feature.geometry.type !== 'MultiPolygon') {
+      return feature;
+    }
+
+    const polygons = feature.geometry.coordinates;
+    if (!polygons.length) {
+      return feature;
+    }
+
+    let totalArea = 0;
+    let largestArea = -1;
+    let largestPolygon: GeoJSON.Position[][] | null = null;
+    let largestBounds: [[number, number], [number, number]] | null = null;
+
+    for (const polygon of polygons) {
+      const polygonFeature: GeoFeature = {
+        type: 'Feature',
+        properties: feature.properties,
+        geometry: { type: 'Polygon', coordinates: polygon },
+      };
+      const area = Math.max(0, generator.area(polygonFeature));
+      totalArea += area;
+
+      if (area > largestArea) {
+        largestArea = area;
+        largestPolygon = polygon;
+        largestBounds = generator.bounds(polygonFeature);
+      }
+    }
+
+    if (!largestPolygon || !largestBounds || totalArea <= 0) {
+      return feature;
+    }
+
+    const fullBounds = generator.bounds(feature);
+    const fullWidth = Math.max(0, fullBounds[1][0] - fullBounds[0][0]);
+    const fullHeight = Math.max(0, fullBounds[1][1] - fullBounds[0][1]);
+    const largestWidth = Math.max(0, largestBounds[1][0] - largestBounds[0][0]);
+    const largestHeight = Math.max(0, largestBounds[1][1] - largestBounds[0][1]);
+    const fullMaxDimension = Math.max(fullWidth, fullHeight);
+    const largestMaxDimension = Math.max(largestWidth, largestHeight);
+    const isMuchMoreSpreadThanLargest = largestMaxDimension > 0 && fullMaxDimension / largestMaxDimension > 2.5;
+    const leftOffset = Math.max(0, largestBounds[0][0] - fullBounds[0][0]);
+    const rightOffset = Math.max(0, fullBounds[1][0] - largestBounds[1][0]);
+    const maxHorizontalOffset = Math.max(leftOffset, rightOffset);
+    const hasDateLineOutlier = fullMaxDimension > 0 && maxHorizontalOffset / fullMaxDimension > 0.18;
+    const largestAreaShare = largestArea / totalArea;
+
+    if ((!isMuchMoreSpreadThanLargest && !hasDateLineOutlier) || largestAreaShare < 0.55) {
+      return feature;
+    }
+
+    return {
+      type: 'Feature',
+      properties: feature.properties,
+      geometry: { type: 'Polygon', coordinates: largestPolygon },
+    };
+  };
+
   for (const feature of geoData.features || []) {
     if (!feature || feature.type !== 'Feature' || !feature.geometry) continue;
 
@@ -608,12 +675,14 @@ function buildQuizAreas(
       continue;
     }
 
-    const path = generator(feature as GeoFeature);
+    const rawFeature = feature as GeoFeature;
+    const focusFeature = getFeatureFocusGeometry(rawFeature);
+    const path = generator(rawFeature);
     if (!path) {
       continue;
     }
 
-    const bounds = generator.bounds(feature as GeoFeature);
+    const bounds = generator.bounds(focusFeature);
     const projectedWidth = Math.max(0, bounds[1][0] - bounds[0][0]);
     const projectedHeight = Math.max(0, bounds[1][1] - bounds[0][1]);
 
@@ -621,7 +690,7 @@ function buildQuizAreas(
       continue;
     }
 
-    const centroid = generator.centroid(feature as GeoFeature);
+    const centroid = generator.centroid(focusFeature);
     if (!Number.isFinite(centroid[0]) || !Number.isFinite(centroid[1])) {
       continue;
     }

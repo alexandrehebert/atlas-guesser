@@ -295,12 +295,20 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
     }
 
     if (quiz.country === 'russia') {
-      playableItems.push({
-        filePath: 'public/maps/russia-subjects.geojson',
-        sourceLabel: 'codeforgermany/click_that_hood',
-        note: t('sources.unverified_note'),
-        url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
-      });
+      playableItems.push(
+        {
+          filePath: 'public/maps/russia-federal-districts.geojson',
+          sourceLabel: 'codeforgermany/click_that_hood',
+          note: t('sources.unverified_note'),
+          url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+        },
+        {
+          filePath: 'public/maps/russia-subjects.geojson',
+          sourceLabel: 'codeforgermany/click_that_hood',
+          note: t('sources.unverified_note'),
+          url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+        },
+      );
     }
 
     if (quiz.country === 'australia') {

@@ -255,7 +255,8 @@
       "states": "{count} stati",
       "communities": "{count} comunità",
       "provinces": "{count} province",
-      "subjects": "{count} soggetti federali"
+      "subjects": "{count} soggetti federali",
+      "federal_districts": "{count} distretti federali"
     },
     "mode": {
       "departements": "Dipartimenti",
@@ -264,7 +265,8 @@
       "states": "Stati",
       "communities": "Comunità",
       "provinces": "Province",
-      "subjects": "Soggetti federali"
+      "subjects": "Soggetti federali",
+      "federal_districts": "Distretti federali"
     },
     "game_mode_map_click": "Clic sulla mappa",
     "game_mode_highlighted_to_name": "Scelta multipla",
@@ -275,7 +277,8 @@
       "states": "Indizio stato",
       "communities": "Indizio comunità",
       "provinces": "Indizio provincia",
-      "subjects": "Soggetto federale"
+      "subjects": "Soggetto federale",
+      "federal_districts": "Indizio distretto federale"
     },
     "prompt_body": {
       "departements": "Trova questo dipartimento sulla mappa di {countryName}.",
@@ -284,7 +287,8 @@
       "states": "Trova questo stato sulla mappa di {countryName}.",
       "communities": "Trova questa comunità sulla mappa di {countryName}.",
       "provinces": "Trova questa provincia sulla mappa di {countryName}.",
-      "subjects": "Trova questo soggetto federale sulla mappa di {countryName}."
+      "subjects": "Trova questo soggetto federale sulla mappa di {countryName}.",
+      "federal_districts": "Trova questo distretto federale sulla mappa di {countryName}."
     },
     "prompt_body_choices": {
       "departements": "Un'area è evidenziata sulla mappa. Quale dipartimento è?",
@@ -293,7 +297,8 @@
       "states": "Un'area è evidenziata sulla mappa. Quale stato è?",
       "communities": "Un'area è evidenziata sulla mappa. Quale comunità è?",
       "provinces": "Un'area è evidenziata sulla mappa. Quale provincia è?",
-      "subjects": "Un'area è evidenziata sulla mappa. Quale soggetto federale è?"
+      "subjects": "Un'area è evidenziata sulla mappa. Quale soggetto federale è?",
+      "federal_districts": "Un'area è evidenziata sulla mappa. Quale distretto federale è?"
     },
     "instruction_map": "Clicca l'area di confine corrispondente sulla mappa.",
     "instruction_choices": "Un'area evidenziata è mostrata sulla mappa. Scegli il nome corretto tra 4 opzioni.",

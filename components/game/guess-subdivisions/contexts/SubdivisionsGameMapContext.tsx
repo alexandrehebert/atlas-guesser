@@ -14,15 +14,17 @@ import {
 import { select } from 'd3-selection';
 import { zoom, zoomIdentity, type ZoomBehavior } from 'd3-zoom';
 import { GameMapContext, type GameMapContextValue } from '../../contexts/GameMapContext';
+import { useSubdivisionsGame } from './SubdivisionsGameContext';
 
 const DEFAULT_HOME_ZOOM = 0.92;
 const MIN_ZOOM = 0.82;
-const MAX_ZOOM = 6;
+const MAX_ZOOM = 12;
 const MOBILE_MIN_ZOOM = 0.6;
-const MOBILE_MAX_ZOOM = 8;
+const MOBILE_MAX_ZOOM = 14;
 const ZOOM_IN_FACTOR = 1.25;
 const ZOOM_OUT_FACTOR = 0.8;
 const ZOOM_EPSILON = 0.0001;
+const FIT_PADDING = 24;
 
 export interface MapTransformState {
   zoom: number;
@@ -53,20 +55,13 @@ interface SubdivisionsGameMapProviderProps {
 }
 
 export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, children }: SubdivisionsGameMapProviderProps) {
+  const { activeAreas } = useSubdivisionsGame();
   const svgRef = useRef<SVGSVGElement | null>(null);
   const zoomBehaviorRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
-  const mapTransformRef = useRef<MapTransformState>({
-    zoom: DEFAULT_HOME_ZOOM,
-    x: (1 - DEFAULT_HOME_ZOOM) * (viewBoxWidth / 2),
-    y: (1 - DEFAULT_HOME_ZOOM) * (viewBoxHeight / 2),
-  });
+  const mapTransformRef = useRef<MapTransformState>({ zoom: 1, x: 0, y: 0 });
   const suppressClickRef = useRef<boolean>(false);
 
-  const [mapTransform, setMapTransform] = useState<MapTransformState>(() => ({
-    zoom: DEFAULT_HOME_ZOOM,
-    x: (1 - DEFAULT_HOME_ZOOM) * (viewBoxWidth / 2),
-    y: (1 - DEFAULT_HOME_ZOOM) * (viewBoxHeight / 2),
-  }));
+  const [mapTransform, setMapTransform] = useState<MapTransformState>({ zoom: 1, x: 0, y: 0 });
   const [mapVisible, setMapVisible] = useState(false);
   const [isPanning, setIsPanning] = useState(false);
   const [useLargeAnswerLabels, setUseLargeAnswerLabels] = useState(false);
@@ -87,6 +82,44 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
   const d3TransformFromZoomState = useCallback((state: MapTransformState) =>
     zoomIdentity.translate(state.x, state.y).scale(state.zoom),
   []);
+
+  const getHomeMapTransform = useCallback((zoomLevel: number): MapTransformState => {
+    const bounds = getZoomBounds();
+    const candidates = activeAreas
+      .map((area) => area.focusBounds)
+      .filter((rect) => Number.isFinite(rect.x) && Number.isFinite(rect.y) && rect.width > 0 && rect.height > 0);
+
+    if (!candidates.length) {
+      const clamped = Math.max(bounds.min, Math.min(bounds.max, zoomLevel));
+      const cx = viewBoxWidth / 2;
+      const cy = viewBoxHeight / 2;
+      return { zoom: clamped, x: (1 - clamped) * cx, y: (1 - clamped) * cy };
+    }
+
+    const minX = Math.min(...candidates.map((rect) => rect.x));
+    const minY = Math.min(...candidates.map((rect) => rect.y));
+    const maxX = Math.max(...candidates.map((rect) => rect.x + rect.width));
+    const maxY = Math.max(...candidates.map((rect) => rect.y + rect.height));
+    const width = Math.max(1, maxX - minX);
+    const height = Math.max(1, maxY - minY);
+
+    const paddedWidth = width + FIT_PADDING * 2;
+    const paddedHeight = height + FIT_PADDING * 2;
+    const scaleX = viewBoxWidth / paddedWidth;
+    const scaleY = viewBoxHeight / paddedHeight;
+    const fitScale = Math.min(scaleX, scaleY);
+    const clampedZoom = Math.max(bounds.min, Math.min(bounds.max, fitScale));
+
+    const centerX = (minX + maxX) / 2;
+    const centerY = (minY + maxY) / 2;
+    return {
+      zoom: clampedZoom,
+      x: viewBoxWidth / 2 - clampedZoom * centerX,
+      y: viewBoxHeight / 2 - clampedZoom * centerY,
+    };
+  }, [activeAreas, getZoomBounds, viewBoxHeight, viewBoxWidth]);
+
+  const homeTransform = useMemo(() => getHomeMapTransform(DEFAULT_HOME_ZOOM), [getHomeMapTransform]);
 
   // Track viewport for label sizing and zoom bounds
   useEffect(() => {
@@ -149,8 +182,10 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
 
     zoomBehaviorRef.current = behavior;
     const svgSelection = select(svgElement);
+    mapTransformRef.current = homeTransform;
+    setMapTransform(homeTransform);
     svgSelection.call(behavior);
-    svgSelection.call(behavior.transform, d3TransformFromZoomState(mapTransformRef.current));
+    svgSelection.call(behavior.transform, d3TransformFromZoomState(homeTransform));
 
     svgElement.addEventListener('wheel', preventBrowserPinchZoom, { passive: false });
     svgElement.addEventListener('gesturestart', preventGestureZoom, { passive: false });
@@ -170,15 +205,21 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
     };
   // Re-wire when viewport category changes (mobile ↔ desktop zoom bounds change)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSmallViewport]);
+  }, [d3TransformFromZoomState, homeTransform, isSmallViewport]);
 
-  const getHomeMapTransform = useCallback((zoomLevel: number): MapTransformState => {
-    const bounds = getZoomBounds();
-    const clamped = Math.max(bounds.min, Math.min(bounds.max, zoomLevel));
-    const cx = viewBoxWidth / 2;
-    const cy = viewBoxHeight / 2;
-    return { zoom: clamped, x: (1 - clamped) * cx, y: (1 - clamped) * cy };
-  }, [getZoomBounds, viewBoxWidth, viewBoxHeight]);
+  useEffect(() => {
+    mapTransformRef.current = homeTransform;
+    setMapTransform(homeTransform);
+
+    const svgElement = svgRef.current;
+    const behavior = zoomBehaviorRef.current;
+    if (!svgElement || !behavior) return;
+
+    select(svgElement)
+      .transition()
+      .duration(220)
+      .call(behavior.transform, d3TransformFromZoomState(homeTransform));
+  }, [d3TransformFromZoomState, homeTransform]);
 
   const zoomBounds = getZoomBounds();
   const isAtMinZoom = mapTransform.zoom <= zoomBounds.min + ZOOM_EPSILON;
@@ -198,7 +239,6 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
   const resetZoom = useCallback(() => {
     const svgElement = svgRef.current;
     const behavior = zoomBehaviorRef.current;
-    const homeTransform = getHomeMapTransform(DEFAULT_HOME_ZOOM);
     if (!svgElement || !behavior) {
       setMapTransform(homeTransform);
       return;
@@ -207,7 +247,7 @@ export function SubdivisionsGameMapProvider({ viewBoxWidth, viewBoxHeight, child
       .transition()
       .duration(220)
       .call(behavior.transform, d3TransformFromZoomState(homeTransform));
-  }, [d3TransformFromZoomState, getHomeMapTransform]);
+  }, [d3TransformFromZoomState, homeTransform]);
 
   // Build the value that GameMapContext expects (so GameZoomControls works unchanged)
   const gameMapValue = useMemo<GameMapContextValue>(() => ({

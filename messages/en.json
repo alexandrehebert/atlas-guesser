@@ -255,7 +255,8 @@
       "states": "{count} states",
       "communities": "{count} communities",
       "provinces": "{count} provinces",
-      "subjects": "{count} federal subjects"
+      "subjects": "{count} federal subjects",
+      "federal_districts": "{count} federal districts"
     },
     "mode": {
       "departements": "Departments",
@@ -264,7 +265,8 @@
       "states": "States",
       "communities": "Communities",
       "provinces": "Provinces",
-      "subjects": "Federal subjects"
+      "subjects": "Federal subjects",
+      "federal_districts": "Federal districts"
     },
     "game_mode_map_click": "Map click",
     "game_mode_highlighted_to_name": "Multiple choice",
@@ -275,7 +277,8 @@
       "states": "State prompt",
       "communities": "Community prompt",
       "provinces": "Province prompt",
-      "subjects": "Federal subject prompt"
+      "subjects": "Federal subject prompt",
+      "federal_districts": "Federal district prompt"
     },
     "prompt_body": {
       "departements": "Find this department on the map of {countryName}.",
@@ -284,7 +287,8 @@
       "states": "Find this state on the map of {countryName}.",
       "communities": "Find this community on the map of {countryName}.",
       "provinces": "Find this province on the map of {countryName}.",
-      "subjects": "Find this federal subject on the map of {countryName}."
+      "subjects": "Find this federal subject on the map of {countryName}.",
+      "federal_districts": "Find this federal district on the map of {countryName}."
     },
     "prompt_body_choices": {
       "departements": "An area is highlighted on the map. Which department is it?",
@@ -293,7 +297,8 @@
       "states": "An area is highlighted on the map. Which state is it?",
       "communities": "An area is highlighted on the map. Which community is it?",
       "provinces": "An area is highlighted on the map. Which province is it?",
-      "subjects": "An area is highlighted on the map. Which federal subject is it?"
+      "subjects": "An area is highlighted on the map. Which federal subject is it?",
+      "federal_districts": "An area is highlighted on the map. Which federal district is it?"
     },
     "instruction_map": "Click the matching border area on the map.",
     "instruction_choices": "A highlighted area is shown on the map. Choose the correct name among 4 options.",
