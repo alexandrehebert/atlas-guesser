@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { geoNaturalEarth1, geoPath } from 'd3-geo';
+import { geoMercator, geoNaturalEarth1, geoPath } from 'd3-geo';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import {
@@ -19,6 +19,7 @@ import { StatsSection } from '~/components/landing/StatsSection';
 import { MapSection } from '~/components/landing/MapSection';
 import { LandingMapPreviewNoSSR } from '~/components/landing/LandingMapPreviewNoSSR';
 import { LandingGameStartCtas } from '~/components/landing/LandingGameStartCtas';
+import { SubdivisionsCountryPreviewList } from '~/components/landing/SubdivisionsCountryPreviewList';
 import { MAP_MODES, MODE_ORDER } from '~/components/game/constants';
 import { getCountryQuizPayload } from '~/lib/server/countryQuiz';
 import { getAdminSubdivisionCatalogStats } from '~/lib/server/adminSubdivisionQuiz';
@@ -26,8 +27,10 @@ import { SUPPORTED_ADMIN_QUIZ_COUNTRIES } from '~/lib/adminQuizCountries';
 import { getAdminQuizCountryShapePreviews } from '~/lib/server/adminQuizCountryShapePreviews';
 
 const LANDING_MAP_VIEWBOX = { width: 420, height: 280 };
+const BRAZIL_PREVIEW_VIEWBOX = { width: 420, height: 280 };
 const FALLBACK_PARIS_POINT = { x: 228, y: 86 };
 const FALLBACK_MADRID_POINT = { x: 186, y: 140 };
+const FALLBACK_BRAZIL_PIN_POINT = { x: 226, y: 148 };
 
 interface LandingMapPreviewData {
   paths: string[];
@@ -39,6 +42,13 @@ interface LandingMapPreviewData {
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
+}
+
+interface BrazilSubdivisionPreviewData {
+  paths: string[];
+  ghostWorldPaths: string[];
+  highlightedPath?: string;
+  highlightPinPoint: { x: number; y: number };
 }
 
 function getEdgePointToward(
@@ -166,6 +176,82 @@ async function getLandingMapPreviewData(): Promise<LandingMapPreviewData> {
   }
 }
 
+async function getBrazilSubdivisionPreviewData(): Promise<BrazilSubdivisionPreviewData> {
+  try {
+    const filePath = join(process.cwd(), 'public/maps/brazil-states.geojson');
+    const rawGeoData = await readFile(filePath, 'utf8');
+    const geoData = JSON.parse(rawGeoData) as { features?: unknown[] };
+    const features = (geoData.features ?? []) as never[];
+
+    if (features.length === 0) {
+      return {
+        paths: [],
+        ghostWorldPaths: [],
+        highlightPinPoint: FALLBACK_BRAZIL_PIN_POINT,
+      };
+    }
+
+    const projection = geoMercator();
+    projection.fitExtent(
+      [[122, 52], [BRAZIL_PREVIEW_VIEWBOX.width - 128, BRAZIL_PREVIEW_VIEWBOX.height - 56]],
+      {
+        type: 'FeatureCollection',
+        features,
+      } as never,
+    );
+
+    const generator = geoPath(projection);
+    const worldFilePath = join(process.cwd(), 'public/maps/world-countries-110m.geojson');
+    const rawWorldGeoData = await readFile(worldFilePath, 'utf8');
+    const worldGeoData = JSON.parse(rawWorldGeoData) as { features?: unknown[] };
+    let highlightedPath: string | undefined;
+    let highlightedFeature: never | undefined;
+
+    const paths = features
+      .map((feature) => {
+        const path = generator(feature);
+        if (!path) {
+          return null;
+        }
+
+        const properties = (feature as { properties?: Record<string, unknown> }).properties ?? {};
+        const propertyText = Object.values(properties)
+          .filter((value): value is string => typeof value === 'string')
+          .join(' ')
+          .toLowerCase();
+
+        if (!highlightedPath && /(sao paulo|s\u00e3o paulo)/.test(propertyText)) {
+          highlightedPath = path;
+          highlightedFeature = feature;
+        }
+
+        return path;
+      })
+      .filter((path): path is string => Boolean(path));
+
+    const ghostWorldPaths = (worldGeoData.features ?? [])
+      .map((feature) => generator(feature as never))
+      .filter((path): path is string => Boolean(path));
+
+    const highlightedCentroid = highlightedFeature ? generator.centroid(highlightedFeature) : null;
+
+    return {
+      paths,
+      ghostWorldPaths,
+      highlightedPath,
+      highlightPinPoint: highlightedCentroid
+        ? { x: highlightedCentroid[0], y: highlightedCentroid[1] }
+        : FALLBACK_BRAZIL_PIN_POINT,
+    };
+  } catch {
+    return {
+      paths: [],
+      ghostWorldPaths: [],
+      highlightPinPoint: FALLBACK_BRAZIL_PIN_POINT,
+    };
+  }
+}
+
 function MetricCard({ label, value, helper, compact = false }: { label: string; value: string; helper: string; compact?: boolean }) {
   return (
     <div
@@ -232,11 +318,12 @@ export default async function HomePage({ params }: HomePageProps) {
   const tGuesser = await getTranslations({ locale, namespace: 'guesser' });
   const tSubdivisions = await getTranslations({ locale, namespace: 'subdivisionsGuesser' });
 
-  const [quiz, adminCatalogStats, landingMap, countryPreviews] = await Promise.all([
+  const [quiz, adminCatalogStats, landingMap, countryPreviews, brazilSubdivisionPreview] = await Promise.all([
     getCountryQuizPayload(locale),
     getAdminSubdivisionCatalogStats(),
     getLandingMapPreviewData(),
     getAdminQuizCountryShapePreviews(),
+    getBrazilSubdivisionPreviewData(),
   ]);
   const playableCountriesCount = quiz.countries.length;
   const gameModeCount = MODE_ORDER.length;
@@ -286,6 +373,13 @@ export default async function HomePage({ params }: HomePageProps) {
     label: tSubdivisions(`countries.${country}`),
     preview: countryPreviews[country],
   }));
+  const regionsPreviewTitle = locale === 'fr'
+    ? 'Explorez les regions comme un pro'
+    : 'Explore regions like a pro';
+  const regionsPreviewDescription = locale === 'fr'
+    ? 'Parcourez les pays disponibles, zoomez sur leurs subdivisions et lancez une partie instantanee depuis cet apercu interactif.'
+    : 'Browse available countries, preview their subdivisions, and jump into a live challenge right from this interactive teaser.';
+  const brazilPreviewCountryLabel = tSubdivisions('countries.brazil');
   const currentYear = new Date().getFullYear();
 
   return (
@@ -340,6 +434,81 @@ export default async function HomePage({ params }: HomePageProps) {
         />
 
         <section className="grid w-full gap-8">
+          <MapSection
+            eyebrow={<SectionEyebrow icon={BarChart3}>{t('start_subdivisions_modal_list_label')}</SectionEyebrow>}
+            heading={regionsPreviewTitle}
+            description={regionsPreviewDescription}
+            sidebarPosition="right"
+            sidebarContent={
+              <>
+                <div className="border-b border-slate-800 px-3 py-2.5">
+                  <p className="text-[9px] uppercase tracking-[0.2em] text-slate-400">{t('start_subdivisions_modal_list_label')}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-100">{t('cta_subdivisions')}</p>
+                  <p className="mt-1 text-[11px] text-slate-500">{subdivisionCountries.length} {t('metric_countries_helper')}</p>
+                </div>
+
+                <SubdivisionsCountryPreviewList countries={subdivisionCountries} selectedCountry="brazil" />
+              </>
+            }
+          >
+            <svg aria-hidden="true" className="absolute inset-0 h-full w-full" viewBox="0 0 420 280" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <pattern id="brazil-preview-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(148,163,184,0.10)" strokeWidth="0.7" />
+                </pattern>
+                <radialGradient id="brazil-preview-glow" cx="50%" cy="45%" r="70%">
+                  <stop offset="0%" stopColor="rgba(34,197,94,0.18)" />
+                  <stop offset="60%" stopColor="rgba(15,23,42,0.16)" />
+                  <stop offset="100%" stopColor="rgba(2,6,23,0)" />
+                </radialGradient>
+              </defs>
+
+              <rect x="0" y="0" width="420" height="280" fill="rgba(7,26,49,0.74)" />
+              <rect x="0" y="0" width="420" height="280" fill="url(#brazil-preview-grid)" />
+              <rect x="0" y="0" width="420" height="280" fill="url(#brazil-preview-glow)" />
+
+              <g>
+                {brazilSubdivisionPreview.ghostWorldPaths.map((pathValue, index) => (
+                  <path
+                    key={`landing-brazil-ghost-world-${index}`}
+                    d={pathValue}
+                    fill="rgba(15,23,42,0.18)"
+                    stroke="rgba(125,211,252,0.18)"
+                    strokeWidth="0.6"
+                  />
+                ))}
+              </g>
+
+              <g>
+                {brazilSubdivisionPreview.paths.map((pathValue, index) => (
+                  <path
+                    key={`landing-brazil-state-${index}`}
+                    d={pathValue}
+                    fill="rgba(30,41,59,0.84)"
+                    stroke="rgba(148,163,184,0.66)"
+                    strokeWidth="0.8"
+                  />
+                ))}
+              </g>
+
+              {brazilSubdivisionPreview.highlightedPath ? (
+                <path
+                  d={brazilSubdivisionPreview.highlightedPath}
+                  fill="rgba(59,130,246,0.8)"
+                  stroke="rgba(219,234,254,0.98)"
+                  strokeWidth="1.2"
+                  vectorEffect="non-scaling-stroke"
+                  style={{ filter: 'drop-shadow(0 0 14px rgba(59,130,246,0.62))' }}
+                />
+              ) : null}
+            </svg>
+
+            <div className="absolute bottom-3 right-3 z-10 rounded-xl border border-emerald-300/35 bg-slate-950/78 px-3 py-2 text-right shadow-[0_18px_48px_rgba(2,6,23,0.55)] backdrop-blur-sm">
+              <p className="mt-1 text-sm font-semibold text-white">{brazilPreviewCountryLabel}</p>
+              <p className="mt-1 text-[11px] text-slate-300">{tSubdivisions('mode.states')}</p>
+            </div>
+          </MapSection>
+
           <StatsSection
             eyebrow={<SectionEyebrow icon={Layers3}>{t('stats_eyebrow')}</SectionEyebrow>}
             heading={t('stats_heading')}

@@ -6,6 +6,7 @@ interface MapSectionProps {
   description: ReactNode;
   children: ReactNode;
   sidebarContent?: ReactNode;
+  sidebarPosition?: 'left' | 'right';
   bottomRightContent?: ReactNode;
 }
 
@@ -15,6 +16,7 @@ export function MapSection({
   description,
   children,
   sidebarContent,
+  sidebarPosition = 'left',
   bottomRightContent,
 }: MapSectionProps) {
   return (
@@ -31,7 +33,11 @@ export function MapSection({
         <div className="relative h-72 overflow-hidden rounded-[1.5rem] border border-slate-800/95 bg-slate-950/60 lg:h-80">
           {children}
           {sidebarContent && (
-            <div aria-hidden="true" className="absolute inset-y-2.5 left-2.5 z-10 w-[30%] min-w-[9rem] overflow-hidden rounded-xl border border-slate-700/90 bg-slate-950/86 shadow-2xl backdrop-blur-sm opacity-0 animate-fade-in-left lg:w-[15rem]" style={{ animationDelay: '800ms' }}>
+            <div
+              aria-hidden="true"
+              className={`absolute inset-y-2.5 z-10 w-[30%] min-w-[9rem] overflow-hidden rounded-xl border border-slate-700/90 bg-slate-950/86 shadow-2xl backdrop-blur-sm opacity-0 lg:w-[15rem] ${sidebarPosition === 'right' ? 'right-2.5 animate-fade-in-right' : 'left-2.5 animate-fade-in-left'}`}
+              style={{ animationDelay: '800ms' }}
+            >
               {sidebarContent}
             </div>
           )}
