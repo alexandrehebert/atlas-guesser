@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { geoArea, geoMercator, geoPath } from 'd3-geo';
 import { SUPPORTED_ADMIN_QUIZ_COUNTRIES, type AdminQuizCountrySlug } from '~/lib/adminQuizCountries';
+import { getAdminQuizCountryShapePreviews, type CountryShapePreview } from '~/lib/server/adminQuizCountryShapePreviews';
 
 const QUIZ_MAP_VIEWBOX = { width: 860, height: 920 };
 
@@ -32,6 +33,7 @@ export interface AdminSubdivisionQuizPayload {
   defaultLevelId: string;
   levels: AdminQuizLevel[];
   availableCountries: AdminQuizCountrySlug[];
+  countryPreviews: Record<AdminQuizCountrySlug, CountryShapePreview>;
   ghostEuropePaths: string[];
   ghostFocusedCountryPaths: string[];
   ghostPlayableCountryPaths: { path: string; country: AdminQuizCountrySlug }[];
@@ -858,8 +860,9 @@ function buildGhostEuropePaths(
 async function buildAdminSubdivisionQuizPayload(country: AdminQuizCountrySlug): Promise<AdminSubdivisionQuizPayload> {
   const config = COUNTRY_CONFIGS[country];
   const includeFranceOverseas = country === 'france';
-  const [worldGeoData, ...loadedGeoData] = await Promise.all([
+  const [worldGeoData, countryPreviews, ...loadedGeoData] = await Promise.all([
     loadGeoJson('world-countries-110m.geojson'),
+    getAdminQuizCountryShapePreviews(),
     ...config.levels.map((level) => loadGeoJson(level.fileName)),
     ...(includeFranceOverseas ? [loadGeoJson(FRANCE_OVERSEAS_FILE_NAME)] : []),
   ]);
@@ -918,6 +921,7 @@ async function buildAdminSubdivisionQuizPayload(country: AdminQuizCountrySlug): 
     defaultLevelId: config.defaultLevelId,
     levels,
     availableCountries: [...SUPPORTED_ADMIN_QUIZ_COUNTRIES],
+    countryPreviews,
     ghostEuropePaths: neighborPaths,
     ghostFocusedCountryPaths: focusedPaths,
     ghostPlayableCountryPaths: playablePaths,

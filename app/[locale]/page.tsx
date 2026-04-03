@@ -24,6 +24,7 @@ import { MAP_MODES, MODE_ORDER } from '~/components/game/constants';
 import { getCountryQuizPayload } from '~/lib/server/countryQuiz';
 import { getAdminSubdivisionCatalogStats } from '~/lib/server/adminSubdivisionQuiz';
 import { SUPPORTED_ADMIN_QUIZ_COUNTRIES } from '~/lib/adminQuizCountries';
+import { getAdminQuizCountryShapePreviews } from '~/lib/server/adminQuizCountryShapePreviews';
 
 const LANDING_MAP_VIEWBOX = { width: 420, height: 280 };
 const FALLBACK_PARIS_POINT = { x: 228, y: 86 };
@@ -232,9 +233,12 @@ export default async function HomePage({ params }: HomePageProps) {
   const tGuesser = await getTranslations({ locale, namespace: 'guesser' });
   const tSubdivisions = await getTranslations({ locale, namespace: 'subdivisionsGuesser' });
 
-  const quiz = await getCountryQuizPayload(locale);
-  const adminCatalogStats = await getAdminSubdivisionCatalogStats();
-  const landingMap = await getLandingMapPreviewData();
+  const [quiz, adminCatalogStats, landingMap, countryPreviews] = await Promise.all([
+    getCountryQuizPayload(locale),
+    getAdminSubdivisionCatalogStats(),
+    getLandingMapPreviewData(),
+    getAdminQuizCountryShapePreviews(),
+  ]);
   const playableCountriesCount = quiz.countries.length;
   const gameModeCount = MODE_ORDER.length;
   const mapModeCount = MAP_MODES.size;
@@ -281,6 +285,7 @@ export default async function HomePage({ params }: HomePageProps) {
   const subdivisionCountries = SUPPORTED_ADMIN_QUIZ_COUNTRIES.map((country) => ({
     country,
     label: tSubdivisions(`countries.${country}`),
+    preview: countryPreviews[country],
   }));
   const currentYear = new Date().getFullYear();
 

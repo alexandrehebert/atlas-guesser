@@ -3,7 +3,9 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowRight } from 'lucide-react';
+import CountryShapeIcon from '~/components/CountryShapeIcon';
 import { RouteLoadingLink } from '~/components/RouteLoadingLink';
+import type { CountryShapePreview } from '~/lib/server/adminQuizCountryShapePreviews';
 
 const MODAL_EXIT_ANIMATION_MS = 220;
 
@@ -16,6 +18,7 @@ type WorldModeOption = {
 type SubdivisionCountryOption = {
   country: string;
   label: string;
+  preview: CountryShapePreview;
 };
 
 interface LandingGameStartCtasProps {
@@ -213,9 +216,12 @@ export function LandingGameStartCtas({
                 <RouteLoadingLink
                   key={option.country}
                   href={`/subdivisions/${option.country}`}
-                  className="rounded-xl border border-white/12 bg-white/5 px-3 py-2 text-center text-sm font-medium text-slate-100 transition hover:border-cyan-300/50 hover:bg-cyan-300/10 hover:text-cyan-100"
+                  className="flex items-center gap-3 rounded-xl border border-white/12 bg-white/5 px-3 py-2 text-left text-sm font-medium text-slate-100 transition hover:border-cyan-300/50 hover:bg-cyan-300/10 hover:text-cyan-100"
                 >
-                  {option.label}
+                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-slate-900/70 text-cyan-100/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                    <CountryShapeIcon preview={option.preview} className="h-5 w-5" />
+                  </span>
+                  <span>{option.label}</span>
                 </RouteLoadingLink>
               ))}
             </div>
