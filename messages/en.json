@@ -348,7 +348,10 @@
     "clear_scores_cancel": "Cancel",
     "game_mode_label": "Game mode",
     "level_label": "Level",
-    "country_label": "Country"
+    "country_label": "Country",
+    "switch_country_title": "Switch to {countryName}?",
+    "switch_country_confirm": "Switch",
+    "switch_country_cancel": "Cancel"
   },
   "transport": {
     "car": "Car",

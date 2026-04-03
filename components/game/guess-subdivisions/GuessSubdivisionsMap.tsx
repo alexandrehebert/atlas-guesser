@@ -3,7 +3,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Map as MapIcon } from 'lucide-react';
+import type { AdminQuizCountrySlug } from '~/lib/adminQuizCountries';
 import type { QuizArea } from '~/lib/server/adminSubdivisionQuiz';
+import { useRouter } from '~/i18n/navigation';
+import { useGlobalRouteLoading } from '~/components/GlobalRouteLoadingProvider';
 import { useGameLayout } from '../contexts/GameLayoutContext';
 import { useSubdivisionsGame } from './contexts/SubdivisionsGameContext';
 import { useSubdivisionsGameMap } from './contexts/SubdivisionsGameMapContext';
@@ -263,9 +266,14 @@ export default function GuessSubdivisionsMap() {
     useLargeAnswerLabels,
   } = useSubdivisionsGameMap();
 
+  const router = useRouter();
+  const { startRouteLoading } = useGlobalRouteLoading();
+
   const [isSourcesModalOpen, setIsSourcesModalOpen] = useState(false);
   const [isScoreModalOpen, setIsScoreModalOpen] = useState(false);
   const [confirmClearScore, setConfirmClearScore] = useState(false);
+  const [pendingCountry, setPendingCountry] = useState<AdminQuizCountrySlug | null>(null);
+  const [hoveredPlayableCountry, setHoveredPlayableCountry] = useState<string | null>(null);
   const [layoutPass, setLayoutPass] = useState(0);
   const layoutRefreshFrameRef = useRef<number | null>(null);
   const hasScore = score.correct > 0 || score.total > 0 || score.streak > 0 || score.bestStreak > 0;
@@ -351,6 +359,22 @@ export default function GuessSubdivisionsMap() {
       return;
     }
     submitAnswer(selectedCode);
+  };
+
+  const handlePlayableCountryClick = (country: AdminQuizCountrySlug) => {
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      return;
+    }
+    setPendingCountry(country);
+  };
+
+  const confirmCountrySwitch = () => {
+    if (!pendingCountry) return;
+    const target = pendingCountry;
+    setPendingCountry(null);
+    startRouteLoading();
+    router.push(`/subdivisions/${target}`);
   };
 
   const answerLabels = useMemo(() => {
@@ -643,6 +667,35 @@ export default function GuessSubdivisionsMap() {
             })}
           </g>
 
+          {quiz.ghostPlayableCountryPaths.map(({ path, country }, index) => {
+            const isHovered = hoveredPlayableCountry === country;
+            return (
+              <path
+                key={`ghost-playable-${country}-${index}`}
+                d={path}
+                className={`outline-none transition-[fill,stroke] duration-150 cursor-pointer ${isHovered ? 'fill-sky-400/30 stroke-sky-300/70' : 'fill-sky-400/15 stroke-sky-400/45'}`}
+                strokeWidth={0.8}
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+                style={{ outline: 'none' }}
+                role="button"
+                tabIndex={0}
+                aria-label={t(`countries.${country}`)}
+                onClick={() => handlePlayableCountryClick(country)}
+                onMouseDown={(event) => { event.preventDefault(); }}
+                onMouseEnter={() => setHoveredPlayableCountry(country)}
+                onMouseLeave={() => setHoveredPlayableCountry(null)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    handlePlayableCountryClick(country);
+                  }
+                }}
+              />
+            );
+          })}
+
           {activeAreas.map((area) => {
             const isClickable = gameMode === 'map-click' && !answer;
             return (
@@ -915,6 +968,41 @@ export default function GuessSubdivisionsMap() {
                   </div>
                 </section>
               ))}
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      {pendingCountry ? (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/62 p-4 backdrop-blur-sm"
+          onClick={() => setPendingCountry(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="switch-country-title"
+            className="w-full max-w-sm rounded-[1.5rem] border border-white/12 bg-slate-950/96 p-5 shadow-[0_32px_90px_rgba(2,6,23,0.6)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2 id="switch-country-title" className="text-lg font-semibold text-white">
+              {t('switch_country_title', { countryName: t(`countries.${pendingCountry}`) })}
+            </h2>
+            <div className="mt-4 flex gap-2">
+              <button
+                type="button"
+                onClick={confirmCountrySwitch}
+                className="flex-1 rounded-lg border border-sky-400/40 bg-sky-500/20 px-3 py-2 text-sm font-medium text-sky-50 transition hover:border-sky-300/50 hover:bg-sky-500/30"
+              >
+                {t('switch_country_confirm')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setPendingCountry(null)}
+                className="flex-1 rounded-lg border border-white/12 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:border-white/20 hover:bg-white/10"
+              >
+                {t('switch_country_cancel')}
+              </button>
             </div>
           </div>
         </div>

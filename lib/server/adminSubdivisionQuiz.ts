@@ -34,6 +34,7 @@ export interface AdminSubdivisionQuizPayload {
   availableCountries: AdminQuizCountrySlug[];
   ghostEuropePaths: string[];
   ghostFocusedCountryPaths: string[];
+  ghostPlayableCountryPaths: { path: string; country: AdminQuizCountrySlug }[];
   viewBox: typeof QUIZ_MAP_VIEWBOX;
 }
 
@@ -729,10 +730,12 @@ function buildGhostEuropePaths(
   worldGeoData: GeoJSON.FeatureCollection,
   projection: ReturnType<typeof geoMercator>,
   config: CountryConfig,
-): { neighborPaths: string[]; focusedPaths: string[] } {
+  playableCountriesByCode: Record<string, AdminQuizCountrySlug>,
+): { neighborPaths: string[]; focusedPaths: string[]; playablePaths: { path: string; country: AdminQuizCountrySlug }[] } {
   const generator = geoPath(projection);
   const neighborPaths: string[] = [];
   const focusedPaths: string[] = [];
+  const playablePaths: { path: string; country: AdminQuizCountrySlug }[] = [];
 
   const getIsoA2 = (properties: FeatureProperties): string => {
     const isoA2 = typeof properties.ISO_A2 === 'string' ? properties.ISO_A2.toUpperCase() : '';
@@ -747,19 +750,24 @@ function buildGhostEuropePaths(
     const countryIsoA2 = getIsoA2(properties);
     const isFocusedCountry = countryIsoA2 === config.countryCode;
 
-    const path = generator(feature as GeoFeature);
-    if (!path) {
+    const svgPath = generator(feature as GeoFeature);
+    if (!svgPath) {
       continue;
     }
 
     if (isFocusedCountry) {
-      focusedPaths.push(path);
+      focusedPaths.push(svgPath);
     } else {
-      neighborPaths.push(path);
+      const playableSlug = playableCountriesByCode[countryIsoA2];
+      if (playableSlug) {
+        playablePaths.push({ path: svgPath, country: playableSlug });
+      } else {
+        neighborPaths.push(svgPath);
+      }
     }
   }
 
-  return { neighborPaths, focusedPaths };
+  return { neighborPaths, focusedPaths, playablePaths };
 }
 
 async function buildAdminSubdivisionQuizPayload(country: AdminQuizCountrySlug): Promise<AdminSubdivisionQuizPayload> {
@@ -810,7 +818,13 @@ async function buildAdminSubdivisionQuizPayload(country: AdminQuizCountrySlug): 
     };
   });
 
-  const { neighborPaths, focusedPaths } = buildGhostEuropePaths(worldGeoData, projection, config);
+  const playableCountriesByCode: Record<string, AdminQuizCountrySlug> = Object.fromEntries(
+    SUPPORTED_ADMIN_QUIZ_COUNTRIES
+      .filter((slug) => slug !== country)
+      .map((slug) => [COUNTRY_CONFIGS[slug].countryCode, slug]),
+  );
+
+  const { neighborPaths, focusedPaths, playablePaths } = buildGhostEuropePaths(worldGeoData, projection, config, playableCountriesByCode);
 
   return {
     country,
@@ -820,6 +834,7 @@ async function buildAdminSubdivisionQuizPayload(country: AdminQuizCountrySlug): 
     availableCountries: [...SUPPORTED_ADMIN_QUIZ_COUNTRIES],
     ghostEuropePaths: neighborPaths,
     ghostFocusedCountryPaths: focusedPaths,
+    ghostPlayableCountryPaths: playablePaths,
     viewBox: QUIZ_MAP_VIEWBOX,
   };
 }

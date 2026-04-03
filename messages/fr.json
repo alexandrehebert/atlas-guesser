@@ -350,7 +350,10 @@
     "clear_scores_cancel": "Annuler",
     "game_mode_label": "Mode de jeu",
     "level_label": "Niveau",
-    "country_label": "Pays"
+    "country_label": "Pays",
+    "switch_country_title": "Passer à {countryName} ?",
+    "switch_country_confirm": "Changer",
+    "switch_country_cancel": "Annuler"
   },
   "transport": {
     "car": "Voiture",

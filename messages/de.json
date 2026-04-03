@@ -348,7 +348,10 @@
     "clear_scores_cancel": "Abbrechen",
     "game_mode_label": "Spielmodus",
     "level_label": "Ebene",
-    "country_label": "Land"
+    "country_label": "Land",
+    "switch_country_title": "Zu {countryName} wechseln?",
+    "switch_country_confirm": "Wechseln",
+    "switch_country_cancel": "Abbrechen"
   },
   "transport": {
     "car": "Auto",
