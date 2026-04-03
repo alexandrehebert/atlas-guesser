@@ -75,6 +75,23 @@ describe('getAdminSubdivisionQuizPayload', () => {
     expect(nearFullMapAreas.length).toBeLessThan(3);
   });
 
+  it('builds a United Kingdom countries payload', async () => {
+    const quiz = await getAdminSubdivisionQuizPayload('united-kingdom');
+    const countries = quiz.levels.find((level) => level.id === 'countries');
+    const counties = quiz.levels.find((level) => level.id === 'counties');
+
+    expect(quiz.defaultLevelId).toBe('countries');
+    expect(quiz.countryCode).toBe('GB');
+    expect(countries?.areas).toHaveLength(4);
+    expect(countries?.areas.map((area) => area.name).sort()).toEqual([
+      'England',
+      'Northern Ireland',
+      'Scotland',
+      'Wales',
+    ]);
+    expect(counties?.areas.length ?? 0).toBeGreaterThan(200);
+  });
+
   it('builds an Algeria wilayas payload', async () => {
     const quiz = await getAdminSubdivisionQuizPayload('algeria');
     const wilayas = quiz.levels.find((level) => level.id === 'wilayas');

@@ -131,6 +131,28 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
       },
     ],
   },
+  'united-kingdom': {
+    countryCode: 'GB',
+    countryNames: ['united kingdom', 'uk', 'u.k.', 'great britain', 'britain'],
+    sortLocale: 'en',
+    defaultLevelId: 'countries',
+    levels: [
+      {
+        id: 'countries',
+        fileName: 'united-kingdom-countries.geojson',
+        minimumClickableSize: 8,
+        codeProperty: 'shapeISO',
+        nameProperty: 'shapeName',
+      },
+      {
+        id: 'counties',
+        fileName: 'united-kingdom-counties.geojson',
+        minimumClickableSize: 1,
+        codeProperty: 'shapeID',
+        nameProperty: 'shapeName',
+      },
+    ],
+  },
   spain: {
     countryCode: 'ES',
     countryNames: ['spain', 'españa', 'espana'],

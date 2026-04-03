@@ -240,6 +240,23 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
       });
     }
 
+    if (quiz.country === 'united-kingdom') {
+      playableItems.push(
+        {
+          filePath: 'public/maps/united-kingdom-countries.geojson',
+          sourceLabel: 'geoBoundaries / Eurostat GISCO',
+          note: t('sources.geoboundaries_note'),
+          url: 'https://www.geoboundaries.org/api/current/gbOpen/GBR/ADM1/',
+        },
+        {
+          filePath: 'public/maps/united-kingdom-counties.geojson',
+          sourceLabel: 'geoBoundaries / ONS Open Geography Portal',
+          note: t('sources.geoboundaries_note'),
+          url: 'https://www.geoboundaries.org/api/current/gbOpen/GBR/ADM2/',
+        },
+      );
+    }
+
     if (quiz.country === 'spain') {
       playableItems.push({
         filePath: 'public/maps/spain-communities.geojson',

@@ -1,10 +1,11 @@
-export const SUPPORTED_ADMIN_QUIZ_COUNTRIES = ['france', 'germany', 'spain', 'italy', 'canada', 'usa', 'brazil', 'china', 'india', 'russia', 'australia', 'argentina', 'algeria'] as const;
+export const SUPPORTED_ADMIN_QUIZ_COUNTRIES = ['france', 'germany', 'united-kingdom', 'spain', 'italy', 'canada', 'usa', 'brazil', 'china', 'india', 'russia', 'australia', 'argentina', 'algeria'] as const;
 
 export type AdminQuizCountrySlug = (typeof SUPPORTED_ADMIN_QUIZ_COUNTRIES)[number];
 
 export const ADMIN_QUIZ_COUNTRY_CODES: Record<AdminQuizCountrySlug, string> = {
   france: 'FR',
   germany: 'DE',
+  'united-kingdom': 'GB',
   spain: 'ES',
   italy: 'IT',
   canada: 'CA',
