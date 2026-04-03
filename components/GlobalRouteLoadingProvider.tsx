@@ -53,7 +53,7 @@ export function GlobalRouteLoadingProvider({ children }: { children: ReactNode }
     <GlobalRouteLoadingContext.Provider value={value}>
       {children}
       <div
-        className={`fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 transition-opacity duration-700 ${isRouteLoading ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+        className={`fixed inset-0 z-[300] flex items-center justify-center bg-slate-950/80 transition-opacity duration-700 ${isRouteLoading ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
         aria-hidden="true"
       >
         <MapIcon className="animate-spin text-sky-400" size={64} strokeWidth={2.5} />

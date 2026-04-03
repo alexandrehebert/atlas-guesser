@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowRight } from 'lucide-react';
-import { Link } from '~/i18n/navigation';
 import { RouteLoadingLink } from '~/components/RouteLoadingLink';
 
 const MODAL_EXIT_ANIMATION_MS = 220;
@@ -156,7 +155,7 @@ export function LandingGameStartCtas({
 
             <div className="mt-5 grid gap-2 sm:grid-cols-2">
               {worldModes.map((option) => (
-                <Link
+                <RouteLoadingLink
                   key={option.mode}
                   href={`/guesser/${option.mode}`}
                   className="group rounded-xl border border-white/12 bg-white/5 px-3 py-3 transition hover:border-amber-300/50 hover:bg-amber-300/10"
@@ -167,7 +166,7 @@ export function LandingGameStartCtas({
                   <p className="mt-1 text-xs text-slate-400 transition group-hover:text-slate-300">
                     {option.prompt}
                   </p>
-                </Link>
+                </RouteLoadingLink>
               ))}
             </div>
           </div>
