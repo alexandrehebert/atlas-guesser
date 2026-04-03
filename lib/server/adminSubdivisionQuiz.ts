@@ -753,6 +753,19 @@ function buildSectionLabels(country: AdminQuizCountrySlug, levelId: string, area
     ].filter((label): label is QuizSectionLabel => Boolean(label));
   }
 
+
+  if (country === 'united-kingdom' && levelId === 'counties') {
+    const scillyLabel = buildSectionLabelFromCodes(areas, {
+      id: 'uk-scilly',
+      labelKey: 'uk_scilly',
+      codes: ['9080712B23650621580823'],
+      paddingX: 12,
+      paddingY: 16,
+    });
+  
+    return scillyLabel ? [scillyLabel] : [];
+  }
+  
   return [];
 }
 
