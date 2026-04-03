@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ExternalLink, Globe, Map as MapIcon } from 'lucide-react';
 import CountryFlag from '~/components/CountryFlag';
 import CountryShapeIcon from '~/components/CountryShapeIcon';
 import { RouteLoadingLink } from '~/components/RouteLoadingLink';
@@ -147,6 +147,7 @@ export function LandingGameStartCtas({
         }}
         className="inline-flex items-center gap-2 rounded-full bg-amber-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-200"
       >
+        <Globe className="h-4 w-4" />
         {worldCtaLabel}
         <ArrowRight className="h-4 w-4" />
       </button>
@@ -159,6 +160,7 @@ export function LandingGameStartCtas({
         }}
         className="inline-flex items-center gap-2 rounded-full bg-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
       >
+        <MapIcon className="h-4 w-4" />
         {subdivisionsCtaLabel}
         <ArrowRight className="h-4 w-4" />
       </button>
@@ -170,10 +172,10 @@ export function LandingGameStartCtas({
           setCountryFilter('');
           setOpenModal('countries');
         }}
-        className="inline-flex items-center gap-2 rounded-full bg-emerald-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-200"
+        className="inline-flex items-center gap-1.5 ml-4 text-sm font-semibold text-slate-300 underline transition hover:text-slate-100"
       >
         {countriesCtaLabel}
-        <ArrowRight className="h-4 w-4" />
+        <ExternalLink className="h-4 w-4" />
       </button>
 
       {openModal === 'world' && portalRoot
