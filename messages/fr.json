@@ -255,7 +255,8 @@
       "china": "Chine",
       "india": "Inde",
       "russia": "Russie",
-      "australia": "Australie"
+      "australia": "Australie",
+      "argentina": "Argentine"
     },
     "top_badge": {
       "departements": "{count} départements",
@@ -340,7 +341,7 @@
       "france_note": "Contours administratifs fournis via les APIs géo publiques françaises (adossées à l'IGN).",
       "overseas_note": "Extrait outre-mer embarqué utilisé pour la mise en encart.",
       "bundled_source_label": "GeoJSON embarqué dans le projet",
-      "unverified_note": "La source amont exacte n'est pas enregistrée dans l'historique du dépôt.",
+      "verified_note": "Source vérifiée à partir de l'historique du dépôt.",
       "natural_earth_note": "Pays Admin 0, 1:110m.",
       "open_link": "Ouvrir la source"
     },

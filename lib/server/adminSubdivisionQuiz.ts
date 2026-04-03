@@ -271,6 +271,21 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
       },
     ],
   },
+  argentina: {
+    countryCode: 'AR',
+    countryNames: ['argentina', 'argentine republic'],
+    sortLocale: 'es',
+    defaultLevelId: 'provinces',
+    levels: [
+      {
+        id: 'provinces',
+        fileName: 'argentina-provinces.geojson',
+        minimumClickableSize: 1,
+        codeProperty: 'GID_1',
+        nameProperty: 'NAME_1',
+      },
+    ],
+  },
 };
 
 const cachedPayloadPromises: Partial<Record<AdminQuizCountrySlug, Promise<AdminSubdivisionQuizPayload>>> = {};

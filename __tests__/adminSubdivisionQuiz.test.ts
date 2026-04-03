@@ -55,4 +55,22 @@ describe('getAdminSubdivisionQuizPayload', () => {
     expect(federalDistricts?.areas.length ?? 0).toBeGreaterThan(0);
     expect(subjects?.areas.length ?? 0).toBeGreaterThan(0);
   });
+
+  it('builds an Argentina provinces payload', async () => {
+    const quiz = await getAdminSubdivisionQuizPayload('argentina');
+    const provinces = quiz.levels.find((level) => level.id === 'provinces');
+
+    expect(quiz.defaultLevelId).toBe('provinces');
+    expect(quiz.countryCode).toBe('AR');
+    expect(provinces?.areas.length ?? 0).toBeGreaterThan(0);
+
+    const fullWidth = quiz.viewBox.width;
+    const fullHeight = quiz.viewBox.height;
+    const nearFullMapAreas = (provinces?.areas ?? []).filter((area) => (
+      area.focusBounds.width >= fullWidth * 0.95
+      && area.focusBounds.height >= fullHeight * 0.95
+    ));
+
+    expect(nearFullMapAreas.length).toBeLessThan(3);
+  });
 });

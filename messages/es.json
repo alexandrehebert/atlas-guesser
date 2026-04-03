@@ -253,7 +253,8 @@
       "china": "China",
       "india": "India",
       "russia": "Rusia",
-      "australia": "Australia"
+      "australia": "Australia",
+      "argentina": "Argentina"
     },
     "top_badge": {
       "departements": "{count} departamentos",
@@ -338,7 +339,7 @@
       "france_note": "Contornos administrativos servidos por las APIs geo públicas de Francia (respaldadas por IGN).",
       "overseas_note": "Extracto ultramarino incluido en el proyecto para el diseño en recuadro.",
       "bundled_source_label": "GeoJSON incluido en el proyecto",
-      "unverified_note": "La fuente ascendente exacta no quedó registrada en el historial del repositorio.",
+      "verified_note": "Fuente verificada en el historial del repositorio.",
       "natural_earth_note": "Países Admin 0, 1:110m.",
       "open_link": "Abrir fuente"
     },

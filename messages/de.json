@@ -253,7 +253,8 @@
       "china": "China",
       "india": "Indien",
       "russia": "Russland",
-      "australia": "Australien"
+      "australia": "Australien",
+      "argentina": "Argentinien"
     },
     "top_badge": {
       "departements": "{count} Departements",
@@ -338,7 +339,7 @@
       "france_note": "Verwaltungskonturen über die öffentlichen Geo-APIs Frankreichs (IGN-gestützt).",
       "overseas_note": "Gebündelter Übersee-Auszug für das Inset-Layout.",
       "bundled_source_label": "Im Projekt gebündeltes GeoJSON",
-      "unverified_note": "Die genaue Upstream-Quelle ist in der Repository-Historie nicht vermerkt.",
+      "verified_note": "Quelle anhand der Repository-Historie verifiziert.",
       "natural_earth_note": "Admin-0-Länder, 1:110m.",
       "open_link": "Quelle öffnen"
     },

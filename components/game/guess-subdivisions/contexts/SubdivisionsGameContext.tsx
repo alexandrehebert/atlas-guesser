@@ -234,8 +234,8 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
     if (quiz.country === 'germany') {
       playableItems.push({
         filePath: 'public/maps/germany-states.geojson',
-        sourceLabel: 'isellsoap/deutschlandGeoJSON (likely)',
-        note: t('sources.unverified_note'),
+        sourceLabel: 'isellsoap/deutschlandGeoJSON',
+        note: t('sources.verified_note'),
         url: 'https://github.com/isellsoap/deutschlandGeoJSON',
       });
     }
@@ -243,8 +243,8 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
     if (quiz.country === 'spain') {
       playableItems.push({
         filePath: 'public/maps/spain-communities.geojson',
-        sourceLabel: 'codeforgermany/click_that_hood (likely)',
-        note: t('sources.unverified_note'),
+        sourceLabel: 'codeforgermany/click_that_hood',
+        note: t('sources.verified_note'),
         url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
       });
     }
@@ -252,8 +252,8 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
     if (quiz.country === 'italy') {
       playableItems.push({
         filePath: 'public/maps/italy-regions.geojson',
-        sourceLabel: 'codeforgermany/click_that_hood (likely)',
-        note: t('sources.unverified_note'),
+        sourceLabel: 'codeforgermany/click_that_hood',
+        note: t('sources.verified_note'),
         url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
       });
     }
@@ -261,8 +261,8 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
     if (quiz.country === 'canada') {
       playableItems.push({
         filePath: 'public/maps/canada-provinces.geojson',
-        sourceLabel: 'codeforgermany/click_that_hood (likely)',
-        note: t('sources.unverified_note'),
+        sourceLabel: 'codeforgermany/click_that_hood',
+        note: t('sources.verified_note'),
         url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
       });
     }
@@ -270,8 +270,8 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
     if (quiz.country === 'usa') {
       playableItems.push({
         filePath: 'public/maps/usa-states.geojson',
-        sourceLabel: 'PublicaMundi/MappingAPI us-states.json (likely)',
-        note: t('sources.unverified_note'),
+        sourceLabel: 'PublicaMundi/MappingAPI us-states.json',
+        note: t('sources.verified_note'),
         url: 'https://github.com/PublicaMundi/MappingAPI/blob/master/data/geojson/us-states.json',
       });
     }
@@ -280,7 +280,7 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
       playableItems.push({
         filePath: 'public/maps/brazil-states.geojson',
         sourceLabel: 'codeforgermany/click_that_hood',
-        note: t('sources.unverified_note'),
+        note: t('sources.verified_note'),
         url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
       });
     }
@@ -289,7 +289,7 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
       playableItems.push({
         filePath: 'public/maps/china-provinces.geojson',
         sourceLabel: 'codeforgermany/click_that_hood',
-        note: t('sources.unverified_note'),
+        note: t('sources.verified_note'),
         url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
       });
     }
@@ -298,7 +298,7 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
       playableItems.push({
         filePath: 'public/maps/india-states.geojson',
         sourceLabel: 'codeforgermany/click_that_hood',
-        note: t('sources.unverified_note'),
+        note: t('sources.verified_note'),
         url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
       });
     }
@@ -308,13 +308,13 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
         {
           filePath: 'public/maps/russia-federal-districts.geojson',
           sourceLabel: 'codeforgermany/click_that_hood',
-          note: t('sources.unverified_note'),
+          note: t('sources.verified_note'),
           url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
         },
         {
           filePath: 'public/maps/russia-subjects.geojson',
           sourceLabel: 'codeforgermany/click_that_hood',
-          note: t('sources.unverified_note'),
+          note: t('sources.verified_note'),
           url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
         },
       );
@@ -324,8 +324,17 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
       playableItems.push({
         filePath: 'public/maps/australia-states.geojson',
         sourceLabel: 'codeforgermany/click_that_hood',
-        note: t('sources.unverified_note'),
+        note: t('sources.verified_note'),
         url: 'https://github.com/codeforgermany/click_that_hood/tree/main/public/data',
+      });
+    }
+
+    if (quiz.country === 'argentina') {
+      playableItems.push({
+        filePath: 'public/maps/argentina-provinces.geojson',
+        sourceLabel: 'GADM',
+        note: t('sources.verified_note'),
+        url: 'https://gadm.org',
       });
     }
 

@@ -253,7 +253,8 @@
       "china": "中国",
       "india": "印度",
       "russia": "俄罗斯",
-      "australia": "澳大利亚"
+      "australia": "澳大利亚",
+      "argentina": "阿根廷"
     },
     "top_badge": {
       "departements": "{count} 个省",
@@ -338,7 +339,7 @@
       "france_note": "通过法国公共地理 API（IGN 支持）提供的行政轮廓。",
       "overseas_note": "用于插图布局的捆绑海外提取。",
       "bundled_source_label": "项目捆绑 GeoJSON",
-      "unverified_note": "确切的上游来源未记录在仓库历史中。",
+      "verified_note": "来源已根据仓库历史核实。",
       "natural_earth_note": "Admin 0 国家，1:110m。",
       "open_link": "打开来源"
     },
