@@ -711,10 +711,9 @@ export default function GuessSubdivisionsMap() {
             />
           ))}
 
-          {/* Expanded hit rects for inset section areas (overseas territories, Alaska, Hawaii…).
-              Each rect covers the full sectionBounds slot of the area, making it much easier to
-              tap on mobile than the actual tiny SVG path. Rendered above the absorbing rects but
-              below the visual paths so clicking anywhere in the slot selects the correct area. */}
+          {/* Expanded hit rects for inset section areas (overseas territories, Alaska, Hawaii…)
+              and for very small standalone regions (e.g. islands). Rendered above absorbing rects
+              but below the visible paths to keep visual output unchanged while improving taps. */}
           {gameMode === 'map-click' && !answer && activeLevel?.sectionLabels && activeAreas.map((area) => {
             const cx = area.sectionBounds.x + area.sectionBounds.width / 2;
             const cy = area.sectionBounds.y + area.sectionBounds.height / 2;
@@ -724,14 +723,26 @@ export default function GuessSubdivisionsMap() {
               && cy >= section.bounds.y
               && cy <= section.bounds.y + section.bounds.height,
             );
-            if (!isInSection) return null;
+
+            const isSpainIslandCommunity = quiz.country === 'spain' && (area.code === '04' || area.code === '05');
+
+            const isTinyArea = area.focusBounds.width < 14 || area.focusBounds.height < 14;
+            if (!isInSection && !isTinyArea && !isSpainIslandCommunity) return null;
+
+            const baseBounds = (isInSection || isSpainIslandCommunity) ? area.sectionBounds : area.focusBounds;
+            const minHitSize = isSpainIslandCommunity ? 34 : 20;
+            const width = Math.max(baseBounds.width, minHitSize);
+            const height = Math.max(baseBounds.height, minHitSize);
+            const x = baseBounds.x + (baseBounds.width - width) / 2;
+            const y = baseBounds.y + (baseBounds.height - height) / 2;
+
             return (
               <rect
                 key={`section-area-hit-${area.code}`}
-                x={area.sectionBounds.x}
-                y={area.sectionBounds.y}
-                width={area.sectionBounds.width}
-                height={area.sectionBounds.height}
+                x={x}
+                y={y}
+                width={width}
+                height={height}
                 fill="rgba(0,0,0,0)"
                 pointerEvents="all"
                 onClick={() => handleMapClick(area.code)}
