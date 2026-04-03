@@ -22,6 +22,12 @@ export default function SubdivisionsGameSidebarContent() {
   } = useSubdivisionsGame();
 
   const activeLevelId = activeLevel?.id ?? quiz.defaultLevelId;
+  const resultPanelClasses = answer?.correct
+    ? 'mt-4 rounded-2xl border border-emerald-300/35 bg-emerald-500/12 px-3 py-3 text-sm text-emerald-50'
+    : 'mt-4 rounded-2xl border border-rose-300/35 bg-rose-500/12 px-3 py-3 text-sm text-rose-50';
+  const nextRoundButtonClasses = answer?.correct
+    ? 'mt-3 inline-flex w-full justify-center rounded-xl border border-emerald-200/45 bg-emerald-500/18 px-3 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-emerald-50 transition hover:bg-emerald-500/28'
+    : 'mt-3 inline-flex w-full justify-center rounded-xl border border-rose-200/45 bg-rose-500/18 px-3 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-rose-50 transition hover:bg-rose-500/28';
 
   return (
     <>
@@ -63,7 +69,7 @@ export default function SubdivisionsGameSidebarContent() {
             {isChoiceMode ? t('instruction_choices') : t('instruction_map')}
           </p>
         ) : (
-          <div className="mt-4 rounded-2xl border border-white/10 bg-slate-900/70 px-3 py-3 text-sm text-slate-200">
+          <div className={resultPanelClasses}>
             <p>
               {answer.correct
                 ? t('result_correct', { areaName: targetArea?.name ?? '' })
@@ -72,7 +78,7 @@ export default function SubdivisionsGameSidebarContent() {
             <button
               type="button"
               onClick={nextRound}
-              className="mt-3 inline-flex w-full justify-center rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-white transition hover:bg-white/20"
+              className={nextRoundButtonClasses}
             >
               {t('next_round')}
             </button>

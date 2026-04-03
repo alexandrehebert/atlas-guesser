@@ -33,5 +33,5 @@ export function CountryGameSidebarContent() {
 }
 
 export function CountryGameSidebarFooter() {
-  return <GameScore />;
+  return <GameScore showClearAction />;
 }

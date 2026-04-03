@@ -24,7 +24,7 @@ export default function GuessSubdivisionsGameClient({ quiz }: GuessSubdivisionsG
           <GameShell
             mapContent={<GuessSubdivisionsMap />}
             sidebarContent={<SubdivisionsGameSidebarContent />}
-            sidebarFooter={<SubdivisionsGameScore />}
+            sidebarFooter={<SubdivisionsGameScore showClearAction />}
             showBackgroundGrid
             topBar={
               <GameTopBar

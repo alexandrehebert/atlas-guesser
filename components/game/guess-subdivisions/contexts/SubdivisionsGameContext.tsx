@@ -112,6 +112,7 @@ interface SubdivisionsGameContextValue {
   optionCodes: string[];
   answer: AnswerState | null;
   score: ScoreState;
+  scoreLoaded: boolean;
   hoveredCode: string | null;
   activeLevel: AdminQuizLevel | undefined;
   activeAreas: QuizArea[];
@@ -409,6 +410,7 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
     optionCodes,
     answer,
     score,
+    scoreLoaded,
     hoveredCode,
     activeLevel,
     activeAreas,
@@ -433,6 +435,7 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
     optionCodes,
     answer,
     score,
+    scoreLoaded,
     hoveredCode,
     activeLevel,
     activeAreas,

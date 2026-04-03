@@ -7,6 +7,7 @@ import GameSettingsMenu from './GameSettingsMenu';
 import GameShell from '../GameShell';
 import GameTopBar from '../GameTopBar';
 import { CountryGameSidebarContent, CountryGameSidebarFooter } from './CountryGameSidebarContent';
+import GameScoreChip from './GameScoreChip';
 
 interface GuessCountryGameProps {
   mapReady: boolean;
@@ -17,7 +18,12 @@ interface GuessCountryGameProps {
 export default function GuessCountryGame({ mapReady, handleMapReady, loadingTargetView }: GuessCountryGameProps) {
   return (
     <GameShell
-      mapContent={<GameMap onInitialZoomEnd={handleMapReady} />}
+      mapContent={(
+        <>
+          <GameMap onInitialZoomEnd={handleMapReady} />
+          <GameScoreChip />
+        </>
+      )}
       sidebarContent={<CountryGameSidebarContent />}
       sidebarFooter={<CountryGameSidebarFooter />}
       isLoading={!mapReady}

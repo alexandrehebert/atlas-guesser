@@ -34,11 +34,18 @@ export default function GameOptions() {
 
         const isSelected = answer?.selectedCode === code;
         const isCorrect = round.targetCode === code;
+        const isWrongSelection = Boolean(answer && isSelected && !answer.correct);
+        const isCorrectReveal = Boolean(answer && isCorrect);
         const statusIcon = answer && isCorrect
-          ? <Check className="h-4.5 w-4.5 text-sky-100 sm:h-4 sm:w-4" />
+          ? <Check className="h-4.5 w-4.5 text-emerald-100 sm:h-4 sm:w-4" />
           : answer && isSelected && !answer.correct
             ? <X className="h-4.5 w-4.5 text-rose-100 sm:h-4 sm:w-4" />
             : null;
+        const statusBadgeClass = isCorrectReveal
+          ? 'border-emerald-300/50'
+          : isWrongSelection
+            ? 'border-rose-300/50'
+            : 'border-white/12';
         const buttonClass = answer
           ? isSelected && answer.correct
             ? 'border-emerald-300/45 bg-emerald-400/18'
@@ -61,7 +68,7 @@ export default function GameOptions() {
               <span className="relative flex min-h-11 items-center justify-center">
                 <OptionLabel country={country} mode={mode} />
                 {statusIcon ? (
-                  <span className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-slate-950/92 ring-1 ring-white/12 sm:h-5 sm:w-5">
+                  <span className={`absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full border bg-slate-950/92 sm:h-5 sm:w-5 ${statusBadgeClass}`}>
                     {statusIcon}
                   </span>
                 ) : null}

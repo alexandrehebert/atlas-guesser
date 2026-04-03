@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from 'react';
 
-export function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
+export function useIsMobile(): { isMobile: boolean; isResolved: boolean } {
+  const [state, setState] = useState({ isMobile: false, isResolved: false });
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 767px)');
-    const updateIsMobile = () => setIsMobile(mediaQuery.matches);
+    const mediaQuery = window.matchMedia('(max-width: 1023px)');
+    const updateIsMobile = () => {
+      setState({ isMobile: mediaQuery.matches, isResolved: true });
+    };
 
     updateIsMobile();
     mediaQuery.addEventListener('change', updateIsMobile);
@@ -17,5 +19,5 @@ export function useIsMobile(): boolean {
     };
   }, []);
 
-  return isMobile;
+  return state;
 }

@@ -60,6 +60,7 @@ interface GameContextValue {
   round: RoundState;
   answer: AnswerState | null;
   score: ScoreState;
+  scoreLoaded: boolean;
   hoveredCode: string | null;
   targetCountry: QuizCountry;
   countriesByCode: Map<string, QuizCountry>;
@@ -199,6 +200,7 @@ export function GameProvider({ quiz, children, initialMode = 'flag-to-country', 
     round,
     answer,
     score,
+    scoreLoaded,
     hoveredCode,
     targetCountry,
     countriesByCode,
@@ -220,6 +222,7 @@ export function GameProvider({ quiz, children, initialMode = 'flag-to-country', 
     round,
     answer,
     score,
+    scoreLoaded,
     hoveredCode,
     targetCountry,
     countriesByCode,

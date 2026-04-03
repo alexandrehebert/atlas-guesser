@@ -5,6 +5,7 @@ import { useIsMobile } from '../hooks/useIsMobile';
 
 interface GameLayoutContextValue {
   isMobile: boolean;
+  layoutReady: boolean;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean | ((current: boolean) => boolean)) => void;
   sidebarRef: RefObject<HTMLDivElement | null>;
@@ -15,7 +16,7 @@ interface GameLayoutContextValue {
 const GameLayoutContext = createContext<GameLayoutContextValue | null>(null);
 
 export function GameLayoutProvider({ children }: { children: ReactNode }) {
-  const isMobile = useIsMobile();
+  const { isMobile, isResolved } = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   const sidebarToggleRef = useRef<HTMLButtonElement | null>(null);
@@ -23,12 +24,13 @@ export function GameLayoutProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<GameLayoutContextValue>(() => ({
     isMobile,
+    layoutReady: isResolved,
     sidebarOpen,
     setSidebarOpen,
     sidebarRef,
     sidebarToggleRef,
     topBarRef,
-  }), [isMobile, sidebarOpen]);
+  }), [isMobile, isResolved, sidebarOpen]);
 
   return <GameLayoutContext.Provider value={value}>{children}</GameLayoutContext.Provider>;
 }

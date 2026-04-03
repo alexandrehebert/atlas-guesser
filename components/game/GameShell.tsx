@@ -24,10 +24,10 @@ interface GameShellProps {
 }
 
 function SidebarSwitcher({ content, footer }: { content: ReactNode; footer?: ReactNode }) {
-  const { isMobile } = useGameLayout();
+  const { isMobile, layoutReady } = useGameLayout();
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => { setHydrated(true); }, []);
-  if (!hydrated) return null;
+  if (!hydrated || !layoutReady) return null;
   return isMobile
     ? <GameSidebarMobile>{content}</GameSidebarMobile>
     : <GameSidebarDesktop footer={footer}>{content}</GameSidebarDesktop>;
