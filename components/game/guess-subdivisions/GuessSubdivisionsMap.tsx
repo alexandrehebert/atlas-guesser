@@ -711,6 +711,37 @@ export default function GuessSubdivisionsMap() {
             />
           ))}
 
+          {/* Expanded hit rects for inset section areas (overseas territories, Alaska, Hawaii…).
+              Each rect covers the full sectionBounds slot of the area, making it much easier to
+              tap on mobile than the actual tiny SVG path. Rendered above the absorbing rects but
+              below the visual paths so clicking anywhere in the slot selects the correct area. */}
+          {gameMode === 'map-click' && !answer && activeLevel?.sectionLabels && activeAreas.map((area) => {
+            const cx = area.sectionBounds.x + area.sectionBounds.width / 2;
+            const cy = area.sectionBounds.y + area.sectionBounds.height / 2;
+            const isInSection = activeLevel.sectionLabels.some((section) =>
+              cx >= section.bounds.x
+              && cx <= section.bounds.x + section.bounds.width
+              && cy >= section.bounds.y
+              && cy <= section.bounds.y + section.bounds.height,
+            );
+            if (!isInSection) return null;
+            return (
+              <rect
+                key={`section-area-hit-${area.code}`}
+                x={area.sectionBounds.x}
+                y={area.sectionBounds.y}
+                width={area.sectionBounds.width}
+                height={area.sectionBounds.height}
+                fill="rgba(0,0,0,0)"
+                pointerEvents="all"
+                onClick={() => handleMapClick(area.code)}
+                onMouseDown={(event) => { event.preventDefault(); }}
+                onMouseEnter={() => setHoveredCode(area.code)}
+                onMouseLeave={() => setHoveredCode(null)}
+              />
+            );
+          })}
+
           {activeAreas.map((area) => {
             const isClickable = gameMode === 'map-click' && !answer;
             return (
