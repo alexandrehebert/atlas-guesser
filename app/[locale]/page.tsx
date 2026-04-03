@@ -19,7 +19,6 @@ import { StatsSection } from '~/components/landing/StatsSection';
 import { MapSection } from '~/components/landing/MapSection';
 import { LandingMapPreviewNoSSR } from '~/components/landing/LandingMapPreviewNoSSR';
 import { LandingGameStartCtas } from '~/components/landing/LandingGameStartCtas';
-import { AnimatedSection } from '~/components/AnimatedSection';
 import { MAP_MODES, MODE_ORDER } from '~/components/game/constants';
 import { getCountryQuizPayload } from '~/lib/server/countryQuiz';
 import { getAdminSubdivisionCatalogStats } from '~/lib/server/adminSubdivisionQuiz';
@@ -304,10 +303,10 @@ export default async function HomePage({ params }: HomePageProps) {
       />
 
       <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-16 px-6 py-10 sm:px-8 lg:px-12 lg:py-14">
-        <AnimatedSection animation="fade-in-down" className="flex items-center justify-between">
+        <div className="flex items-center justify-between opacity-0 animate-fade-in-down">
           <SectionEyebrow iconSrc="/icon.svg">Atlas Guesser</SectionEyebrow>
           <LanguageSwitcher currentLocale={locale} />
-        </AnimatedSection>
+        </div>
 
         <HeroSection
           title={t('hero_title')}
@@ -426,7 +425,7 @@ export default async function HomePage({ params }: HomePageProps) {
           </MapSection>
         </section>
 
-        <AnimatedSection animation="fade-in-up">
+        <div className="opacity-0 animate-fade-in-up">
           <footer className="py-6 text-center">
             <p className="flex items-center justify-center gap-2 text-sm text-slate-300">
               {t('footer_made_with')}
@@ -435,7 +434,7 @@ export default async function HomePage({ params }: HomePageProps) {
             </p>
             <p className="mt-2 text-xs text-slate-500">{t('footer_copyright', { year: currentYear })}</p>
           </footer>
-        </AnimatedSection>
+        </div>
       </div>
     </main>
   );

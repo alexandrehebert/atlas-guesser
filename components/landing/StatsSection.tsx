@@ -1,8 +1,4 @@
-'use client';
-
 import { ReactNode } from 'react';
-import { AnimatedSection } from '~/components/AnimatedSection';
-import { StaggeredAnimation } from '~/components/StaggeredAnimation';
 
 interface StatSectionProps {
   eyebrow: ReactNode;
@@ -18,7 +14,7 @@ export function StatsSection({
   content,
 }: StatSectionProps) {
   return (
-    <AnimatedSection animation="fade-in-up">
+    <div className="opacity-0 animate-fade-in-up">
       <article className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/5 p-6 shadow-[0_24px_90px_rgba(2,6,23,0.4)] backdrop-blur-sm">
         <div className="grid gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center">
           <div className="lg:flex lg:min-h-full lg:flex-col lg:justify-center">
@@ -30,12 +26,12 @@ export function StatsSection({
           </div>
 
           <div className="rounded-[1.5rem] border border-slate-800/95 bg-slate-950/65 p-4 lg:h-80 overflow-hidden">
-            <StaggeredAnimation animation="fade-in-up" staggerDelay={60}>
+            <div>
               {content}
-            </StaggeredAnimation>
+            </div>
           </div>
         </div>
       </article>
-    </AnimatedSection>
+    </div>
   );
 }
