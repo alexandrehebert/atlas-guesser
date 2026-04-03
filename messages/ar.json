@@ -345,7 +345,9 @@
     "reset_view": "إعادة تعيين",
     "section_labels": {
       "france_overseas": "الأقاليم الخارجية",
-      "generic_inset": "الإدراج"
+      "generic_inset": "الإدراج",
+      "india_lakshadweep": "لاكشادويب",
+      "india_andaman": "جزر الأندمان والنيكوبار"
     },
     "sources": {
       "open_button": "مصادر البيانات",

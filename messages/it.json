@@ -345,7 +345,9 @@
     "reset_view": "Reimposta",
     "section_labels": {
       "france_overseas": "Territori d'oltremare",
-      "generic_inset": "Riquadro"
+      "generic_inset": "Riquadro",
+      "india_lakshadweep": "Lakshadweep",
+      "india_andaman": "Isole Andamane e Nicobare"
     },
     "sources": {
       "open_button": "Fonti",

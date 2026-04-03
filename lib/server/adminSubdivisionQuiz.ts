@@ -715,6 +715,25 @@ function buildSectionLabels(country: AdminQuizCountrySlug, levelId: string, area
     ].filter((label): label is QuizSectionLabel => Boolean(label));
   }
 
+  if (country === 'india') {
+    return [
+      buildSectionLabelFromCodes(areas, {
+        id: 'india-lakshadweep',
+        labelKey: 'india_lakshadweep',
+        codes: ['31'],
+        paddingX: 14,
+        paddingY: 18,
+      }),
+      buildSectionLabelFromCodes(areas, {
+        id: 'india-andaman',
+        labelKey: 'india_andaman',
+        codes: ['35'],
+        paddingX: 14,
+        paddingY: 18,
+      }),
+    ].filter((label): label is QuizSectionLabel => Boolean(label));
+  }
+
   return [];
 }
 

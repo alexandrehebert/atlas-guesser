@@ -345,7 +345,9 @@
     "reset_view": "Redefinir",
     "section_labels": {
       "france_overseas": "Territórios ultramarinos",
-      "generic_inset": "Destaque"
+      "generic_inset": "Destaque",
+      "india_lakshadweep": "Ilhas Lakshadweep",
+      "india_andaman": "Ilhas Andamã e Nicobar"
     },
     "sources": {
       "open_button": "Fontes de dados",

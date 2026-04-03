@@ -345,7 +345,9 @@
     "reset_view": "Reset",
     "section_labels": {
       "france_overseas": "Overseas territories",
-      "generic_inset": "Inset"
+      "generic_inset": "Inset",
+      "india_lakshadweep": "Lakshadweep",
+      "india_andaman": "Andaman & Nicobar Islands"
     },
     "sources": {
       "open_button": "Data sources",

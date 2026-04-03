@@ -345,7 +345,9 @@
     "reset_view": "Zurücksetzen",
     "section_labels": {
       "france_overseas": "Überseegebiete",
-      "generic_inset": "Ausschnitt"
+      "generic_inset": "Ausschnitt",
+      "india_lakshadweep": "Lakshadweep",
+      "india_andaman": "Andamanen und Nikobaren"
     },
     "sources": {
       "open_button": "Datenquellen",

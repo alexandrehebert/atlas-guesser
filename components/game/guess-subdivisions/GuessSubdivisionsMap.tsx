@@ -209,7 +209,7 @@ function getSectionLabelWidth(label: string): number {
 }
 
 function shouldRenderSectionBadge(labelKey: string): boolean {
-  return labelKey !== 'france_overseas' && labelKey !== 'generic_inset';
+  return labelKey !== 'france_overseas' && labelKey !== 'generic_inset' && labelKey !== 'india_lakshadweep' && labelKey !== 'india_andaman';
 }
 
 function getAreaClasses(
@@ -725,12 +725,13 @@ export default function GuessSubdivisionsMap() {
             );
 
             const isSpainIslandCommunity = quiz.country === 'spain' && (area.code === '04' || area.code === '05');
+            const isIndiaIslandTerritory = quiz.country === 'india' && (area.code === '31' || area.code === '35');
 
             const isTinyArea = area.focusBounds.width < 14 || area.focusBounds.height < 14;
-            if (!isInSection && !isTinyArea && !isSpainIslandCommunity) return null;
+            if (!isInSection && !isTinyArea && !isSpainIslandCommunity && !isIndiaIslandTerritory) return null;
 
-            const baseBounds = (isInSection || isSpainIslandCommunity) ? area.sectionBounds : area.focusBounds;
-            const minHitSize = isSpainIslandCommunity ? 34 : 20;
+            const baseBounds = (isInSection || isSpainIslandCommunity || isIndiaIslandTerritory) ? area.sectionBounds : area.focusBounds;
+            const minHitSize = (isSpainIslandCommunity || isIndiaIslandTerritory) ? 34 : 20;
             const width = Math.max(baseBounds.width, minHitSize);
             const height = Math.max(baseBounds.height, minHitSize);
             const x = baseBounds.x + (baseBounds.width - width) / 2;

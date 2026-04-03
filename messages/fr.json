@@ -347,7 +347,9 @@
     "reset_view": "Recentrer",
     "section_labels": {
       "france_overseas": "Outre-mer",
-      "generic_inset": "Encart"
+      "generic_inset": "Encart",
+      "india_lakshadweep": "Lakshadweep",
+      "india_andaman": "Îles Andaman-et-Nicobar"
     },
     "sources": {
       "open_button": "Sources",
