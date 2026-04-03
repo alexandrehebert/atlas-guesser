@@ -696,6 +696,21 @@ export default function GuessSubdivisionsMap() {
             );
           })}
 
+          {/* Transparent hit-absorbing rects over inset section bounds, placed above playable country
+              ghost paths so that clicks in the gaps between overseas/inset territory paths do not
+              accidentally trigger a playable-country switch for the country underneath. */}
+          {activeLevel?.sectionLabels.map((section) => (
+            <rect
+              key={`section-hit-${section.id}`}
+              x={section.bounds.x}
+              y={section.bounds.y}
+              width={section.bounds.width}
+              height={section.bounds.height}
+              fill="rgba(0,0,0,0)"
+              pointerEvents="all"
+            />
+          ))}
+
           {activeAreas.map((area) => {
             const isClickable = gameMode === 'map-click' && !answer;
             return (
