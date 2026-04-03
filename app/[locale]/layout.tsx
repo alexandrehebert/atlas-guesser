@@ -26,15 +26,17 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const RTL_LOCALES = ['ar', 'fa', 'he', 'ur'];
 
   if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
     notFound();
   }
 
   const messages = await getMessages();
+  const direction = RTL_LOCALES.includes(locale) ? 'rtl' : 'ltr';
 
   return (
-    <html lang={locale}>
+    <html lang={locale} dir={direction}>
       <body className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}>
         <PwaInit />
         <NextIntlClientProvider messages={messages}>

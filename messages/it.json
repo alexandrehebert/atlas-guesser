@@ -254,7 +254,8 @@
       "india": "India",
       "russia": "Russia",
       "australia": "Australia",
-      "argentina": "Argentina"
+      "argentina": "Argentina",
+      "algeria": "Algeria"
     },
     "top_badge": {
       "departements": "{count} dipartimenti",
@@ -263,6 +264,7 @@
       "states": "{count} stati",
       "communities": "{count} comunità",
       "provinces": "{count} province",
+      "wilayas": "{count} wilaya",
       "subjects": "{count} soggetti federali",
       "federal_districts": "{count} distretti federali"
     },
@@ -273,6 +275,7 @@
       "states": "Stati",
       "communities": "Comunità",
       "provinces": "Province",
+      "wilayas": "Wilaya",
       "subjects": "Soggetti federali",
       "federal_districts": "Distretti federali"
     },
@@ -285,6 +288,7 @@
       "states": "Indizio stato",
       "communities": "Indizio comunità",
       "provinces": "Indizio provincia",
+      "wilayas": "Indizio wilaya",
       "subjects": "Soggetto federale",
       "federal_districts": "Indizio distretto federale"
     },
@@ -295,6 +299,7 @@
       "states": "Trova questo stato sulla mappa di {countryName}.",
       "communities": "Trova questa comunità sulla mappa di {countryName}.",
       "provinces": "Trova questa provincia sulla mappa di {countryName}.",
+      "wilayas": "Trova questa wilaya sulla mappa di {countryName}.",
       "subjects": "Trova questo soggetto federale sulla mappa di {countryName}.",
       "federal_districts": "Trova questo distretto federale sulla mappa di {countryName}."
     },
@@ -305,6 +310,7 @@
       "states": "Un'area è evidenziata sulla mappa. Quale stato è?",
       "communities": "Un'area è evidenziata sulla mappa. Quale comunità è?",
       "provinces": "Un'area è evidenziata sulla mappa. Quale provincia è?",
+      "wilayas": "Un'area è evidenziata sulla mappa. Quale wilaya è?",
       "subjects": "Un'area è evidenziata sulla mappa. Quale soggetto federale è?",
       "federal_districts": "Un'area è evidenziata sulla mappa. Quale distretto federale è?"
     },

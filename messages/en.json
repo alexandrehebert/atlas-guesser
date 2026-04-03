@@ -254,7 +254,8 @@
       "india": "India",
       "russia": "Russia",
       "australia": "Australia",
-      "argentina": "Argentina"
+      "argentina": "Argentina",
+      "algeria": "Algeria"
     },
     "top_badge": {
       "departements": "{count} departments",
@@ -263,6 +264,7 @@
       "states": "{count} states",
       "communities": "{count} communities",
       "provinces": "{count} provinces",
+      "wilayas": "{count} wilayas",
       "subjects": "{count} federal subjects",
       "federal_districts": "{count} federal districts"
     },
@@ -273,6 +275,7 @@
       "states": "States",
       "communities": "Communities",
       "provinces": "Provinces",
+      "wilayas": "Wilayas",
       "subjects": "Federal subjects",
       "federal_districts": "Federal districts"
     },
@@ -285,6 +288,7 @@
       "states": "State prompt",
       "communities": "Community prompt",
       "provinces": "Province prompt",
+      "wilayas": "Wilaya prompt",
       "subjects": "Federal subject prompt",
       "federal_districts": "Federal district prompt"
     },
@@ -295,6 +299,7 @@
       "states": "Find this state on the map of {countryName}.",
       "communities": "Find this community on the map of {countryName}.",
       "provinces": "Find this province on the map of {countryName}.",
+      "wilayas": "Find this wilaya on the map of {countryName}.",
       "subjects": "Find this federal subject on the map of {countryName}.",
       "federal_districts": "Find this federal district on the map of {countryName}."
     },
@@ -305,6 +310,7 @@
       "states": "An area is highlighted on the map. Which state is it?",
       "communities": "An area is highlighted on the map. Which community is it?",
       "provinces": "An area is highlighted on the map. Which province is it?",
+      "wilayas": "An area is highlighted on the map. Which wilaya is it?",
       "subjects": "An area is highlighted on the map. Which federal subject is it?",
       "federal_districts": "An area is highlighted on the map. Which federal district is it?"
     },

@@ -1,4 +1,4 @@
-export const SUPPORTED_ADMIN_QUIZ_COUNTRIES = ['france', 'germany', 'spain', 'italy', 'canada', 'usa', 'brazil', 'china', 'india', 'russia', 'australia', 'argentina'] as const;
+export const SUPPORTED_ADMIN_QUIZ_COUNTRIES = ['france', 'germany', 'spain', 'italy', 'canada', 'usa', 'brazil', 'china', 'india', 'russia', 'australia', 'argentina', 'algeria'] as const;
 
 export type AdminQuizCountrySlug = (typeof SUPPORTED_ADMIN_QUIZ_COUNTRIES)[number];
 

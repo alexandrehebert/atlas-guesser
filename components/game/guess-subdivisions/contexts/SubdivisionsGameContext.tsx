@@ -338,6 +338,15 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
       });
     }
 
+    if (quiz.country === 'algeria') {
+      playableItems.push({
+        filePath: 'public/maps/algeria-wilayas.geojson',
+        sourceLabel: 'geoBoundaries',
+        note: t('sources.verified_note'),
+        url: 'https://www.geoboundaries.org',
+      });
+    }
+
     return [
       {
         id: 'playable',

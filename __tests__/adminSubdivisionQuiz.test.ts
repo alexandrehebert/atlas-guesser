@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { SUPPORTED_ADMIN_QUIZ_COUNTRIES } from '~/lib/adminQuizCountries';
 import { getAdminSubdivisionQuizPayload, getFranceAdminQuizPayload } from '~/lib/server/adminSubdivisionQuiz';
 
 describe('getFranceAdminQuizPayload', () => {
@@ -72,5 +73,53 @@ describe('getAdminSubdivisionQuizPayload', () => {
     ));
 
     expect(nearFullMapAreas.length).toBeLessThan(3);
+  });
+
+  it('builds an Algeria wilayas payload', async () => {
+    const quiz = await getAdminSubdivisionQuizPayload('algeria');
+    const wilayas = quiz.levels.find((level) => level.id === 'wilayas');
+
+    expect(quiz.defaultLevelId).toBe('wilayas');
+    expect(quiz.countryCode).toBe('DZ');
+    expect(wilayas?.areas.length ?? 0).toBeGreaterThan(40);
+
+    const areas = wilayas?.areas ?? [];
+    const minX = Math.min(...areas.map((area) => area.focusBounds.x));
+    const minY = Math.min(...areas.map((area) => area.focusBounds.y));
+    const maxX = Math.max(...areas.map((area) => area.focusBounds.x + area.focusBounds.width));
+    const maxY = Math.max(...areas.map((area) => area.focusBounds.y + area.focusBounds.height));
+    const unionWidth = Math.max(1, maxX - minX);
+    const unionHeight = Math.max(1, maxY - minY);
+
+    const fitPadding = 24;
+    const fitScaleFactor = 0.94;
+    const inferredHomeZoom = Math.min(
+      quiz.viewBox.width / (unionWidth + fitPadding * 2),
+      quiz.viewBox.height / (unionHeight + fitPadding * 2),
+    ) * fitScaleFactor;
+
+    expect(inferredHomeZoom).toBeLessThan(2);
+  });
+
+  it('avoids inverted full-map geometries across subdivision datasets', async () => {
+    for (const country of SUPPORTED_ADMIN_QUIZ_COUNTRIES) {
+      const quiz = await getAdminSubdivisionQuizPayload(country);
+
+      for (const level of quiz.levels) {
+        if (level.areas.length <= 5) continue;
+
+        const uniqueFocusBounds = new Set(
+          level.areas.map((area) => {
+            const x = area.focusBounds.x.toFixed(2);
+            const y = area.focusBounds.y.toFixed(2);
+            const width = area.focusBounds.width.toFixed(2);
+            const height = area.focusBounds.height.toFixed(2);
+            return `${x}:${y}:${width}:${height}`;
+          }),
+        );
+
+        expect(uniqueFocusBounds.size).toBeGreaterThan(1);
+      }
+    }
   });
 });

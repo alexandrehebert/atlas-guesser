@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { geoMercator, geoPath } from 'd3-geo';
+import { geoArea, geoMercator, geoPath } from 'd3-geo';
 import { SUPPORTED_ADMIN_QUIZ_COUNTRIES, type AdminQuizCountrySlug } from '~/lib/adminQuizCountries';
 
 const QUIZ_MAP_VIEWBOX = { width: 860, height: 920 };
@@ -286,6 +286,21 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
       },
     ],
   },
+  algeria: {
+    countryCode: 'DZ',
+    countryNames: ['algeria', 'algerie', 'algérie'],
+    sortLocale: 'fr',
+    defaultLevelId: 'wilayas',
+    levels: [
+      {
+        id: 'wilayas',
+        fileName: 'algeria-wilayas.geojson',
+        minimumClickableSize: 1,
+        codeProperty: 'shapeISO',
+        nameProperty: 'shapeName',
+      },
+    ],
+  },
 };
 
 const cachedPayloadPromises: Partial<Record<AdminQuizCountrySlug, Promise<AdminSubdivisionQuizPayload>>> = {};
@@ -309,6 +324,61 @@ async function loadGeoJson(fileName: string): Promise<GeoJSON.FeatureCollection>
   const filePath = join(process.cwd(), `public/maps/${fileName}`);
   const rawGeoData = await readFile(filePath, 'utf8');
   return JSON.parse(rawGeoData) as GeoJSON.FeatureCollection;
+}
+
+function normalizeFeatureOrientation(feature: GeoFeature): GeoFeature {
+  const flipPolygon = (coordinates: GeoJSON.Position[][]): GeoJSON.Position[][] => (
+    coordinates.map((ring) => [...ring].reverse())
+  );
+
+  if (feature.geometry.type === 'Polygon') {
+    const area = geoArea(feature as never);
+    if (area > Math.PI * 2) {
+      return {
+        ...feature,
+        geometry: {
+          type: 'Polygon',
+          coordinates: flipPolygon(feature.geometry.coordinates),
+        },
+      };
+    }
+
+    return feature;
+  }
+
+  if (feature.geometry.type === 'MultiPolygon') {
+    const normalizedPolygons = feature.geometry.coordinates.map((polygon) => {
+      const polygonFeature: GeoFeature = {
+        type: 'Feature',
+        properties: feature.properties,
+        geometry: { type: 'Polygon', coordinates: polygon },
+      };
+      const area = geoArea(polygonFeature as never);
+      return area > Math.PI * 2 ? flipPolygon(polygon) : polygon;
+    });
+
+    return {
+      ...feature,
+      geometry: {
+        type: 'MultiPolygon',
+        coordinates: normalizedPolygons,
+      },
+    };
+  }
+
+  return feature;
+}
+
+function normalizeFeatureCollectionOrientation(geoData: GeoJSON.FeatureCollection): GeoJSON.FeatureCollection {
+  return {
+    ...geoData,
+    features: (geoData.features || []).map((feature) => {
+      if (!feature || feature.type !== 'Feature' || !feature.geometry) {
+        return feature;
+      }
+      return normalizeFeatureOrientation(feature as GeoFeature);
+    }),
+  };
 }
 
 function compareAreaCodes(left: string, right: string, locale: string): number {
@@ -692,7 +762,7 @@ function buildQuizAreas(
       continue;
     }
 
-    const rawFeature = feature as GeoFeature;
+    const rawFeature = normalizeFeatureOrientation(feature as GeoFeature);
     const focusFeature = getFeatureFocusGeometry(rawFeature);
     const path = generator(rawFeature);
     if (!path) {
@@ -815,8 +885,9 @@ async function buildAdminSubdivisionQuizPayload(country: AdminQuizCountrySlug): 
     );
   });
 
+  const normalizedLevelGeoData = preparedLevelGeoData.map((geoData) => normalizeFeatureCollectionOrientation(geoData));
   const projection = geoMercator();
-  const primaryGeoData = preparedLevelGeoData[0];
+  const primaryGeoData = normalizedLevelGeoData[0];
 
   projection.fitExtent(
     [[24, 24], [QUIZ_MAP_VIEWBOX.width - 24, QUIZ_MAP_VIEWBOX.height - 24]],
@@ -824,7 +895,7 @@ async function buildAdminSubdivisionQuizPayload(country: AdminQuizCountrySlug): 
   );
 
   const levels = config.levels.map((levelConfig, index) => {
-    const areas = buildQuizAreas(preparedLevelGeoData[index], projection, levelConfig, config.sortLocale);
+    const areas = buildQuizAreas(normalizedLevelGeoData[index], projection, levelConfig, config.sortLocale);
 
     return {
       id: levelConfig.id,

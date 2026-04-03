@@ -254,7 +254,8 @@
       "india": "印度",
       "russia": "俄罗斯",
       "australia": "澳大利亚",
-      "argentina": "阿根廷"
+      "argentina": "阿根廷",
+      "algeria": "阿尔及利亚"
     },
     "top_badge": {
       "departements": "{count} 个省",
@@ -263,6 +264,7 @@
       "states": "{count} 个州",
       "communities": "{count} 个自治区",
       "provinces": "{count} 个省份",
+      "wilayas": "{count} 个省（wilaya）",
       "subjects": "{count} 个联邦主体",
       "federal_districts": "{count} 个联邦区"
     },
@@ -273,6 +275,7 @@
       "states": "州",
       "communities": "自治区",
       "provinces": "省份",
+      "wilayas": "省（wilaya）",
       "subjects": "联邦主体",
       "federal_districts": "联邦区"
     },
@@ -285,6 +288,7 @@
       "states": "州提示",
       "communities": "自治区提示",
       "provinces": "省份提示",
+      "wilayas": "Wilaya 提示",
       "subjects": "联邦主体提示",
       "federal_districts": "联邦区提示"
     },
@@ -295,6 +299,7 @@
       "states": "在 {countryName} 地图上找到这个州。",
       "communities": "在 {countryName} 地图上找到这个自治区。",
       "provinces": "在 {countryName} 地图上找到这个省份。",
+      "wilayas": "在 {countryName} 地图上找到这个 wilaya。",
       "subjects": "在{countryName}地图上找到这个联邦主体。",
       "federal_districts": "在 {countryName} 地图上找到这个联邦区。"
     },
@@ -305,6 +310,7 @@
       "states": "地图上有一个区域被高亮。这是哪个州？",
       "communities": "地图上有一个区域被高亮。这是哪个自治区？",
       "provinces": "地图上有一个区域被高亮。这是哪个省份？",
+      "wilayas": "地图上有一个区域被高亮。这是哪个 wilaya？",
       "subjects": "地图上高亮了一个区域。这是哪个联邦主体？",
       "federal_districts": "地图上高亮了一个区域。这是哪个联邦区？"
     },

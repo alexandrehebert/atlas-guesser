@@ -254,7 +254,8 @@
       "india": "India",
       "russia": "Rusia",
       "australia": "Australia",
-      "argentina": "Argentina"
+      "argentina": "Argentina",
+      "algeria": "Argelia"
     },
     "top_badge": {
       "departements": "{count} departamentos",
@@ -263,6 +264,7 @@
       "states": "{count} estados",
       "communities": "{count} comunidades",
       "provinces": "{count} provincias",
+      "wilayas": "{count} wilayas",
       "subjects": "{count} sujetos federales",
       "federal_districts": "{count} distritos federales"
     },
@@ -273,6 +275,7 @@
       "states": "Estados",
       "communities": "Comunidades",
       "provinces": "Provincias",
+      "wilayas": "Wilayas",
       "subjects": "Sujetos federales",
       "federal_districts": "Distritos federales"
     },
@@ -285,6 +288,7 @@
       "states": "Pista estado",
       "communities": "Pista comunidad",
       "provinces": "Pista provincia",
+      "wilayas": "Pista wilaya",
       "subjects": "Sujeto federal",
       "federal_districts": "Pista distrito federal"
     },
@@ -295,6 +299,7 @@
       "states": "Encuentra este estado en el mapa de {countryName}.",
       "communities": "Encuentra esta comunidad en el mapa de {countryName}.",
       "provinces": "Encuentra esta provincia en el mapa de {countryName}.",
+      "wilayas": "Encuentra esta wilaya en el mapa de {countryName}.",
       "subjects": "Encuentra este sujeto federal en el mapa de {countryName}.",
       "federal_districts": "Encuentra este distrito federal en el mapa de {countryName}."
     },
@@ -305,6 +310,7 @@
       "states": "Un área está resaltada en el mapa. ¿Qué estado es?",
       "communities": "Un área está resaltada en el mapa. ¿Qué comunidad es?",
       "provinces": "Un área está resaltada en el mapa. ¿Qué provincia es?",
+      "wilayas": "Un área está resaltada en el mapa. ¿Qué wilaya es?",
       "subjects": "Un área está resaltada en el mapa. ¿Qué sujeto federal es?",
       "federal_districts": "Un área está resaltada en el mapa. ¿Qué distrito federal es?"
     },

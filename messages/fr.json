@@ -256,7 +256,8 @@
       "india": "Inde",
       "russia": "Russie",
       "australia": "Australie",
-      "argentina": "Argentine"
+      "argentina": "Argentine",
+      "algeria": "Algérie"
     },
     "top_badge": {
       "departements": "{count} départements",
@@ -265,6 +266,7 @@
       "states": "{count} états",
       "communities": "{count} communautés",
       "provinces": "{count} provinces",
+      "wilayas": "{count} wilayas",
       "subjects": "{count} sujets fédéraux",
       "federal_districts": "{count} districts fédéraux"
     },
@@ -275,6 +277,7 @@
       "states": "États",
       "communities": "Communautés",
       "provinces": "Provinces",
+      "wilayas": "Wilayas",
       "subjects": "Sujets fédéraux",
       "federal_districts": "Districts fédéraux"
     },
@@ -287,6 +290,7 @@
       "states": "Indice état",
       "communities": "Indice communauté",
       "provinces": "Indice province",
+      "wilayas": "Indice wilaya",
       "subjects": "Sujet fédéral",
       "federal_districts": "Indice district fédéral"
     },
@@ -297,6 +301,7 @@
       "states": "Retrouvez cet état sur la carte de {countryName}.",
       "communities": "Retrouvez cette communauté sur la carte de {countryName}.",
       "provinces": "Retrouvez cette province sur la carte de {countryName}.",
+      "wilayas": "Retrouvez cette wilaya sur la carte de {countryName}.",
       "subjects": "Trouvez ce sujet fédéral sur la carte de {countryName}.",
       "federal_districts": "Trouvez ce district fédéral sur la carte de {countryName}."
     },
@@ -307,6 +312,7 @@
       "states": "Quel état est surligné sur la carte ?",
       "communities": "De quelle communauté s'agit-il ?",
       "provinces": "De quelle province s'agit-il ?",
+      "wilayas": "De quelle wilaya s'agit-il ?",
       "subjects": "Une zone est mise en évidence sur la carte. Quel est ce sujet fédéral ?",
       "federal_districts": "Une zone est mise en évidence sur la carte. Quel district fédéral est-ce ?"
     },
