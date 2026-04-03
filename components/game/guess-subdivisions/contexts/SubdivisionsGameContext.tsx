@@ -364,6 +364,15 @@ export function SubdivisionsGameProvider({ quiz, children }: SubdivisionsGamePro
       });
     }
 
+    if (quiz.country === 'nigeria') {
+      playableItems.push({
+        filePath: 'public/maps/nigeria-states.geojson',
+        sourceLabel: 'geoBoundaries',
+        note: t('sources.verified_note'),
+        url: 'https://www.geoboundaries.org',
+      });
+    }
+
     return [
       {
         id: 'playable',

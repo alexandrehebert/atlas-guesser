@@ -325,6 +325,21 @@ const COUNTRY_CONFIGS: Record<AdminQuizCountrySlug, CountryConfig> = {
       },
     ],
   },
+  nigeria: {
+    countryCode: 'NG',
+    countryNames: ['nigeria'],
+    sortLocale: 'en',
+    defaultLevelId: 'states',
+    levels: [
+      {
+        id: 'states',
+        fileName: 'nigeria-states.geojson',
+        minimumClickableSize: 1,
+        codeProperty: 'shapeISO',
+        nameProperty: 'shapeName',
+      },
+    ],
+  },
 };
 
 const cachedPayloadPromises: Partial<Record<AdminQuizCountrySlug, Promise<AdminSubdivisionQuizPayload>>> = {};

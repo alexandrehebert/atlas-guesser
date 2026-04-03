@@ -118,6 +118,15 @@ describe('getAdminSubdivisionQuizPayload', () => {
     expect(inferredHomeZoom).toBeLessThan(2);
   });
 
+  it('builds a Nigeria states payload', async () => {
+    const quiz = await getAdminSubdivisionQuizPayload('nigeria');
+    const states = quiz.levels.find((level) => level.id === 'states');
+
+    expect(quiz.defaultLevelId).toBe('states');
+    expect(quiz.countryCode).toBe('NG');
+    expect(states?.areas).toHaveLength(37);
+  });
+
   it('avoids inverted full-map geometries across subdivision datasets', async () => {
     for (const country of SUPPORTED_ADMIN_QUIZ_COUNTRIES) {
       const quiz = await getAdminSubdivisionQuizPayload(country);
