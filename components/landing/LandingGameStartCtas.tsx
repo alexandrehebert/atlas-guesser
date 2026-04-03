@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowRight } from 'lucide-react';
+import CountryFlag from '~/components/CountryFlag';
 import CountryShapeIcon from '~/components/CountryShapeIcon';
 import { RouteLoadingLink } from '~/components/RouteLoadingLink';
 import type { CountryShapePreview } from '~/lib/server/adminQuizCountryShapePreviews';
@@ -21,9 +22,22 @@ type SubdivisionCountryOption = {
   preview: CountryShapePreview;
 };
 
+type MapCountryOption = {
+  code: string;
+  name: string;
+  path: string;
+  focusBounds: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+};
+
 interface LandingGameStartCtasProps {
   worldCtaLabel: string;
   subdivisionsCtaLabel: string;
+  countriesCtaLabel: string;
   modalCloseLabel: string;
   worldModalTitle: string;
   worldModalDescription: string;
@@ -31,13 +45,20 @@ interface LandingGameStartCtasProps {
   subdivisionsModalTitle: string;
   subdivisionsModalDescription: string;
   subdivisionsModalListLabel: string;
+  countriesModalTitle: string;
+  countriesModalDescription: string;
+  countriesModalListLabel: string;
+  countriesSearchPlaceholder: string;
+  countriesAvailableLabel: string;
   worldModes: WorldModeOption[];
   subdivisionCountries: SubdivisionCountryOption[];
+  mapCountries: MapCountryOption[];
 }
 
 export function LandingGameStartCtas({
   worldCtaLabel,
   subdivisionsCtaLabel,
+  countriesCtaLabel,
   modalCloseLabel,
   worldModalTitle,
   worldModalDescription,
@@ -45,12 +66,31 @@ export function LandingGameStartCtas({
   subdivisionsModalTitle,
   subdivisionsModalDescription,
   subdivisionsModalListLabel,
+  countriesModalTitle,
+  countriesModalDescription,
+  countriesModalListLabel,
+  countriesSearchPlaceholder,
+  countriesAvailableLabel,
   worldModes,
   subdivisionCountries,
+  mapCountries,
 }: LandingGameStartCtasProps) {
-  const [openModal, setOpenModal] = useState<'world' | 'subdivisions' | null>(null);
+  const [openModal, setOpenModal] = useState<'world' | 'subdivisions' | 'countries' | null>(null);
   const [isClosingModal, setIsClosingModal] = useState(false);
   const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
+  const [countryFilter, setCountryFilter] = useState('');
+
+  const filteredMapCountries = useMemo(() => {
+    const normalizedFilter = countryFilter.trim().toLowerCase();
+    if (!normalizedFilter) {
+      return mapCountries;
+    }
+
+    return mapCountries.filter((country) => (
+      country.name.toLowerCase().includes(normalizedFilter)
+      || country.code.toLowerCase().includes(normalizedFilter)
+    ));
+  }, [countryFilter, mapCountries]);
 
   useEffect(() => {
     setPortalRoot(document.body);
@@ -120,6 +160,19 @@ export function LandingGameStartCtas({
         className="inline-flex items-center gap-2 rounded-full bg-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
       >
         {subdivisionsCtaLabel}
+        <ArrowRight className="h-4 w-4" />
+      </button>
+
+      <button
+        type="button"
+        onClick={() => {
+          setIsClosingModal(false);
+          setCountryFilter('');
+          setOpenModal('countries');
+        }}
+        className="inline-flex items-center gap-2 rounded-full bg-emerald-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-200"
+      >
+        {countriesCtaLabel}
         <ArrowRight className="h-4 w-4" />
       </button>
 
@@ -224,6 +277,92 @@ export function LandingGameStartCtas({
                   <span>{option.label}</span>
                 </RouteLoadingLink>
               ))}
+            </div>
+          </div>
+        </div>,
+        portalRoot,
+      )
+        : null}
+
+      {openModal === 'countries' && portalRoot
+        ? createPortal(
+        <div
+          className={`fixed inset-0 z-[200] flex items-center justify-center bg-slate-950/74 p-4 backdrop-blur-sm ${isClosingModal ? 'animate-fade-out pointer-events-none' : 'animate-fade-in-up'}`}
+          onClick={() => setIsClosingModal(true)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="countries-catalog-title"
+            className={`w-full max-w-4xl rounded-[1.5rem] border border-white/12 bg-slate-950/95 p-5 shadow-[0_32px_90px_rgba(2,6,23,0.6)] ${isClosingModal ? 'animate-scale-out' : 'animate-scale-in'}`}
+            style={{ animationDuration: '260ms' }}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-emerald-200/85">
+                  {countriesModalListLabel}
+                </p>
+                <h2 id="countries-catalog-title" className="mt-2 text-xl font-semibold text-white">
+                  {countriesModalTitle}
+                </h2>
+                <p className="mt-2 text-sm text-slate-300">{countriesModalDescription}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsClosingModal(true)}
+                className="rounded-full border border-white/12 bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-200 transition hover:border-white/22 hover:bg-white/10"
+              >
+                {modalCloseLabel}
+              </button>
+            </div>
+
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <label className="sr-only" htmlFor="landing-country-filter">
+                {countriesSearchPlaceholder}
+              </label>
+              <input
+                id="landing-country-filter"
+                type="search"
+                value={countryFilter}
+                onChange={(event) => setCountryFilter(event.target.value)}
+                placeholder={countriesSearchPlaceholder}
+                className="w-full rounded-xl border border-white/12 bg-white/5 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-400 outline-none transition focus:border-emerald-300/50 focus:bg-emerald-300/10 sm:max-w-sm"
+              />
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-300">
+                {countriesAvailableLabel.replace('{count}', String(filteredMapCountries.length))}
+              </p>
+            </div>
+
+            <div className="mt-4 max-h-[min(72vh,40rem)] overflow-y-auto pr-1">
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredMapCountries.map((country) => {
+                  return (
+                    <div
+                      key={country.code}
+                      className="rounded-xl border border-white/12 bg-white/5 px-3 py-2"
+                    >
+                      <div className="flex items-center gap-3">
+                        <CountryFlag country={country.name} countryCode={country.code} size="md" />
+                        <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-slate-900/70 text-emerald-100/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                          <svg
+                            aria-hidden="true"
+                            viewBox={`${country.focusBounds.x} ${country.focusBounds.y} ${Math.max(1, country.focusBounds.width)} ${Math.max(1, country.focusBounds.height)}`}
+                            className="h-[18px] w-[18px]"
+                            preserveAspectRatio="xMidYMid meet"
+                          >
+                            <path d={country.path} fill="currentColor" />
+                          </svg>
+                        </span>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-slate-100">{country.name}</p>
+                          <p className="text-[10px] uppercase tracking-[0.14em] text-slate-400">{country.code}</p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>,

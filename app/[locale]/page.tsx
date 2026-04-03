@@ -114,7 +114,6 @@ async function getLandingMapPreviewData(): Promise<LandingMapPreviewData> {
       .map((feature) => {
         const path = generator(feature as never);
         if (!path) return null;
-
         const properties = (feature as { properties?: Record<string, unknown> }).properties ?? {};
         const countryCode = typeof properties.ISO_A2 === 'string' ? properties.ISO_A2.toUpperCase() : '';
         const nameCandidates = [
@@ -379,6 +378,22 @@ export default async function HomePage({ params }: HomePageProps) {
   const regionsPreviewDescription = locale === 'fr'
     ? 'Parcourez les pays disponibles, zoomez sur leurs subdivisions et lancez une partie instantanee depuis cet apercu interactif.'
     : 'Browse available countries, preview their subdivisions, and jump into a live challenge right from this interactive teaser.';
+  const countriesCtaLabel = locale === 'fr' ? 'Voir tous les pays' : 'View all countries';
+  const countriesModalTitle = locale === 'fr'
+    ? 'Catalogue complet des pays jouables'
+    : 'Complete playable countries catalog';
+  const countriesModalDescription = locale === 'fr'
+    ? 'Retrouvez la liste complete des pays disponibles, avec leur drapeau et leur icone SVG.'
+    : 'Browse the complete list of available countries, with their flag and SVG icon.';
+  const countriesModalListLabel = locale === 'fr' ? 'Catalogue pays' : 'Country catalog';
+  const countriesSearchPlaceholder = locale === 'fr' ? 'Rechercher un pays ou un code' : 'Search country or code';
+  const countriesAvailableLabel = locale === 'fr' ? '{count} pays affiches' : '{count} countries shown';
+  const mapCountries = quiz.countries.map((country) => ({
+    code: country.code.toUpperCase(),
+    name: country.name,
+    path: country.path,
+    focusBounds: country.focusBounds,
+  }));
   const brazilPreviewCountryLabel = tSubdivisions('countries.brazil');
   const currentYear = new Date().getFullYear();
 
@@ -417,8 +432,15 @@ export default async function HomePage({ params }: HomePageProps) {
                 subdivisionsModalTitle={t('start_subdivisions_modal_title')}
                 subdivisionsModalDescription={t('start_subdivisions_modal_description')}
                 subdivisionsModalListLabel={t('start_subdivisions_modal_list_label')}
+                countriesCtaLabel={countriesCtaLabel}
+                countriesModalTitle={countriesModalTitle}
+                countriesModalDescription={countriesModalDescription}
+                countriesModalListLabel={countriesModalListLabel}
+                countriesSearchPlaceholder={countriesSearchPlaceholder}
+                countriesAvailableLabel={countriesAvailableLabel}
                 worldModes={worldModes}
                 subdivisionCountries={subdivisionCountries}
+                mapCountries={mapCountries}
               />
               <PwaInstallCallToAction />
             </div>
