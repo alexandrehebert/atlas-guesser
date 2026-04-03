@@ -1,11 +1,11 @@
 {
   "landing": {
     "eyebrow": "Weltkarten-Spiel",
-    "hero_title": "Lerne Geographie spielend.",
+    "hero_title": "Stelle deine Geografie-Reflexe auf die Probe.",
     "hero_description": "Atlas Guesser verwandelt die Weltkarte in ein schnelles Quiz mit Flaggen, Hauptstädten und umgekehrten Runden, die dein Länderwissen schärfen.",
     "cta_trips": "Atlas öffnen",
-    "cta_guesser": "Jetzt spielen",
-    "cta_subdivisions": "Regionale Karten spielen",
+    "cta_guesser": "Weltwissen testen",
+    "cta_subdivisions": "Regionalwissen testen",
     "install_cta": "App installieren",
     "install_cta_pending": "Installationsaufforderung wird geöffnet...",
     "install_ios_title": "Auf iPhone oder iPad installieren",

@@ -172,11 +172,11 @@ function MetricCard({ label, value, helper, compact = false }: { label: string; 
     <div
       className={compact
         ? 'rounded-xl border border-white/10 bg-white/5 p-3 shadow-[0_12px_36px_rgba(2,6,23,0.28)] backdrop-blur-sm flex flex-col items-center justify-center text-center'
-        : 'rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_60px_rgba(2,6,23,0.35)] backdrop-blur-sm flex flex-col items-center justify-center text-center lg:aspect-square'}
+        : 'rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_18px_60px_rgba(2,6,23,0.35)] backdrop-blur-sm flex flex-col items-center justify-center text-center lg:aspect-square lg:rounded-xl lg:p-3'}
     >
       <p className={compact ? 'text-[0.56rem] uppercase tracking-[0.2em] text-slate-400' : 'text-[0.65rem] uppercase tracking-[0.24em] text-slate-400'}>{label}</p>
-      <p className={compact ? 'mt-1.5 text-xl font-semibold text-white' : 'mt-2 text-2xl font-semibold text-white'}>{value}</p>
-      <p className={compact ? 'mt-0.5 text-xs text-slate-400' : 'mt-1 text-sm text-slate-400'}>{helper}</p>
+      <p className={compact ? 'mt-1.5 text-xl font-semibold text-white' : 'mt-2 text-2xl font-semibold text-white lg:mt-1.5 lg:text-xl'}>{value}</p>
+      <p className={compact ? 'mt-0.5 text-xs text-slate-400' : 'mt-1 text-sm text-slate-400 lg:text-xs'}>{helper}</p>
     </div>
   );
 }
@@ -301,7 +301,7 @@ export default async function HomePage({ params }: HomePageProps) {
           cta={
             <div className="flex flex-wrap items-center gap-3">
               <RouteLoadingLink
-                href="/guesser"
+                href="/guesser/flag-to-country"
                 className="inline-flex items-center gap-2 rounded-full bg-amber-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-200"
               >
                 {t('cta_guesser')}
@@ -309,9 +309,10 @@ export default async function HomePage({ params }: HomePageProps) {
               </RouteLoadingLink>
               <RouteLoadingLink
                 href="/subdivisions/france"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:border-white/35 hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-full bg-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
               >
                 {t('cta_subdivisions')}
+                <ArrowRight className="h-4 w-4" />
               </RouteLoadingLink>
               <PwaInstallCallToAction />
             </div>

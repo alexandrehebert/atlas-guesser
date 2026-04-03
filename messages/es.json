@@ -1,11 +1,11 @@
 {
   "landing": {
     "eyebrow": "Juego del mapa mundial",
-    "hero_title": "Aprende geografía jugando.",
+    "hero_title": "Pon a prueba tus reflejos geográficos.",
     "hero_description": "Atlas Guesser convierte el mapa del mundo en un quiz rápido con banderas, capitales y rondas inversas diseñadas para agudizar tu conocimiento de los países.",
     "cta_trips": "Abrir atlas",
-    "cta_guesser": "Jugar ahora",
-    "cta_subdivisions": "Jugar mapas regionales",
+    "cta_guesser": "Probar conocimiento mundial",
+    "cta_subdivisions": "Probar conocimiento regional",
     "install_cta": "Instalar app",
     "install_cta_pending": "Abriendo solicitud de instalación...",
     "install_ios_title": "Instalar en iPhone o iPad",

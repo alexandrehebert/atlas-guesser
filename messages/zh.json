@@ -1,11 +1,11 @@
 {
   "landing": {
     "eyebrow": "世界地图游戏",
-    "hero_title": "通过游戏学习地理。",
+    "hero_title": "挑战你的地理反应力。",
     "hero_description": "Atlas Guesser 将世界地图变成快速问答循环，包含国旗、首都和反向提示，帮助您提升地理知识。",
     "cta_trips": "打开地图册",
-    "cta_guesser": "立即游戏",
-    "cta_subdivisions": "游玩区域地图",
+    "cta_guesser": "测试世界地理知识",
+    "cta_subdivisions": "测试区域地理知识",
     "install_cta": "安装应用",
     "install_cta_pending": "正在打开安装提示...",
     "install_ios_title": "在 iPhone 或 iPad 上安装",

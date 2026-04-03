@@ -39,7 +39,7 @@ export function HeroSection({
         </AnimatedSection>
       </div>
 
-      <StaggeredAnimation animation="fade-in-up" staggerDelay={100} className="grid grid-cols-1 gap-3 h-full [&>*]:flex-1 content-center sm:grid-cols-2 lg:grid-cols-2 lg:max-w-[26rem] lg:justify-self-end">
+      <StaggeredAnimation animation="fade-in-up" staggerDelay={100} className="grid grid-cols-1 gap-3 h-full [&>*]:flex-1 content-center sm:grid-cols-2 lg:grid-cols-2 lg:max-w-[22rem] lg:justify-self-end">
         {metrics}
       </StaggeredAnimation>
     </section>
