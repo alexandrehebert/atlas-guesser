@@ -386,6 +386,9 @@ export default async function HomePage({ params }: HomePageProps) {
     ? 'Retrouvez la liste complete des pays disponibles, avec leur drapeau et leur icone SVG.'
     : 'Browse the complete list of available countries, with their flag and SVG icon.';
   const countriesModalListLabel = locale === 'fr' ? 'Catalogue pays' : 'Country catalog';
+  const countriesExternalListLabel = locale === 'fr'
+    ? 'Voir la liste exhaustive des pays du monde sur countries.hebert.app'
+    : 'See the exhaustive list of world countries on countries.hebert.app';
   const countriesSearchPlaceholder = locale === 'fr' ? 'Rechercher un pays ou un code' : 'Search country or code';
   const countriesAvailableLabel = locale === 'fr' ? '{count} pays affiches' : '{count} countries shown';
   const mapCountries = quiz.countries.map((country) => ({
@@ -436,6 +439,7 @@ export default async function HomePage({ params }: HomePageProps) {
                 countriesModalTitle={countriesModalTitle}
                 countriesModalDescription={countriesModalDescription}
                 countriesModalListLabel={countriesModalListLabel}
+                countriesExternalListLabel={countriesExternalListLabel}
                 countriesSearchPlaceholder={countriesSearchPlaceholder}
                 countriesAvailableLabel={countriesAvailableLabel}
                 worldModes={worldModes}

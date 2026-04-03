@@ -48,6 +48,7 @@ interface LandingGameStartCtasProps {
   countriesModalTitle: string;
   countriesModalDescription: string;
   countriesModalListLabel: string;
+  countriesExternalListLabel: string;
   countriesSearchPlaceholder: string;
   countriesAvailableLabel: string;
   worldModes: WorldModeOption[];
@@ -69,6 +70,7 @@ export function LandingGameStartCtas({
   countriesModalTitle,
   countriesModalDescription,
   countriesModalListLabel,
+  countriesExternalListLabel,
   countriesSearchPlaceholder,
   countriesAvailableLabel,
   worldModes,
@@ -309,6 +311,15 @@ export function LandingGameStartCtas({
                   {countriesModalTitle}
                 </h2>
                 <p className="mt-2 text-sm text-slate-300">{countriesModalDescription}</p>
+                <a
+                  href="https://countries.hebert.app"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-emerald-200 underline decoration-emerald-300/60 underline-offset-4 transition hover:text-emerald-100"
+                >
+                  {countriesExternalListLabel}
+                  <ExternalLink className="h-4 w-4" />
+                </a>
               </div>
               <button
                 type="button"
