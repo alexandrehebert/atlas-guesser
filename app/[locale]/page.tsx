@@ -4,9 +4,7 @@ import { join } from 'node:path';
 import { geoNaturalEarth1, geoPath } from 'd3-geo';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { Link } from '~/i18n/navigation';
 import {
-  ArrowRight,
   BarChart3,
   Heart,
   Layers3,
@@ -20,11 +18,12 @@ import { HeroSection } from '~/components/landing/HeroSection';
 import { StatsSection } from '~/components/landing/StatsSection';
 import { MapSection } from '~/components/landing/MapSection';
 import { LandingMapPreviewNoSSR } from '~/components/landing/LandingMapPreviewNoSSR';
+import { LandingGameStartCtas } from '~/components/landing/LandingGameStartCtas';
 import { AnimatedSection } from '~/components/AnimatedSection';
 import { MAP_MODES, MODE_ORDER } from '~/components/game/constants';
-import { RouteLoadingLink } from '~/components/RouteLoadingLink';
 import { getCountryQuizPayload } from '~/lib/server/countryQuiz';
 import { getAdminSubdivisionCatalogStats } from '~/lib/server/adminSubdivisionQuiz';
+import { SUPPORTED_ADMIN_QUIZ_COUNTRIES } from '~/lib/adminQuizCountries';
 
 const LANDING_MAP_VIEWBOX = { width: 420, height: 280 };
 const FALLBACK_PARIS_POINT = { x: 228, y: 86 };
@@ -231,6 +230,7 @@ export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'landing' });
   const tGuesser = await getTranslations({ locale, namespace: 'guesser' });
+  const tSubdivisions = await getTranslations({ locale, namespace: 'subdivisionsGuesser' });
 
   const quiz = await getCountryQuizPayload(locale);
   const adminCatalogStats = await getAdminSubdivisionCatalogStats();
@@ -273,6 +273,15 @@ export default async function HomePage({ params }: HomePageProps) {
   const previewConnectorTo = getEdgePointToward(previewLabelRect, previewPinPoint);
   const previewConnectorPath = getCurvedConnectorPath({ from: previewPinPoint, to: previewConnectorTo });
   const statsPreview = MODE_ORDER;
+  const worldModes = MODE_ORDER.map((mode) => ({
+    mode,
+    label: tGuesser(`modes.${mode}`),
+    prompt: tGuesser(`mode_moves.${mode}`),
+  }));
+  const subdivisionCountries = SUPPORTED_ADMIN_QUIZ_COUNTRIES.map((country) => ({
+    country,
+    label: tSubdivisions(`countries.${country}`),
+  }));
   const currentYear = new Date().getFullYear();
 
   return (
@@ -300,20 +309,19 @@ export default async function HomePage({ params }: HomePageProps) {
           description={t('hero_description')}
           cta={
             <div className="flex flex-wrap items-center gap-3">
-              <RouteLoadingLink
-                href="/guesser/flag-to-country"
-                className="inline-flex items-center gap-2 rounded-full bg-amber-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-200"
-              >
-                {t('cta_guesser')}
-                <ArrowRight className="h-4 w-4" />
-              </RouteLoadingLink>
-              <RouteLoadingLink
-                href="/subdivisions/france"
-                className="inline-flex items-center gap-2 rounded-full bg-cyan-300 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-200"
-              >
-                {t('cta_subdivisions')}
-                <ArrowRight className="h-4 w-4" />
-              </RouteLoadingLink>
+              <LandingGameStartCtas
+                worldCtaLabel={t('cta_guesser')}
+                subdivisionsCtaLabel={t('cta_subdivisions')}
+                modalCloseLabel={t('start_picker_close')}
+                worldModalTitle={t('start_world_modal_title')}
+                worldModalDescription={t('start_world_modal_description')}
+                worldModalListLabel={t('start_world_modal_list_label')}
+                subdivisionsModalTitle={t('start_subdivisions_modal_title')}
+                subdivisionsModalDescription={t('start_subdivisions_modal_description')}
+                subdivisionsModalListLabel={t('start_subdivisions_modal_list_label')}
+                worldModes={worldModes}
+                subdivisionCountries={subdivisionCountries}
+              />
               <PwaInstallCallToAction />
             </div>
           }
