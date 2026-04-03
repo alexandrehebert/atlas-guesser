@@ -347,7 +347,9 @@
       "france_overseas": "Territórios ultramarinos",
       "generic_inset": "Destaque",
       "india_lakshadweep": "Ilhas Lakshadweep",
-      "india_andaman": "Ilhas Andamã e Nicobar"
+      "india_andaman": "Ilhas Andamã e Nicobar",
+      "spain_ceuta": "Ceuta",
+      "spain_melilla": "Melilla"
     },
     "sources": {
       "open_button": "Fontes de dados",

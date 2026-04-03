@@ -347,7 +347,9 @@
       "france_overseas": "Overseas territories",
       "generic_inset": "Inset",
       "india_lakshadweep": "Lakshadweep",
-      "india_andaman": "Andaman & Nicobar Islands"
+      "india_andaman": "Andaman & Nicobar Islands",
+      "spain_ceuta": "Ceuta",
+      "spain_melilla": "Melilla"
     },
     "sources": {
       "open_button": "Data sources",

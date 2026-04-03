@@ -347,7 +347,9 @@
       "france_overseas": "الأقاليم الخارجية",
       "generic_inset": "الإدراج",
       "india_lakshadweep": "لاكشادويب",
-      "india_andaman": "جزر الأندمان والنيكوبار"
+      "india_andaman": "جزر الأندمان والنيكوبار",
+      "spain_ceuta": "سبتة",
+      "spain_melilla": "مليلية"
     },
     "sources": {
       "open_button": "مصادر البيانات",

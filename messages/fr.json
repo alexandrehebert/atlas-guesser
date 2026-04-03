@@ -349,7 +349,9 @@
       "france_overseas": "Outre-mer",
       "generic_inset": "Encart",
       "india_lakshadweep": "Lakshadweep",
-      "india_andaman": "Îles Andaman-et-Nicobar"
+      "india_andaman": "Îles Andaman-et-Nicobar",
+      "spain_ceuta": "Ceuta",
+      "spain_melilla": "Melilla"
     },
     "sources": {
       "open_button": "Sources",

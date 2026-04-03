@@ -347,7 +347,9 @@
       "france_overseas": "Territori d'oltremare",
       "generic_inset": "Riquadro",
       "india_lakshadweep": "Lakshadweep",
-      "india_andaman": "Isole Andamane e Nicobare"
+      "india_andaman": "Isole Andamane e Nicobare",
+      "spain_ceuta": "Ceuta",
+      "spain_melilla": "Melilla"
     },
     "sources": {
       "open_button": "Fonti",

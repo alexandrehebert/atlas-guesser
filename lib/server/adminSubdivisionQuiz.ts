@@ -734,6 +734,25 @@ function buildSectionLabels(country: AdminQuizCountrySlug, levelId: string, area
     ].filter((label): label is QuizSectionLabel => Boolean(label));
   }
 
+  if (country === 'spain') {
+    return [
+      buildSectionLabelFromCodes(areas, {
+        id: 'spain-ceuta',
+        labelKey: 'spain_ceuta',
+        codes: ['18'],
+        paddingX: 12,
+        paddingY: 16,
+      }),
+      buildSectionLabelFromCodes(areas, {
+        id: 'spain-melilla',
+        labelKey: 'spain_melilla',
+        codes: ['19'],
+        paddingX: 12,
+        paddingY: 16,
+      }),
+    ].filter((label): label is QuizSectionLabel => Boolean(label));
+  }
+
   return [];
 }
 

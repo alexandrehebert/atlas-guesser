@@ -347,7 +347,9 @@
       "france_overseas": "Überseegebiete",
       "generic_inset": "Ausschnitt",
       "india_lakshadweep": "Lakshadweep",
-      "india_andaman": "Andamanen und Nikobaren"
+      "india_andaman": "Andamanen und Nikobaren",
+      "spain_ceuta": "Ceuta",
+      "spain_melilla": "Melilla"
     },
     "sources": {
       "open_button": "Datenquellen",

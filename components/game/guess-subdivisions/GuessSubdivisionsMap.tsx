@@ -209,7 +209,7 @@ function getSectionLabelWidth(label: string): number {
 }
 
 function shouldRenderSectionBadge(labelKey: string): boolean {
-  return labelKey !== 'france_overseas' && labelKey !== 'generic_inset' && labelKey !== 'india_lakshadweep' && labelKey !== 'india_andaman';
+  return labelKey !== 'france_overseas' && labelKey !== 'generic_inset' && labelKey !== 'india_lakshadweep' && labelKey !== 'india_andaman' && labelKey !== 'spain_ceuta' && labelKey !== 'spain_melilla';
 }
 
 function getAreaClasses(
